@@ -385,7 +385,7 @@ p  { color: var(--text-3); font-size: 0.9375rem; line-height: 1.6; }
 }
 .user-info { flex: 1; min-width: 0; transition: opacity var(--t) var(--ease); }
 .sidebar[data-collapsed="true"] .user-info { opacity: 0; width: 0; pointer-events: none; }
-.user-name { font-size: 0.8125rem; font-weight: 600; truncate; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.user-name { font-size: 0.8125rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .user-email { font-size: 0.7rem; color: var(--text-4); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* ── TOPBAR (mobile only) ─────────────────────────── */
@@ -430,7 +430,6 @@ p  { color: var(--text-3); font-size: 0.9375rem; line-height: 1.6; }
   display: flex; align-items: flex-start; justify-content: space-between;
   gap: 16px; flex-wrap: wrap;
 }
-.page-title-block {}
 .page-title { font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; letter-spacing: -0.025em; line-height: 1.12; }
 .page-sub { font-size: 0.875rem; color: var(--text-3); margin-top: 3px; }
 .page-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
