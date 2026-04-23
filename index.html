@@ -690,6 +690,113 @@ ul,ol{list-style:none}
   .dash-hero{flex-direction:column;gap:16px}
   .groups-grid{grid-template-columns:1fr}
 }
+
+/* ═══════════════════════════════════════════════════
+   DESIGN SYSTEM v2 — VISUAL ENHANCEMENTS
+═══════════════════════════════════════════════════ */
+
+/* Auth: ambient glow + better structure */
+#auth-view{
+  background:
+    radial-gradient(ellipse 85% 60% at 108% 8%, oklch(from var(--primary) l c h / .13) 0%,transparent 55%),
+    radial-gradient(ellipse 60% 50% at -6% 92%, oklch(from var(--primary) l c h / .08) 0%,transparent 55%),
+    var(--bg);
+}
+.auth-wrap{display:flex;flex-direction:column;align-items:center}
+.auth-logo-wrap{text-align:center;margin-bottom:36px}
+.auth-logo-mark{
+  width:56px;height:56px;border-radius:16px;margin:0 auto 14px;
+  background:linear-gradient(140deg,var(--primary) 0%,#029099 100%);
+  box-shadow:0 6px 22px oklch(from var(--primary) l c h / .40);
+  display:flex;align-items:center;justify-content:center;color:#fff;
+}
+.auth-logo-name{font-family:var(--font-d);font-size:1.85rem;font-weight:700;letter-spacing:-.035em;line-height:1}
+.auth-logo-sub{font-size:.875rem;color:var(--text-3);margin-top:5px}
+.auth-card{
+  border:1px solid var(--border-2);
+  box-shadow:var(--sh-3), 0 0 0 1px oklch(from var(--primary) l c h / .06);
+}
+.auth-brand{display:none}
+
+/* Mark: gradient everywhere */
+.auth-mark,.sb-mark{
+  background:linear-gradient(140deg,var(--primary) 0%,#029099 100%)!important;
+  box-shadow:0 3px 14px oklch(from var(--primary) l c h / .36)!important;
+}
+
+/* Primary button: gradient + glow */
+.btn-primary{
+  background:linear-gradient(135deg,var(--primary) 0%,#029099 100%);
+  box-shadow:0 1px 4px oklch(from var(--primary) l c h / .25);
+}
+.btn-primary:hover{
+  filter:brightness(.91);
+  box-shadow:0 3px 12px oklch(from var(--primary) l c h / .36);
+}
+
+/* Group cards: colored avatar + accent bar */
+.group-card{position:relative;overflow:hidden}
+.group-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2.5px;
+  background:linear-gradient(90deg,var(--primary),#029099);
+  opacity:0;transition:opacity var(--t) var(--ease);
+}
+.group-card:hover::before{opacity:1}
+.group-card:hover{border-color:oklch(from var(--primary) l c h / .22)}
+.grp-av{
+  width:42px;height:42px;border-radius:var(--r-md);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-d);font-size:1.1rem;font-weight:700;
+  color:#fff;flex-shrink:0;margin-bottom:13px;
+  box-shadow:0 2px 10px oklch(0% 0 0 / .18);
+}
+
+/* Dashboard hero: warm gradient */
+.dash-hero{
+  background:linear-gradient(135deg,oklch(from var(--primary) l c h / .09) 0%,var(--surface) 52%)!important;
+  border-color:oklch(from var(--primary) l c h / .18)!important;
+}
+.hero-stat-v{color:var(--primary)}
+.ring-bar{filter:drop-shadow(0 0 5px oklch(from var(--primary) l c h / .35))}
+
+/* Avatar + message avatars: gradient */
+.avatar,.msg-av{
+  background:linear-gradient(140deg,var(--primary) 0%,#029099 100%);
+}
+
+/* Chat send: gradient */
+.chat-send-btn{
+  background:linear-gradient(135deg,var(--primary),#029099);
+  box-shadow:0 2px 8px oklch(from var(--primary) l c h / .28);
+}
+
+/* Nav active: bolder */
+.nav-item.active{font-weight:600}
+
+/* Page title: tighter tracking */
+.page-title{letter-spacing:-.030em;line-height:1.06}
+
+/* Vote button voted: gradient */
+.vote-btn.voted{
+  background:linear-gradient(135deg,oklch(from var(--primary) l c h / .12),oklch(from var(--primary) l c h / .06));
+}
+
+/* Invite code: gradient text */
+.invite-code{color:var(--primary)}
+
+/* Board post pinned: subtle gradient */
+.board-post.pinned{
+  background:linear-gradient(135deg,oklch(from var(--primary) l c h / .08) 0%,var(--surface) 55%);
+}
+
+/* Sidebar top: brand name refinement */
+.sb-brand-txt{font-size:.96rem;letter-spacing:-.022em}
+
+/* Auth heading: slightly larger */
+.auth-heading{font-size:1.5rem}
+
+/* Toast: backdrop blur */
+.toast{backdrop-filter:blur(12px)}
 </style>
 </head>
 <body>
@@ -697,13 +804,14 @@ ul,ol{list-style:none}
 <!-- ════════════════════ AUTH ════════════════════ -->
 <div id="auth-view" class="view">
   <div class="auth-wrap">
-    <div class="auth-brand">
-      <div class="auth-mark"><i data-lucide="layers" style="width:16px;height:16px;"></i></div>
-      <span class="auth-brand-name">GroupUp</span>
+    <div class="auth-logo-wrap">
+      <div class="auth-logo-mark"><i data-lucide="layers" style="width:24px;height:24px;"></i></div>
+      <div class="auth-logo-name">GroupUp</div>
+      <div class="auth-logo-sub">Trabajo en equipo, sin complicaciones.</div>
     </div>
     <div class="auth-card">
-      <h2 class="auth-heading">Bienvenido</h2>
-      <p class="auth-sub">Tu espacio de trabajo en equipo.</p>
+      <h2 class="auth-heading">Accede a tu cuenta</h2>
+      <p class="auth-sub">Continúa donde lo dejaste.</p>
       <div class="auth-tabs">
         <button class="auth-tab active" onclick="switchTab('login')">Iniciar sesión</button>
         <button class="auth-tab" onclick="switchTab('register')">Crear cuenta</button>
@@ -1101,7 +1209,8 @@ function go(hash,el){
   (el||document.querySelector(`[data-hash="${hash}"]`))?.classList.add('active');
   document.getElementById('topbar-title').textContent=PTITLE[hash]||'GroupUp';
   location.hash=hash; closeMob(); lucide.createIcons();
-  if(hash==='chat') loadChat();
+  if(hash==='groups'){if(U)loadGroups()}
+  else if(hash==='chat') loadChat();
   else if(hash==='tasks') loadTasks();
   else if(hash==='board') loadBoard();
   else if(hash==='files') loadFiles();
@@ -1212,6 +1321,11 @@ function showGroupsV(){
 }
 function leaveGrp(){G=null;M=null;mbrs=[];killRT();showGroupsV()}
  
+function grpColor(name){
+  const palettes=['#16697a','#4a4e69','#8b5e52','#2d6a4f','#6b4226','#7b2d8b','#1a5276','#c07a30','#35605a','#6b2737'];
+  let h=0;for(let i=0;i<name.length;i++)h=(h*31+name.charCodeAt(i))>>>0;
+  return palettes[h%palettes.length];
+}
 async function loadGroups(){
   const el=document.getElementById('groups-grid');
   el.innerHTML=`<div class="card card-pad"><div class="sk" style="height:20px;width:60%;margin-bottom:9px;"></div><div class="sk" style="height:13px;width:80%;"></div><div class="sk" style="height:12px;width:40%;margin-top:14px;"></div></div><div class="card card-pad"><div class="sk" style="height:20px;width:55%;margin-bottom:9px;"></div><div class="sk" style="height:13px;width:72%;"></div><div class="sk" style="height:12px;width:38%;margin-top:14px;"></div></div>`;
@@ -1228,13 +1342,19 @@ async function loadGroups(){
  
   el.innerHTML=(grps||[]).map(g=>{
     const dt=new Date(g.created_at).toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'});
-    return`<div class="group-card" onclick="enterGrp('${g.id}','${esc(g.name)}','${esc(g.description||'')}','${g.code}','${esc(mmap[g.id])}','${g.created_by}')">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:6px;">
+    const cl=grpColor(g.name);
+    const dn=mmap[g.id]||'';
+    return`<div class="group-card" onclick="enterGrp('${g.id}','${esc(g.name)}','${esc(g.description||'')}','${g.code}','${esc(dn)}','${g.created_by}')">
+      <div class="grp-av" style="background:${cl}">${g.name[0].toUpperCase()}</div>
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:5px;">
         <span class="group-card-name">${esc(g.name)}</span>
-        <span class="badge badge-primary">${esc(g.code)}</span>
+        <span class="badge badge-muted" style="font-family:monospace;letter-spacing:.05em;font-size:.64rem;font-weight:700;">${esc(g.code)}</span>
       </div>
       <p class="group-card-desc">${g.description?esc(g.description):'Sin descripción'}</p>
-      <div class="group-card-foot"><i data-lucide="calendar" style="width:11px;height:11px;"></i> ${dt}</div>
+      <div class="group-card-foot">
+        <i data-lucide="calendar" style="width:11px;height:11px;"></i> ${dt}
+        ${dn?`<span style="margin-left:auto;display:flex;align-items:center;gap:4px;color:var(--primary);font-weight:600;font-size:.7rem;"><i data-lucide="user" style="width:10px;height:10px;"></i>${esc(dn)}</span>`:''}
+      </div>
     </div>`;
   }).join('');
   lucide.createIcons();
