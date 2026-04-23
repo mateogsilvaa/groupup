@@ -29,8 +29,8 @@
   /* Accent teal */
   --primary:        #01696f;
   --primary-hover:  #015458;
-  --primary-faint:  oklch(from #01696f l c h / 0.10);
-  --primary-faint2: oklch(from #01696f l c h / 0.17);
+  --primary-faint:  oklch(from var(--primary) l c h / 0.10);
+  --primary-faint2: oklch(from var(--primary) l c h / 0.17);
  
   /* Text */
   --text:       #18170f;
@@ -87,8 +87,8 @@
   --border-3:   oklch(from #f3f1ea l c h / 0.22);
   --primary:        #029099;
   --primary-hover:  #02aab4;
-  --primary-faint:  oklch(from #029099 l c h / 0.13);
-  --primary-faint2: oklch(from #029099 l c h / 0.20);
+  --primary-faint:  oklch(from var(--primary) l c h / 0.13);
+  --primary-faint2: oklch(from var(--primary) l c h / 0.20);
   --text:       #f3f1ea;
   --text-2:     #ccc9be;
   --text-3:     #9c9990;
@@ -797,6 +797,41 @@ ul,ol{list-style:none}
 
 /* Toast: backdrop blur */
 .toast{backdrop-filter:blur(12px)}
+
+/* ── TOGGLE SWITCH ──────────────────────────────── */
+.toggle-sw{position:relative;display:inline-block;width:40px;height:22px;flex-shrink:0}
+.toggle-sw input{opacity:0;width:0;height:0;position:absolute}
+.toggle-track{position:absolute;inset:0;background:var(--border-3);border-radius:99px;cursor:pointer;transition:background var(--t) var(--ease)}
+.toggle-track::before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:transform var(--t) var(--ease);box-shadow:0 1px 3px oklch(0% 0 0 / .20)}
+.toggle-sw input:checked+.toggle-track{background:var(--primary)}
+.toggle-sw input:checked+.toggle-track::before{transform:translateX(18px)}
+
+/* ── COLOR SWATCHES ─────────────────────────────── */
+.color-swatches{display:flex;gap:10px;flex-wrap:wrap;padding:4px 0}
+.color-swatch{width:30px;height:30px;border-radius:50%;cursor:pointer;transition:all var(--t) var(--ease);flex-shrink:0;border:3px solid transparent}
+.color-swatch.selected{transform:scale(1.22);box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--text)}
+
+/* ── ICON GRID ──────────────────────────────────── */
+.icon-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.icon-opt{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:10px 4px;border-radius:var(--r-sm);border:2px solid var(--border);cursor:pointer;font-size:.62rem;font-weight:600;color:var(--text-3);transition:all var(--t) var(--ease);background:var(--surface-2)}
+.icon-opt:hover{border-color:var(--border-2);color:var(--text)}
+.icon-opt.selected{border-color:var(--primary);color:var(--primary);background:var(--primary-faint)}
+
+/* ── GROUP CARD v2 ──────────────────────────────── */
+.group-card{padding:0;display:flex;flex-direction:column;overflow:hidden}
+.group-card::before{display:none!important}
+.grp-card-banner{height:58px;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative}
+.grp-card-banner::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 30%,oklch(0% 0 0 / .18));pointer-events:none}
+.grp-card-body{padding:14px 16px;flex:1;display:flex;flex-direction:column;gap:8px}
+.grp-prog-bar{height:3px;background:var(--surface-3);border-radius:99px;overflow:hidden;margin-top:3px}
+.grp-prog-fill{height:100%;border-radius:99px;transition:width .7s var(--ease)}
+
+/* ── NOTIF ROWS ─────────────────────────────────── */
+.notif-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)}
+.notif-row:last-child{border:none}
+.notif-row-label{font-size:.875rem;font-weight:500;display:flex;align-items:center;gap:9px;color:var(--text-2)}
+.notif-row-sub{font-size:.72rem;color:var(--text-4);margin-top:1px}
+.notif-sections-wrap{padding-top:6px;display:flex;flex-direction:column}
 </style>
 </head>
 <body>
@@ -995,7 +1030,10 @@ ul,ol{list-style:none}
           <div class="card-head"><span class="card-title">Información del grupo</span></div>
           <div class="card-body" style="display:flex;flex-direction:column;gap:13px;">
             <div class="field"><label>Nombre del grupo</label><input id="set-name" type="text" placeholder="Nombre del grupo"></div>
+            <div class="field"><label>Nombre personalizado <span class="t-xxs muted">(apodo corto, opcional)</span></label><input id="set-cname" type="text" placeholder="Ej: Redes Q2, Squad Alpha…"></div>
             <div class="field"><label>Descripción</label><textarea id="set-desc" placeholder="Descripción del grupo…" style="min-height:72px;"></textarea></div>
+            <div class="field"><label>Color del grupo</label><div class="color-swatches" id="set-color-swatches"></div><input type="hidden" id="set-accent-color"></div>
+            <div class="field"><label>Icono del grupo</label><div class="icon-grid" id="set-icon-grid"></div><input type="hidden" id="set-icon"></div>
             <div id="set-info-msg" class="msg-banner hidden"></div>
             <div style="display:flex;justify-content:flex-end;">
               <button class="btn btn-primary btn-sm" id="btn-save-info" onclick="saveGroupInfo()"><span>Guardar cambios</span></button>
@@ -1031,6 +1069,21 @@ ul,ol{list-style:none}
           <div class="card-body" style="display:flex;flex-direction:column;gap:8px;" id="set-mbr-list">
             <div class="sk" style="height:36px;border-radius:8px;"></div>
             <div class="sk" style="height:36px;border-radius:8px;"></div>
+          </div>
+        </div>
+
+        <!-- Notificaciones -->
+        <div class="card" id="notif-card">
+          <div class="card-head"><span class="card-title">Notificaciones</span></div>
+          <div class="card-body" style="padding:0 var(--s5);">
+            <div class="notif-row">
+              <div class="notif-row-label">
+                <i data-lucide="bell" style="width:15px;height:15px;color:var(--primary);flex-shrink:0;"></i>
+                <div><div>Activar notificaciones</div><div class="notif-row-sub">Alertas del navegador para este grupo</div></div>
+              </div>
+              <label class="toggle-sw"><input type="checkbox" id="notif-master" onchange="toggleNotifMaster()"><span class="toggle-track"></span></label>
+            </div>
+            <div id="notif-sections-wrap" class="notif-sections-wrap hidden"></div>
           </div>
         </div>
 
@@ -1207,7 +1260,8 @@ function go(hash,el){
   document.getElementById(pid)?.classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   (el||document.querySelector(`[data-hash="${hash}"]`))?.classList.add('active');
-  document.getElementById('topbar-title').textContent=PTITLE[hash]||'GroupUp';
+  const inGrp=['dashboard','chat','tasks','board','files','brainstorm','settings'].includes(hash);
+  document.getElementById('topbar-title').textContent=inGrp&&G?(G.custom_name||G.name):(PTITLE[hash]||'GroupUp');
   location.hash=hash; closeMob(); lucide.createIcons();
   if(hash==='groups'){if(U)loadGroups()}
   else if(hash==='chat') loadChat();
@@ -1299,7 +1353,7 @@ async function doRegister(){
 async function doLogout(){
   await sb.auth.signOut();
   U=null;G=null;M=null;mbrs=[];tasks=[];ideas=[];myV=new Set();
-  killRT();
+  killRT();resetAccent();
   location.hash='';
   showGroupsV();showV('auth-view');
 }
@@ -1319,7 +1373,8 @@ function showGroupsV(){
   go('groups',document.querySelector('[data-hash="groups"]'));
   loadGroups();
 }
-function leaveGrp(){G=null;M=null;mbrs=[];killRT();showGroupsV()}
+function resetAccent(){document.documentElement.style.removeProperty('--primary')}
+function leaveGrp(){G=null;M=null;mbrs=[];killRT();resetAccent();showGroupsV()}
  
 function grpColor(name){
   const palettes=['#16697a','#4a4e69','#8b5e52','#2d6a4f','#6b4226','#7b2d8b','#1a5276','#c07a30','#35605a','#6b2737'];
@@ -1337,23 +1392,53 @@ async function loadGroups(){
  
   const gids=mships.map(m=>m.group_id);
   const mmap=Object.fromEntries(mships.map(m=>[m.group_id,m.display_name]));
-  const{data:grps,error:gErr}=await sb.from('groups').select('id,name,description,code,created_at,created_by').in('id',gids);
-  if(gErr){toast('Error: '+gErr.message,'err');el.innerHTML='';return}
- 
-  el.innerHTML=(grps||[]).map(g=>{
-    const dt=new Date(g.created_at).toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'});
-    const cl=grpColor(g.name);
+
+  const[gRes,mbRes,tRes]=await Promise.all([
+    sb.from('groups').select('id,name,description,code,created_at,created_by,accent_color,icon,custom_name').in('id',gids),
+    sb.from('group_members').select('group_id').in('group_id',gids),
+    sb.from('tasks').select('group_id,status').in('group_id',gids),
+  ]);
+  if(gRes.error){toast('Error: '+gRes.error.message,'err');el.innerHTML='';return}
+
+  const mCount={};
+  (mbRes.data||[]).forEach(m=>{mCount[m.group_id]=(mCount[m.group_id]||0)+1});
+  const tStats={};
+  (tRes.data||[]).forEach(t=>{
+    if(!tStats[t.group_id])tStats[t.group_id]={total:0,done:0};
+    tStats[t.group_id].total++;
+    if(t.status==='done')tStats[t.group_id].done++;
+  });
+
+  el.innerHTML=(gRes.data||[]).map(g=>{
     const dn=mmap[g.id]||'';
-    return`<div class="group-card" onclick="enterGrp('${g.id}','${esc(g.name)}','${esc(g.description||'')}','${g.code}','${esc(dn)}','${g.created_by}')">
-      <div class="grp-av" style="background:${cl}">${g.name[0].toUpperCase()}</div>
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:5px;">
-        <span class="group-card-name">${esc(g.name)}</span>
-        <span class="badge badge-muted" style="font-family:monospace;letter-spacing:.05em;font-size:.64rem;font-weight:700;">${esc(g.code)}</span>
+    const dName=esc(g.custom_name||g.name);
+    const accent=g.accent_color||grpColor(g.name);
+    const icon=g.icon||'users';
+    const mc=mCount[g.id]||0;
+    const ts=tStats[g.id]||{total:0,done:0};
+    const pct=ts.total?Math.round(ts.done/ts.total*100):0;
+    const dt=new Date(g.created_at).toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'});
+    return`<div class="group-card" onclick="enterGrp('${g.id}','${esc(g.name)}','${esc(g.description||'')}','${g.code}','${esc(dn)}','${g.created_by}','${accent}','${icon}','${esc(g.custom_name||'')}')">
+      <div class="grp-card-banner" style="background:${accent}">
+        <i data-lucide="${icon}" style="width:22px;height:22px;color:rgba(255,255,255,.92);position:relative;z-index:1;"></i>
       </div>
-      <p class="group-card-desc">${g.description?esc(g.description):'Sin descripción'}</p>
-      <div class="group-card-foot">
-        <i data-lucide="calendar" style="width:11px;height:11px;"></i> ${dt}
-        ${dn?`<span style="margin-left:auto;display:flex;align-items:center;gap:4px;color:var(--primary);font-weight:600;font-size:.7rem;"><i data-lucide="user" style="width:10px;height:10px;"></i>${esc(dn)}</span>`:''}
+      <div class="grp-card-body">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
+          <span class="group-card-name">${dName}</span>
+          <span class="badge badge-muted" style="font-family:monospace;letter-spacing:.05em;font-size:.63rem;font-weight:700;flex-shrink:0;">${esc(g.code)}</span>
+        </div>
+        <p class="group-card-desc" style="min-height:0;">${g.description?esc(g.description):'Sin descripción'}</p>
+        <div style="display:flex;flex-direction:column;gap:3px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-4);">Tareas</span>
+            <span style="font-size:.7rem;font-weight:600;color:var(--text-3);">${ts.done}/${ts.total}</span>
+          </div>
+          <div class="grp-prog-bar"><div class="grp-prog-fill" style="width:${pct}%;background:${accent}"></div></div>
+        </div>
+        <div class="group-card-foot">
+          <i data-lucide="users" style="width:11px;height:11px;"></i> ${mc} miembro${mc!==1?'s':''}
+          ${dn?`<span style="margin-left:auto;display:flex;align-items:center;gap:3px;color:${accent};font-weight:600;font-size:.69rem;"><i data-lucide="user" style="width:10px;height:10px;"></i>${esc(dn)}</span>`:''}
+        </div>
       </div>
     </div>`;
   }).join('');
@@ -1376,7 +1461,7 @@ async function createGrp(){
   closeM('m-create');
   document.getElementById('cg-name').value='';document.getElementById('cg-desc').value='';document.getElementById('cg-dn').value='';
   toast('Grupo creado','ok');
-  enterGrp(g.id,g.name,g.description||'',g.code,dn,g.created_by);
+  enterGrp(g.id,g.name,g.description||'',g.code,dn,g.created_by,'','','');
 }
  
 async function joinGrp(){
@@ -1388,22 +1473,29 @@ async function joinGrp(){
   const{data:g,error:gErr}=await sb.from('groups').select('*').eq('code',code).single();
   if(gErr||!g){setLoad('btn-join',false,'Unirse');return setMsg('m-join-msg','error','Código no encontrado')}
   const{data:ex}=await sb.from('group_members').select('display_name').eq('group_id',g.id).eq('user_id',U.id).maybeSingle();
-  if(ex){setLoad('btn-join',false,'Unirse');closeM('m-join');enterGrp(g.id,g.name,g.description||'',g.code,ex.display_name,g.created_by);return}
+  if(ex){setLoad('btn-join',false,'Unirse');closeM('m-join');enterGrp(g.id,g.name,g.description||'',g.code,ex.display_name,g.created_by,g.accent_color,g.icon,g.custom_name);return}
   const{error:mErr}=await sb.from('group_members').insert({group_id:g.id,user_id:U.id,display_name:dn});
   setLoad('btn-join',false,'Unirse');
   if(mErr)return setMsg('m-join-msg','error',mErr.message);
   closeM('m-join');toast('¡Te has unido!','ok');
-  enterGrp(g.id,g.name,g.description||'',g.code,dn,g.created_by);
+  enterGrp(g.id,g.name,g.description||'',g.code,dn,g.created_by,g.accent_color,g.icon,g.custom_name);
 }
  
-async function enterGrp(id,name,desc,code,displayName,createdBy){
-  G={id,name,description:desc,code,created_by:createdBy};
+async function enterGrp(id,name,desc,code,displayName,createdBy,accentColor,icon,customName){
+  G={id,name,description:desc,code,created_by:createdBy,accent_color:accentColor||'',icon:icon||'users',custom_name:customName||''};
   M={display_name:displayName};
-  document.getElementById('sb-grp-name').textContent=name;
+  const dName=customName||name;
+  // Apply accent color
+  if(accentColor){
+    document.documentElement.style.setProperty('--primary',accentColor);
+  } else {
+    document.documentElement.style.removeProperty('--primary');
+  }
+  document.getElementById('sb-grp-name').textContent=dName;
   document.getElementById('nav-in-grp').classList.remove('hidden');
   document.getElementById('nav-no-grp').classList.add('hidden');
   document.getElementById('invite-code-el').textContent=code;
-  document.getElementById('chat-grp-nm').textContent=name;
+  document.getElementById('chat-grp-nm').textContent=dName;
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.querySelector('[data-hash="dashboard"]')?.classList.add('active');
   await loadMbrs();
@@ -1771,33 +1863,82 @@ function subRT(){
   killRT();const gid=G.id;
   const ch1=sb.channel(`g-${gid}-msgs`)
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:`group_id=eq.${gid}`},p=>{
-      if(p.new.user_id!==U.id&&document.getElementById('page-chat').classList.contains('active'))appendMsg(p.new,true);
+      if(p.new.user_id!==U.id){
+        if(document.getElementById('page-chat').classList.contains('active'))appendMsg(p.new,true);
+        else notifyUser((p.new.display_name||'Miembro'),p.new.content?.slice(0,90)||'','chat');
+      }
     }).subscribe();
   const ch2=sb.channel(`g-${gid}-tasks`)
-    .on('postgres_changes',{event:'*',schema:'public',table:'tasks',filter:`group_id=eq.${gid}`},()=>{
+    .on('postgres_changes',{event:'*',schema:'public',table:'tasks',filter:`group_id=eq.${gid}`},p=>{
       if(document.getElementById('page-tasks').classList.contains('active'))loadTasks();
       if(document.getElementById('page-dashboard').classList.contains('active'))loadDash();
+      if(p.eventType==='INSERT')notifyUser('Nueva tarea: '+(p.new.title||''),'','tasks');
+      else if(p.eventType==='UPDATE')notifyUser('Tarea actualizada: '+(p.new.title||''),'','tasks');
     }).subscribe();
-  rChans.push(ch1,ch2);
+  const ch3=sb.channel(`g-${gid}-board`)
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'board_posts',filter:`group_id=eq.${gid}`},p=>{
+      if(document.getElementById('page-board').classList.contains('active'))loadBoard();
+      if(document.getElementById('page-dashboard').classList.contains('active'))loadDash();
+      notifyUser('Nuevo anuncio: '+(p.new.title||''),(p.new.content||'').slice(0,90),'board');
+    }).subscribe();
+  const ch4=sb.channel(`g-${gid}-ideas`)
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'ideas',filter:`group_id=eq.${gid}`},p=>{
+      if(document.getElementById('page-brainstorm').classList.contains('active'))loadIdeas();
+      notifyUser('Nueva idea de '+(p.new.display_name||'Miembro'),(p.new.content||'').slice(0,90),'ideas');
+    }).subscribe();
+  const ch5=sb.channel(`g-${gid}-files`)
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'files',filter:`group_id=eq.${gid}`},p=>{
+      if(document.getElementById('page-files').classList.contains('active'))loadFiles();
+      notifyUser('Archivo subido: '+(p.new.file_name||''),(p.new.display_name||''),'files');
+    }).subscribe();
+  rChans.push(ch1,ch2,ch3,ch4,ch5);
 }
  
 /* ════════════════════════════════════════════════════
    AJUSTES DEL GRUPO
 ════════════════════════════════════════════════════ */
+const ACCENT_COLORS=['#01696f','#e05c4b','#2563eb','#7c3aed','#ea580c','#16a34a'];
+const GROUP_ICONS=[
+  {n:'users',l:'Equipo'},{n:'briefcase',l:'Trabajo'},{n:'book-open',l:'Estudio'},
+  {n:'code-2',l:'Dev'},{n:'flask-conical',l:'Lab'},{n:'music',l:'Música'},
+  {n:'camera',l:'Diseño'},{n:'rocket',l:'Proyecto'},{n:'globe',l:'Global'},{n:'heart',l:'Social'}
+];
+
+function renderColorSwatches(selected){
+  const el=document.getElementById('set-color-swatches');if(!el)return;
+  el.innerHTML=ACCENT_COLORS.map(c=>`<div class="color-swatch${selected===c?' selected':''}" style="background:${c}" title="${c}" onclick="selectColor('${c}')"></div>`).join('');
+  document.getElementById('set-accent-color').value=selected||ACCENT_COLORS[0];
+}
+function selectColor(c){
+  document.getElementById('set-accent-color').value=c;
+  document.querySelectorAll('.color-swatch').forEach(s=>s.classList.toggle('selected',s.style.background===c||s.style.backgroundColor===c));
+}
+function renderIconGrid(selected){
+  const el=document.getElementById('set-icon-grid');if(!el)return;
+  el.innerHTML=GROUP_ICONS.map(ic=>`<div class="icon-opt${selected===ic.n?' selected':''}" onclick="selectIcon('${ic.n}')"><i data-lucide="${ic.n}" style="width:16px;height:16px;"></i>${ic.l}</div>`).join('');
+  document.getElementById('set-icon').value=selected||GROUP_ICONS[0].n;
+  lucide.createIcons();
+}
+function selectIcon(n){
+  document.getElementById('set-icon').value=n;
+  document.querySelectorAll('.icon-opt').forEach(o=>o.classList.toggle('selected',o.getAttribute('onclick')===`selectIcon('${n}')`));
+}
+
 function loadSettings(){
   if(!G)return;
-  // Rellenar campos
   document.getElementById('set-name').value=G.name||'';
+  document.getElementById('set-cname').value=G.custom_name||'';
   document.getElementById('set-desc').value=G.description||'';
   document.getElementById('set-dn').value=M?.display_name||'';
   document.getElementById('set-code').textContent=G.code||'—';
-  // Mostrar/ocultar botones sólo para el creador
+  renderColorSwatches(G.accent_color||ACCENT_COLORS[0]);
+  renderIconGrid(G.icon||GROUP_ICONS[0].n);
   const isOwner=G.created_by===U?.id;
   document.getElementById('btn-del-grp').style.display=isOwner?'':'none';
   document.getElementById('btn-save-info').closest('.card').style.display=isOwner?'':'none';
   document.getElementById('btn-regen-code').style.display=isOwner?'':'none';
-  // Miembros
   renderSettingsMembers(isOwner);
+  loadNotifUI();
 }
 
 function renderSettingsMembers(isOwner){
@@ -1821,15 +1962,21 @@ function renderSettingsMembers(isOwner){
 
 async function saveGroupInfo(){
   const name=document.getElementById('set-name').value.trim();
+  const customName=document.getElementById('set-cname').value.trim();
   const desc=document.getElementById('set-desc').value.trim();
+  const accentColor=document.getElementById('set-accent-color').value||null;
+  const icon=document.getElementById('set-icon').value||null;
   if(!name)return setMsg('set-info-msg','error','El nombre no puede estar vacío');
   setLoad('btn-save-info',true);
-  const{error}=await sb.from('groups').update({name,description:desc}).eq('id',G.id);
+  const{error}=await sb.from('groups').update({name,custom_name:customName||null,description:desc,accent_color:accentColor,icon}).eq('id',G.id);
   setLoad('btn-save-info',false,'Guardar cambios');
   if(error)return setMsg('set-info-msg','error',error.message);
-  G.name=name;G.description=desc;
-  document.getElementById('sb-grp-name').textContent=name;
-  document.getElementById('chat-grp-nm').textContent=name;
+  G.name=name;G.custom_name=customName;G.description=desc;G.accent_color=accentColor;G.icon=icon;
+  const dName=customName||name;
+  document.getElementById('sb-grp-name').textContent=dName;
+  document.getElementById('chat-grp-nm').textContent=dName;
+  if(accentColor)document.documentElement.style.setProperty('--primary',accentColor);
+  else document.documentElement.style.removeProperty('--primary');
   setMsg('set-info-msg','success','Cambios guardados');
   setTimeout(()=>setMsg('set-info-msg','',''),2500);
   toast('Grupo actualizado','ok');
@@ -1899,6 +2046,88 @@ async function deleteGrp(){
   leaveGrp();
 }
 
+
+/* ════════════════════════════════════════════════════
+   NOTIFICACIONES
+════════════════════════════════════════════════════ */
+const NOTIF_SECTIONS=[
+  {id:'chat',label:'Chat',icon:'message-square'},
+  {id:'tasks',label:'Tareas',icon:'check-square'},
+  {id:'board',label:'Tablón',icon:'pin'},
+  {id:'ideas',label:'Ideas',icon:'lightbulb'},
+  {id:'files',label:'Archivos',icon:'paperclip'},
+];
+
+function getNotifPrefs(){
+  if(!G)return{enabled:false};
+  try{return JSON.parse(localStorage.getItem('notif_'+G.id)||'{}')}catch{return{enabled:false}}
+}
+function saveNotifPrefsToStorage(prefs){
+  if(!G)return;
+  localStorage.setItem('notif_'+G.id,JSON.stringify(prefs));
+}
+function notifyUser(title,body,section){
+  if(!G)return;
+  const prefs=getNotifPrefs();
+  if(!prefs.enabled)return;
+  if(prefs[section]===false)return;
+  if(Notification.permission!=='granted')return;
+  const grpName=G.custom_name||G.name;
+  try{new Notification(`${grpName} · ${title}`,{body,icon:'',tag:section+'-'+G.id,silent:false})}catch(e){}
+}
+function loadNotifUI(){
+  if(!G)return;
+  const prefs=getNotifPrefs();
+  const master=document.getElementById('notif-master');
+  if(master)master.checked=!!prefs.enabled;
+  renderNotifSections(prefs);
+}
+function renderNotifSections(prefs){
+  const wrap=document.getElementById('notif-sections-wrap');if(!wrap)return;
+  if(!prefs?.enabled){wrap.classList.add('hidden');return}
+  wrap.classList.remove('hidden');
+  wrap.innerHTML=`<p class="t-xs muted" style="padding:4px 0 8px;">Elige de qué secciones recibir:</p>`+
+    NOTIF_SECTIONS.map(s=>{
+      const on=prefs[s.id]!==false;
+      return`<div class="notif-row">
+        <div class="notif-row-label">
+          <i data-lucide="${s.icon}" style="width:14px;height:14px;color:var(--primary);flex-shrink:0;"></i>
+          <span>${s.label}</span>
+        </div>
+        <label class="toggle-sw"><input type="checkbox" ${on?'checked':''} onchange="saveNotifSection('${s.id}',this.checked)"><span class="toggle-track"></span></label>
+      </div>`;
+    }).join('');
+  lucide.createIcons();
+}
+async function toggleNotifMaster(){
+  const master=document.getElementById('notif-master');
+  if(!master)return;
+  if(master.checked){
+    if(!('Notification' in window)){
+      master.checked=false;
+      return toast('Tu navegador no soporta notificaciones','err');
+    }
+    if(Notification.permission==='denied'){
+      master.checked=false;
+      return toast('Permiso denegado en el navegador. Actívalo manualmente.','err');
+    }
+    if(Notification.permission!=='granted'){
+      const p=await Notification.requestPermission();
+      if(p!=='granted'){master.checked=false;toast('Permiso de notificaciones denegado','err');return}
+    }
+  }
+  const prefs=getNotifPrefs();
+  prefs.enabled=master.checked;
+  if(prefs.enabled)NOTIF_SECTIONS.forEach(s=>{if(prefs[s.id]===undefined)prefs[s.id]=true});
+  saveNotifPrefsToStorage(prefs);
+  renderNotifSections(prefs);
+  toast(prefs.enabled?'Notificaciones activadas':'Notificaciones desactivadas',prefs.enabled?'ok':'');
+}
+function saveNotifSection(section,val){
+  const prefs=getNotifPrefs();
+  prefs[section]=val;
+  saveNotifPrefsToStorage(prefs);
+}
 
 let _sessionReady=false;
 
