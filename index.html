@@ -881,7 +881,7 @@ ul,ol{list-style:none}
     <div class="page" id="page-settings">
       <div class="page-head"><div class="page-title-block"><h1 class="page-title">Ajustes del grupo</h1><p class="page-sub">Gestiona la información y los miembros</p></div></div>
       <div class="page-body" style="max-width:640px;display:flex;flex-direction:column;gap:16px;">
- 
+
         <!-- Info del grupo -->
         <div class="card">
           <div class="card-head"><span class="card-title">Información del grupo</span></div>
@@ -894,7 +894,7 @@ ul,ol{list-style:none}
             </div>
           </div>
         </div>
- 
+
         <!-- Tu nombre en el grupo -->
         <div class="card">
           <div class="card-head"><span class="card-title">Tu nombre en este grupo</span></div>
@@ -906,7 +906,7 @@ ul,ol{list-style:none}
             </div>
           </div>
         </div>
- 
+
         <!-- Código de invitación -->
         <div class="card">
           <div class="card-head"><span class="card-title">Código de invitación</span></div>
@@ -916,7 +916,7 @@ ul,ol{list-style:none}
             <button class="btn btn-secondary btn-sm" id="btn-regen-code" onclick="regenCode()"><i data-lucide="refresh-cw" style="width:13px;height:13px;"></i> Regenerar</button>
           </div>
         </div>
- 
+
         <!-- Miembros -->
         <div class="card">
           <div class="card-head"><span class="card-title">Miembros</span><span id="set-mbr-count" class="badge badge-muted">—</span></div>
@@ -925,7 +925,7 @@ ul,ol{list-style:none}
             <div class="sk" style="height:36px;border-radius:8px;"></div>
           </div>
         </div>
- 
+
         <!-- Zona de peligro -->
         <div class="card" style="border-color:oklch(from var(--c-red) l c h / 0.28);">
           <div class="card-head"><span class="card-title" style="color:var(--c-red);">Zona de peligro</span></div>
@@ -937,10 +937,10 @@ ul,ol{list-style:none}
             </div>
           </div>
         </div>
- 
+
       </div>
     </div>
- 
+
   </main>
 </div>
  
@@ -1679,7 +1679,7 @@ function loadSettings(){
   // Miembros
   renderSettingsMembers(isOwner);
 }
- 
+
 function renderSettingsMembers(isOwner){
   const el=document.getElementById('set-mbr-list');
   document.getElementById('set-mbr-count').textContent=mbrs.length+' miembro'+(mbrs.length!==1?'s':'');
@@ -1698,7 +1698,7 @@ function renderSettingsMembers(isOwner){
   }).join('');
   lucide.createIcons();
 }
- 
+
 async function saveGroupInfo(){
   const name=document.getElementById('set-name').value.trim();
   const desc=document.getElementById('set-desc').value.trim();
@@ -1714,7 +1714,7 @@ async function saveGroupInfo(){
   setTimeout(()=>setMsg('set-info-msg','',''),2500);
   toast('Grupo actualizado','ok');
 }
- 
+
 async function saveDisplayName(){
   const dn=document.getElementById('set-dn').value.trim();
   if(!dn)return setMsg('set-dn-msg','error','El nombre no puede estar vacío');
@@ -1729,7 +1729,7 @@ async function saveDisplayName(){
   setTimeout(()=>setMsg('set-dn-msg','',''),2500);
   toast('Nombre actualizado','ok');
 }
- 
+
 async function regenCode(){
   if(!confirm('¿Regenerar el código? El código actual dejará de funcionar.'))return;
   setLoad('btn-regen-code',true);
@@ -1742,7 +1742,7 @@ async function regenCode(){
   document.getElementById('invite-code-el').textContent=code;
   toast('Código regenerado: '+code,'ok');
 }
- 
+
 async function kickMember(userId,displayName){
   if(!confirm(`¿Expulsar a ${displayName} del grupo?`))return;
   const{error}=await sb.from('group_members').delete().eq('group_id',G.id).eq('user_id',userId);
@@ -1751,7 +1751,7 @@ async function kickMember(userId,displayName){
   toast(displayName+' ha sido expulsado','ok');
   renderSettingsMembers(G.created_by===U?.id);
 }
- 
+
 async function leaveGrpConfirm(){
   if(!confirm('¿Abandonar este grupo? Perderás el acceso.'))return;
   const{error}=await sb.from('group_members').delete().eq('group_id',G.id).eq('user_id',U.id);
@@ -1759,7 +1759,7 @@ async function leaveGrpConfirm(){
   toast('Has abandonado el grupo','ok');
   leaveGrp();
 }
- 
+
 async function deleteGrp(){
   if(G.created_by!==U?.id)return toast('Solo el creador puede eliminar el grupo','err');
   if(!confirm(`¿Eliminar el grupo "${G.name}"? Esta acción es irreversible y borrará todos los datos.`))return;
@@ -1778,7 +1778,7 @@ async function deleteGrp(){
   toast('Grupo eliminado','ok');
   leaveGrp();
 }
- 
+
 
 let _sessionReady=false;
 
