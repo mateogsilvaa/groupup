@@ -832,6 +832,31 @@ ul,ol{list-style:none}
 .notif-row-label{font-size:.875rem;font-weight:500;display:flex;align-items:center;gap:9px;color:var(--text-2)}
 .notif-row-sub{font-size:.72rem;color:var(--text-4);margin-top:1px}
 .notif-sections-wrap{padding-top:6px;display:flex;flex-direction:column}
+
+/* ── FEATURE 1: CARD MICRO-ANIMATIONS ──────────── */
+.group-card{transition:transform var(--t) var(--ease), box-shadow var(--t) var(--ease), border-color var(--t) var(--ease)}
+.group-card:hover{transform:translateY(-2px);box-shadow:var(--sh-3)}
+.task-item,.board-post,.file-item,.idea-item{transition:transform var(--t) var(--ease), box-shadow var(--t) var(--ease), border-color var(--t) var(--ease)}
+.task-item:hover,.file-item:hover{transform:translateY(-1px);box-shadow:var(--sh-2)}
+
+/* ── FEATURE 3: STATUS DOTS ─────────────────────── */
+.status-dot{width:9px;height:9px;border-radius:50%;border:2px solid var(--surface);flex-shrink:0}
+.status-active{background:#22c55e}
+.status-away{background:#f59e0b}
+.status-offline{background:#9ca3af}
+.user-row-wrap{position:relative}
+.sb-av-wrap{position:relative;display:inline-flex}
+.sb-av-status{position:absolute;bottom:-1px;right:-1px}
+.avatar-img{width:100%;height:100%;border-radius:50%;object-fit:cover}
+.profile-header{display:flex;align-items:center;gap:14px;padding:18px 20px;border-bottom:1px solid var(--border)}
+.profile-av{width:52px;height:52px;border-radius:50%;background:linear-gradient(140deg,var(--primary),#029099);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;flex-shrink:0}
+.profile-name{font-family:var(--font-d);font-size:1.1rem;font-weight:700;letter-spacing:-.015em}
+.profile-bio{font-size:.875rem;color:var(--text-3);margin-top:2px}
+.status-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.status-opt{display:flex;align-items:center;gap:9px;padding:10px 12px;border-radius:var(--r-sm);border:2px solid var(--border);cursor:pointer;transition:all var(--t) var(--ease);font-size:.875rem;font-weight:500;color:var(--text-2);background:var(--surface-2)}
+.status-opt:hover{border-color:var(--border-2)}
+.status-opt.selected{border-color:var(--primary);background:var(--primary-faint);color:var(--primary)}
+.badge-count{min-width:17px;height:17px;padding:0 4px;border-radius:99px;background:var(--c-red);color:#fff;font-size:.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1}
 </style>
 </head>
 <body>
@@ -891,6 +916,11 @@ ul,ol{list-style:none}
           <i data-lucide="users" style="width:16px;height:16px;"></i>
           <span class="sb-label">Mis grupos</span>
         </button>
+        <button class="nav-item" data-hash="friends" onclick="go('friends',this)" title="Compañeros" style="position:relative;">
+          <i data-lucide="user-check" style="width:16px;height:16px;"></i>
+          <span class="sb-label">Compañeros</span>
+          <span class="badge-count" id="friend-req-badge" style="display:none;position:absolute;top:6px;right:6px;"></span>
+        </button>
       </div>
  
       <!-- In group -->
@@ -909,7 +939,13 @@ ul,ol{list-style:none}
     </nav>
  
     <div class="sb-foot">
-      <div class="user-row"><div class="avatar" id="sb-av">?</div><div class="user-meta"><div class="user-name" id="sb-name">—</div><div class="user-email" id="sb-email">—</div></div></div>
+      <div class="user-row" style="cursor:pointer;" onclick="openOwnProfile()" title="Mi perfil">
+        <div class="sb-av-wrap">
+          <div class="avatar" id="sb-av">?</div>
+          <span class="status-dot sb-av-status" id="sb-status-dot" style="display:none;"></span>
+        </div>
+        <div class="user-meta"><div class="user-name" id="sb-name">—</div><div class="user-email" id="sb-email">—</div></div>
+      </div>
       <button class="nav-item" onclick="doLogout()" style="margin-top:2px;"><i data-lucide="log-out" style="width:15px;height:15px;"></i><span class="sb-label">Cerrar sesión</span></button>
     </div>
   </aside>
@@ -941,6 +977,20 @@ ul,ol{list-style:none}
       </div>
     </div>
  
+    <!-- FRIENDS -->
+    <div class="page" id="page-friends">
+      <div class="page-head">
+        <div class="page-title-block"><h1 class="page-title">Compañeros</h1><p class="page-sub">Tus conexiones en GroupUp</p></div>
+      </div>
+      <div class="page-body">
+        <div class="tabs" id="friends-tabs">
+          <button class="tab active" onclick="fFriends('friends',this)"><i data-lucide="user-check" style="width:13px;height:13px;"></i> Compañeros</button>
+          <button class="tab" onclick="fFriends('requests',this)"><i data-lucide="user-plus" style="width:13px;height:13px;"></i> Solicitudes <span class="badge-count" id="req-tab-badge" style="display:none;margin-left:4px;"></span></button>
+        </div>
+        <div id="friends-list"></div>
+      </div>
+    </div>
+
     <!-- DASHBOARD -->
     <div class="page" id="page-dashboard">
       <div class="page-head" style="padding-bottom:0;">
@@ -1072,6 +1122,12 @@ ul,ol{list-style:none}
           </div>
         </div>
 
+        <!-- Canales activos -->
+        <div class="card" id="card-channels" style="display:none;">
+          <div class="card-head"><span class="card-title">Canales activos</span></div>
+          <div class="card-body" style="display:flex;flex-direction:column;gap:0;padding:0 var(--s5);" id="channels-list"></div>
+        </div>
+
         <!-- Notificaciones -->
         <div class="card" id="notif-card">
           <div class="card-head"><span class="card-title">Notificaciones</span></div>
@@ -1106,7 +1162,44 @@ ul,ol{list-style:none}
 </div>
  
 <!-- ════════════════════ MODALS ════════════════════ -->
- 
+
+<!-- OWN PROFILE -->
+<div class="overlay" id="m-own-profile">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-head"><span class="modal-title">Mi perfil</span><button class="btn-icon" onclick="closeM('m-own-profile')"><i data-lucide="x" style="width:16px;height:16px;"></i></button></div>
+    <div class="modal-body">
+      <div id="own-profile-msg" class="msg-banner hidden"></div>
+      <div class="field"><label>Nombre visible</label><input id="p-dn" type="text" placeholder="Tu nombre"></div>
+      <div class="field"><label>Bio <span class="t-xxs muted">(opcional)</span></label><textarea id="p-bio" placeholder="Cuéntanos algo sobre ti…" style="min-height:68px;"></textarea></div>
+      <div class="field"><label>URL de avatar <span class="t-xxs muted">(opcional)</span></label><input id="p-avatar" type="url" placeholder="https://…"></div>
+      <div class="field"><label>Estado</label>
+        <div class="status-grid">
+          <div class="status-opt" data-status="active" onclick="selectStatus('active')"><span class="status-dot status-active"></span>Activo</div>
+          <div class="status-opt" data-status="away" onclick="selectStatus('away')"><span class="status-dot status-away"></span>Ausente</div>
+          <div class="status-opt" data-status="offline" onclick="selectStatus('offline')"><span class="status-dot status-offline"></span>Desconectado</div>
+          <div class="status-opt" data-status="ghost" onclick="selectStatus('ghost')"><i data-lucide="eye-off" style="width:12px;height:12px;color:var(--text-4);"></i>Invisible</div>
+        </div>
+        <input type="hidden" id="p-status" value="active">
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary" onclick="closeM('m-own-profile')">Cancelar</button>
+      <button class="btn btn-primary" id="btn-save-profile" onclick="saveOwnProfile()"><span>Guardar</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- MEMBER PROFILE -->
+<div class="overlay" id="m-member-profile">
+  <div class="modal" style="max-width:380px;">
+    <div class="modal-head"><span class="modal-title">Perfil</span><button class="btn-icon" onclick="closeM('m-member-profile')"><i data-lucide="x" style="width:16px;height:16px;"></i></button></div>
+    <div class="modal-body" id="member-profile-body">
+      <!-- rendered by JS -->
+    </div>
+    <div class="modal-foot" id="member-profile-foot"></div>
+  </div>
+</div>
+
 <!-- CREATE GROUP -->
 <div class="overlay" id="m-create">
   <div class="modal">
@@ -1229,6 +1322,10 @@ let U=null, G=null, M=null;
 let mbrs=[], tasks=[], ideas=[], myV=new Set();
 let tFilt='all', iSort='votes', selF=null;
 let rChans=[], dark=false;
+let groupsData=[];
+let friends=[], pendingReqs=[];
+let friendsTab='friends';
+let myGlobalStatus='active';
  
 /* ── THEME ──────────────────────────────────────── */
 function setTheme(d){
@@ -1251,8 +1348,8 @@ function closeMob(){document.getElementById('sidebar').classList.remove('mob-ope
 function showV(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id)?.classList.add('active');lucide.createIcons()}
  
 /* ── ROUTING ────────────────────────────────────── */
-const PAGE={groups:'page-groups',dashboard:'page-dashboard',chat:'page-chat',tasks:'page-tasks',board:'page-board',files:'page-files',brainstorm:'page-brainstorm',settings:'page-settings'};
-const PTITLE={groups:'Mis grupos',dashboard:'Panel',chat:'Chat',tasks:'Tareas',board:'Tablón',files:'Archivos',brainstorm:'Ideas',settings:'Ajustes'};
+const PAGE={groups:'page-groups',friends:'page-friends',dashboard:'page-dashboard',chat:'page-chat',tasks:'page-tasks',board:'page-board',files:'page-files',brainstorm:'page-brainstorm',settings:'page-settings'};
+const PTITLE={groups:'Mis grupos',friends:'Compañeros',dashboard:'Panel',chat:'Chat',tasks:'Tareas',board:'Tablón',files:'Archivos',brainstorm:'Ideas',settings:'Ajustes'};
  
 function go(hash,el){
   const pid=PAGE[hash]; if(!pid) return;
@@ -1264,6 +1361,7 @@ function go(hash,el){
   document.getElementById('topbar-title').textContent=inGrp&&G?(G.custom_name||G.name):(PTITLE[hash]||'GroupUp');
   location.hash=hash; closeMob(); lucide.createIcons();
   if(hash==='groups'){if(U)loadGroups()}
+  else if(hash==='friends') loadFriends();
   else if(hash==='chat') loadChat();
   else if(hash==='tasks') loadTasks();
   else if(hash==='board') loadBoard();
@@ -1394,11 +1492,12 @@ async function loadGroups(){
   const mmap=Object.fromEntries(mships.map(m=>[m.group_id,m.display_name]));
 
   const[gRes,mbRes,tRes]=await Promise.all([
-    sb.from('groups').select('id,name,description,code,created_at,created_by,accent_color,icon,custom_name').in('id',gids),
+    sb.from('groups').select('id,name,description,code,created_at,created_by,accent_color,icon,custom_name,active_channels').in('id',gids),
     sb.from('group_members').select('group_id').in('group_id',gids),
     sb.from('tasks').select('group_id,status').in('group_id',gids),
   ]);
   if(gRes.error){toast('Error: '+gRes.error.message,'err');el.innerHTML='';return}
+  groupsData=gRes.data||[];
 
   const mCount={};
   (mbRes.data||[]).forEach(m=>{mCount[m.group_id]=(mCount[m.group_id]||0)+1});
@@ -1418,7 +1517,7 @@ async function loadGroups(){
     const ts=tStats[g.id]||{total:0,done:0};
     const pct=ts.total?Math.round(ts.done/ts.total*100):0;
     const dt=new Date(g.created_at).toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'});
-    return`<div class="group-card" onclick="enterGrp('${g.id}','${esc(g.name)}','${esc(g.description||'')}','${g.code}','${esc(dn)}','${g.created_by}','${accent}','${icon}','${esc(g.custom_name||'')}')">
+    return`<div class="group-card" onclick="enterGrpById('${g.id}','${esc(dn)}')">
       <div class="grp-card-banner" style="background:${accent}">
         <i data-lucide="${icon}" style="width:22px;height:22px;color:rgba(255,255,255,.92);position:relative;z-index:1;"></i>
       </div>
@@ -1453,15 +1552,15 @@ async function createGrp(){
   if(!dn)return setMsg('m-create-msg','error','Indica cómo quieres que te llamen en el grupo');
   const code=Math.random().toString(36).slice(2,8).toUpperCase();
   setLoad('btn-create',true);
-  const{data:g,error:gErr}=await sb.from('groups').insert({name,description:desc,code,created_by:U.id}).select().single();
+  const{data:g,error:gErr}=await sb.from('groups').insert({name,description:desc,code,created_by:U.id,active_channels:['chat','tasks','board','files','ideas']}).select().single();
   if(gErr){setLoad('btn-create',false,'Crear grupo');return setMsg('m-create-msg','error',gErr.message)}
-  const{error:mErr}=await sb.from('group_members').insert({group_id:g.id,user_id:U.id,display_name:dn});
+  const{error:mErr}=await sb.from('group_members').insert({group_id:g.id,user_id:U.id,display_name:dn,role:'owner'});
   setLoad('btn-create',false,'Crear grupo');
   if(mErr)return setMsg('m-create-msg','error',mErr.message);
   closeM('m-create');
   document.getElementById('cg-name').value='';document.getElementById('cg-desc').value='';document.getElementById('cg-dn').value='';
   toast('Grupo creado','ok');
-  enterGrp(g.id,g.name,g.description||'',g.code,dn,g.created_by,'','','');
+  enterGrp(g.id,g.name,g.description||'',g.code,dn,g.created_by,'','','',['chat','tasks','board','files','ideas']);
 }
  
 async function joinGrp(){
@@ -1473,16 +1572,17 @@ async function joinGrp(){
   const{data:g,error:gErr}=await sb.from('groups').select('*').eq('code',code).single();
   if(gErr||!g){setLoad('btn-join',false,'Unirse');return setMsg('m-join-msg','error','Código no encontrado')}
   const{data:ex}=await sb.from('group_members').select('display_name').eq('group_id',g.id).eq('user_id',U.id).maybeSingle();
-  if(ex){setLoad('btn-join',false,'Unirse');closeM('m-join');enterGrp(g.id,g.name,g.description||'',g.code,ex.display_name,g.created_by,g.accent_color,g.icon,g.custom_name);return}
-  const{error:mErr}=await sb.from('group_members').insert({group_id:g.id,user_id:U.id,display_name:dn});
+  if(ex){setLoad('btn-join',false,'Unirse');closeM('m-join');enterGrp(g.id,g.name,g.description||'',g.code,ex.display_name,g.created_by,g.accent_color,g.icon,g.custom_name,g.active_channels);return}
+  const{error:mErr}=await sb.from('group_members').insert({group_id:g.id,user_id:U.id,display_name:dn,role:'member'});
   setLoad('btn-join',false,'Unirse');
   if(mErr)return setMsg('m-join-msg','error',mErr.message);
   closeM('m-join');toast('¡Te has unido!','ok');
-  enterGrp(g.id,g.name,g.description||'',g.code,dn,g.created_by,g.accent_color,g.icon,g.custom_name);
+  enterGrp(g.id,g.name,g.description||'',g.code,dn,g.created_by,g.accent_color,g.icon,g.custom_name,g.active_channels);
 }
  
-async function enterGrp(id,name,desc,code,displayName,createdBy,accentColor,icon,customName){
+async function enterGrp(id,name,desc,code,displayName,createdBy,accentColor,icon,customName,activeChannels){
   G={id,name,description:desc,code,created_by:createdBy,accent_color:accentColor||'',icon:icon||'users',custom_name:customName||''};
+  G.active_channels=activeChannels||['chat','tasks','board','files','ideas'];
   M={display_name:displayName};
   const dName=customName||name;
   // Apply accent color
@@ -1491,16 +1591,48 @@ async function enterGrp(id,name,desc,code,displayName,createdBy,accentColor,icon
   } else {
     document.documentElement.style.removeProperty('--primary');
   }
-  document.getElementById('sb-grp-name').textContent=dName;
   document.getElementById('nav-in-grp').classList.remove('hidden');
   document.getElementById('nav-no-grp').classList.add('hidden');
   document.getElementById('invite-code-el').textContent=code;
   document.getElementById('chat-grp-nm').textContent=dName;
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  document.querySelector('[data-hash="dashboard"]')?.classList.add('active');
   await loadMbrs();
+  // Set role from mbrs
+  const me=mbrs.find(m=>m.user_id===U.id);
+  if(me)M.role=me.role||'member';
+  renderGroupNav();
   go('dashboard');
   subRT();
+}
+
+function renderGroupNav(){
+  const ch=G.active_channels||['chat','tasks','board','files','ideas'];
+  const myRole=M?.role||'member';
+  const isAdmin=myRole==='admin'||myRole==='owner';
+  const ALL_NAV=[
+    {hash:'dashboard',icon:'layout-dashboard',label:'Panel'},
+    {hash:'chat',icon:'message-square',label:'Chat'},
+    {hash:'tasks',icon:'check-square',label:'Tareas'},
+    {hash:'board',icon:'pin',label:'Tablón'},
+    {hash:'files',icon:'paperclip',label:'Archivos'},
+    {hash:'brainstorm',icon:'lightbulb',label:'Ideas',channel:'ideas'},
+    {hash:'settings',icon:'settings',label:'Ajustes'},
+  ];
+  const el=document.getElementById('nav-in-grp');
+  el.innerHTML=`<div class="sb-section-lbl" id="sb-grp-name">${esc(G.custom_name||G.name)}</div>`+
+    ALL_NAV.filter(n=>{
+      if(n.hash==='dashboard'||n.hash==='settings')return true;
+      const channelKey=n.channel||n.hash;
+      return ch.includes(channelKey);
+    }).map(n=>`<button class="nav-item" data-hash="${n.hash}" title="${n.label}" onclick="go('${n.hash}',this)"><i data-lucide="${n.icon}" style="width:16px;height:16px;"></i><span class="sb-label">${n.label}</span></button>`).join('')+
+    `<div class="nav-sep"></div><button class="nav-item" title="Mis grupos" onclick="leaveGrp()"><i data-lucide="chevron-left" style="width:16px;height:16px;"></i><span class="sb-label">Mis grupos</span></button>`;
+  lucide.createIcons();
+}
+
+async function enterGrpById(id,displayName){
+  const g=groupsData.find(x=>x.id===id);
+  if(!g)return;
+  enterGrp(g.id,g.name,g.description||'',g.code,displayName,g.created_by,g.accent_color,g.icon,g.custom_name||'',g.active_channels||['chat','tasks','board','files','ideas']);
 }
  
 async function loadMbrs(){
@@ -1933,10 +2065,33 @@ function loadSettings(){
   document.getElementById('set-code').textContent=G.code||'—';
   renderColorSwatches(G.accent_color||ACCENT_COLORS[0]);
   renderIconGrid(G.icon||GROUP_ICONS[0].n);
-  const isOwner=G.created_by===U?.id;
+  const myRole=M?.role||'member';
+  const isOwner=myRole==='owner';
+  const isAdmin=myRole==='admin'||isOwner;
   document.getElementById('btn-del-grp').style.display=isOwner?'':'none';
-  document.getElementById('btn-save-info').closest('.card').style.display=isOwner?'':'none';
-  document.getElementById('btn-regen-code').style.display=isOwner?'':'none';
+  document.getElementById('btn-save-info').closest('.card').style.display=isAdmin?'':'none';
+  document.getElementById('btn-regen-code').style.display=isAdmin?'':'none';
+  // Channels card
+  const channelCard=document.getElementById('card-channels');
+  if(isOwner){
+    channelCard.style.display='';
+    const ch=G.active_channels||['chat','tasks','board','files','ideas'];
+    const ALL_CH=[
+      {id:'chat',label:'Chat',icon:'message-square'},
+      {id:'tasks',label:'Tareas',icon:'check-square'},
+      {id:'board',label:'Tablón',icon:'pin'},
+      {id:'files',label:'Archivos',icon:'paperclip'},
+      {id:'ideas',label:'Ideas',icon:'lightbulb'},
+    ];
+    document.getElementById('channels-list').innerHTML=ALL_CH.map(c=>`
+      <div class="notif-row">
+        <div class="notif-row-label"><i data-lucide="${c.icon}" style="width:14px;height:14px;color:var(--primary);flex-shrink:0;"></i><span>${c.label}</span></div>
+        <label class="toggle-sw"><input type="checkbox" ${ch.includes(c.id)?'checked':''} onchange="saveChannels()"><span class="toggle-track"></span></label>
+      </div>`).join('');
+    lucide.createIcons();
+  }else{
+    channelCard.style.display='none';
+  }
   renderSettingsMembers(isOwner);
   loadNotifUI();
 }
@@ -1947,14 +2102,21 @@ function renderSettingsMembers(isOwner){
   if(!mbrs.length){el.innerHTML='<p class="t-sm muted">Sin miembros cargados.</p>';return;}
   el.innerHTML=mbrs.map(m=>{
     const isMe=m.user_id===U?.id;
-    const isCreator=m.user_id===G?.created_by;
-    return`<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);">
-      <div class="avatar" style="width:30px;height:30px;font-size:.72rem;flex-shrink:0;">${(m.display_name||'?')[0].toUpperCase()}</div>
+    const role=m.role||'member';
+    const roleCls=role==='owner'?'badge-primary':role==='admin'?'badge-blue':'badge-muted';
+    return`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer;" onclick="openMemberProfile('${m.user_id}')">
+      <div class="avatar" style="width:30px;height:30px;font-size:.72rem;flex-shrink:0;">
+        ${m.avatar_url?`<img src="${esc(m.avatar_url)}" class="avatar-img">`:(m.display_name||'?')[0].toUpperCase()}
+      </div>
       <div style="flex:1;min-width:0;">
         <div style="font-size:.875rem;font-weight:500;">${esc(m.display_name||'Miembro')}${isMe?' <span class="badge badge-primary" style="font-size:.6rem;">Tú</span>':''}</div>
-        ${isCreator?'<div class="t-xs muted">Creador</div>':''}
+        <span class="badge ${roleCls}" style="font-size:.6rem;margin-top:2px;">${role}</span>
       </div>
-      ${isOwner&&!isMe?`<button class="btn btn-secondary btn-sm" onclick="kickMember('${m.user_id}','${esc(m.display_name||'')}')"><i data-lucide="user-minus" style="width:12px;height:12px;"></i> Expulsar</button>`:''}
+      ${isOwner&&!isMe?`<div style="display:flex;gap:4px;">
+        ${role!=='admin'&&role!=='owner'?`<button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();promoteToAdmin('${m.user_id}','${esc(m.display_name||'')}')"><i data-lucide="shield" style="width:11px;height:11px;"></i></button>`:''}
+        ${role==='admin'?`<button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();demoteToMember('${m.user_id}','${esc(m.display_name||'')}')"><i data-lucide="shield-off" style="width:11px;height:11px;"></i></button>`:''}
+        <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();kickMember('${m.user_id}','${esc(m.display_name||'')}')"><i data-lucide="user-minus" style="width:11px;height:11px;"></i></button>
+      </div>`:''}
     </div>`;
   }).join('');
   lucide.createIcons();
@@ -2016,7 +2178,7 @@ async function kickMember(userId,displayName){
   if(error)return toast('Error: '+error.message,'err');
   mbrs=mbrs.filter(m=>m.user_id!==userId);
   toast(displayName+' ha sido expulsado','ok');
-  renderSettingsMembers(G.created_by===U?.id);
+  renderSettingsMembers(M?.role==='owner');
 }
 
 async function leaveGrpConfirm(){
@@ -2129,13 +2291,243 @@ function saveNotifSection(section,val){
   saveNotifPrefsToStorage(prefs);
 }
 
+/* ════════════════════════════════════════════════════
+   CANALES
+════════════════════════════════════════════════════ */
+async function saveChannels(){
+  const ALL_CH_IDS=['chat','tasks','board','files','ideas'];
+  const checkboxes=document.querySelectorAll('#channels-list input[type=checkbox]');
+  const active=ALL_CH_IDS.filter((id,i)=>checkboxes[i]?.checked);
+  const{error}=await sb.from('groups').update({active_channels:active}).eq('id',G.id);
+  if(error)return toast('Error: '+error.message,'err');
+  G.active_channels=active;
+  renderGroupNav();
+  toast('Canales actualizados','ok');
+}
+
+/* ════════════════════════════════════════════════════
+   ROLES
+════════════════════════════════════════════════════ */
+async function promoteToAdmin(userId,displayName){
+  if(!confirm(`¿Promover a ${displayName} a administrador?`))return;
+  const{error}=await sb.from('group_members').update({role:'admin'}).eq('group_id',G.id).eq('user_id',userId);
+  if(error)return toast('Error: '+error.message,'err');
+  const mbr=mbrs.find(m=>m.user_id===userId);if(mbr)mbr.role='admin';
+  toast(displayName+' es ahora administrador','ok');
+  renderSettingsMembers(true);
+}
+
+async function demoteToMember(userId,displayName){
+  if(!confirm(`¿Quitar permisos de admin a ${displayName}?`))return;
+  const{error}=await sb.from('group_members').update({role:'member'}).eq('group_id',G.id).eq('user_id',userId);
+  if(error)return toast('Error: '+error.message,'err');
+  const mbr=mbrs.find(m=>m.user_id===userId);if(mbr)mbr.role='member';
+  toast('Permisos actualizados','ok');
+  renderSettingsMembers(true);
+}
+
+/* ════════════════════════════════════════════════════
+   PERFIL PROPIO
+════════════════════════════════════════════════════ */
+function selectStatus(s){
+  myGlobalStatus=s;
+  document.getElementById('p-status').value=s;
+  document.querySelectorAll('.status-opt').forEach(o=>o.classList.toggle('selected',o.dataset.status===s));
+}
+
+function openOwnProfile(){
+  const dn=M?.display_name||U?.user_metadata?.display_name||'';
+  const bio=M?.bio||'';
+  const avatar=M?.avatar_url||'';
+  const status=M?.status||'active';
+  document.getElementById('p-dn').value=dn;
+  document.getElementById('p-bio').value=bio;
+  document.getElementById('p-avatar').value=avatar;
+  selectStatus(status);
+  setMsg('own-profile-msg','','');
+  openM('m-own-profile');
+}
+
+async function saveOwnProfile(){
+  const dn=document.getElementById('p-dn').value.trim();
+  const bio=document.getElementById('p-bio').value.trim();
+  const avatar=document.getElementById('p-avatar').value.trim();
+  const status=document.getElementById('p-status').value;
+  if(!dn)return setMsg('own-profile-msg','error','El nombre no puede estar vacío');
+  setLoad('btn-save-profile',true);
+  const{data:mships}=await sb.from('group_members').select('group_id').eq('user_id',U.id);
+  const updates=(mships||[]).map(ms=>
+    sb.from('group_members').update({display_name:dn,bio,avatar_url:avatar,status}).eq('group_id',ms.group_id).eq('user_id',U.id)
+  );
+  await Promise.all(updates);
+  setLoad('btn-save-profile',false,'Guardar');
+  if(M){M.display_name=dn;M.bio=bio;M.avatar_url=avatar;M.status=status;}
+  updateSbUser();
+  updateStatusDot(status);
+  closeM('m-own-profile');
+  toast('Perfil actualizado','ok');
+}
+
+function updateStatusDot(status){
+  const dot=document.getElementById('sb-status-dot');
+  if(!dot)return;
+  if(status==='ghost'){dot.style.display='none';return;}
+  dot.style.display='';
+  dot.className='status-dot sb-av-status';
+  if(status==='active')dot.classList.add('status-active');
+  else if(status==='away')dot.classList.add('status-away');
+  else dot.classList.add('status-offline');
+}
+
+/* ════════════════════════════════════════════════════
+   PERFIL DE MIEMBRO
+════════════════════════════════════════════════════ */
+async function openMemberProfile(userId){
+  if(userId===U.id){openOwnProfile();return;}
+  const mbr=mbrs.find(m=>m.user_id===userId);
+  if(!mbr)return;
+  const[{data:fr1},{data:fr2},{data:fs}]=await Promise.all([
+    sb.from('friend_requests').select('id,status').eq('from_user_id',U.id).eq('to_user_id',userId).maybeSingle(),
+    sb.from('friend_requests').select('id,status').eq('from_user_id',userId).eq('to_user_id',U.id).maybeSingle(),
+    sb.from('friendships').select('id').or(`user1_id.eq.${U.id},user2_id.eq.${U.id}`).or(`user1_id.eq.${userId},user2_id.eq.${userId}`).maybeSingle(),
+  ]);
+  const isFriend=!!fs;
+  const hasSent=!!fr1;
+  const hasIncoming=!!fr2&&fr2.status==='pending';
+  const statusDotHtml=(mbr.status&&mbr.status!=='ghost')?`<span class="status-dot status-${mbr.status}" style="display:inline-block;"></span>`:'';
+  const avatarHtml=mbr.avatar_url
+    ?`<img src="${esc(mbr.avatar_url)}" style="width:52px;height:52px;border-radius:50%;object-fit:cover;">`
+    :`<div class="profile-av">${(mbr.display_name||'?')[0].toUpperCase()}</div>`;
+  document.getElementById('member-profile-body').innerHTML=`
+    <div class="profile-header">
+      ${avatarHtml}
+      <div>
+        <div class="profile-name" style="display:flex;align-items:center;gap:7px;">${esc(mbr.display_name||'Miembro')} ${statusDotHtml}</div>
+        ${mbr.bio?`<div class="profile-bio">${esc(mbr.bio)}</div>`:'<div class="profile-bio" style="color:var(--text-4);">Sin bio</div>'}
+        ${mbr.role?`<span class="badge ${mbr.role==='owner'?'badge-primary':mbr.role==='admin'?'badge-blue':'badge-muted'}" style="margin-top:5px;">${mbr.role}</span>`:''}
+      </div>
+    </div>`;
+  let footHtml='';
+  if(isFriend){
+    footHtml=`<span style="display:flex;align-items:center;gap:6px;font-size:.875rem;color:var(--c-green);font-weight:500;"><i data-lucide="check-circle" style="width:15px;height:15px;"></i>Compañeros</span>`;
+  }else if(hasSent){
+    footHtml=`<span style="font-size:.875rem;color:var(--text-3);">Solicitud enviada</span>`;
+  }else if(hasIncoming){
+    footHtml=`<button class="btn btn-primary btn-sm" onclick="acceptFriendReq('${fr2.id}','${userId}')"><i data-lucide="user-check" style="width:13px;height:13px;"></i> Aceptar solicitud</button>`;
+  }else{
+    footHtml=`<button class="btn btn-secondary btn-sm" id="btn-add-friend" onclick="sendFriendReq('${userId}')"><i data-lucide="user-plus" style="width:13px;height:13px;"></i> Añadir compañero</button>`;
+  }
+  document.getElementById('member-profile-foot').innerHTML=`<div style="flex:1;"></div>${footHtml}`;
+  openM('m-member-profile');
+  lucide.createIcons();
+}
+
+async function sendFriendReq(toUserId){
+  const btn=document.getElementById('btn-add-friend');
+  if(btn){btn.disabled=true;btn.innerHTML='<div class="spinner"></div>';}
+  const{error}=await sb.from('friend_requests').insert({from_user_id:U.id,to_user_id:toUserId,status:'pending'});
+  if(error){toast('Error: '+error.message,'err');if(btn){btn.disabled=false;btn.innerHTML='<i data-lucide="user-plus" style="width:13px;height:13px;"></i> Añadir compañero';lucide.createIcons();}return;}
+  toast('Solicitud enviada','ok');
+  closeM('m-member-profile');
+}
+
+async function acceptFriendReq(reqId,fromUserId){
+  await sb.from('friend_requests').update({status:'accepted'}).eq('id',reqId);
+  const u1=U.id<fromUserId?U.id:fromUserId;
+  const u2=U.id<fromUserId?fromUserId:U.id;
+  await sb.from('friendships').insert({user1_id:u1,user2_id:u2});
+  toast('Solicitud aceptada','ok');
+  closeM('m-member-profile');
+  loadFriends();
+}
+
+/* ════════════════════════════════════════════════════
+   COMPAÑEROS (FRIENDS)
+════════════════════════════════════════════════════ */
+async function loadFriends(){
+  const el=document.getElementById('friends-list');
+  if(!el)return;
+  el.innerHTML=`<div class="sk" style="height:60px;border-radius:8px;margin-bottom:8px;"></div><div class="sk" style="height:60px;border-radius:8px;"></div>`;
+  if(friendsTab==='friends'){
+    const{data:fs}=await sb.from('friendships').select('*').or(`user1_id.eq.${U.id},user2_id.eq.${U.id}`);
+    friends=fs||[];
+    if(!friends.length){el.innerHTML=mkEmpty('users','Sin compañeros','Añade compañeros desde el perfil de los miembros de tus grupos.');lucide.createIcons();return;}
+    const otherIds=friends.map(f=>f.user1_id===U.id?f.user2_id:f.user1_id);
+    const{data:mbrData}=await sb.from('group_members').select('user_id,display_name,avatar_url,status').in('user_id',otherIds);
+    const mbrMap={};
+    (mbrData||[]).forEach(m=>{if(!mbrMap[m.user_id])mbrMap[m.user_id]=m;});
+    el.innerHTML=otherIds.map(uid=>{
+      const m=mbrMap[uid]||{display_name:'Usuario',status:'offline'};
+      const dot=m.status&&m.status!=='ghost'?`<span class="status-dot status-${m.status}" style="position:absolute;bottom:-1px;right:-1px;"></span>`:'';
+      const statusLbl={active:'Activo',away:'Ausente',offline:'Desconectado',ghost:''}[m.status]||'';
+      return`<div style="display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--border);">
+        <div class="avatar" style="width:36px;height:36px;font-size:.8rem;flex-shrink:0;position:relative;">
+          ${m.avatar_url?`<img src="${esc(m.avatar_url)}" class="avatar-img">`:(m.display_name||'?')[0].toUpperCase()}
+          ${dot}
+        </div>
+        <div style="flex:1;min-width:0;"><div style="font-size:.875rem;font-weight:500;">${esc(m.display_name||'Usuario')}</div><div style="font-size:.72rem;color:var(--text-4);">${statusLbl}</div></div>
+      </div>`;
+    }).join('');
+  }else{
+    const{data:reqs}=await sb.from('friend_requests').select('*').eq('to_user_id',U.id).eq('status','pending');
+    pendingReqs=reqs||[];
+    updateReqBadge();
+    if(!pendingReqs.length){el.innerHTML=mkEmpty('users','Sin solicitudes pendientes','Cuando alguien te añada como compañero aparecerá aquí.');lucide.createIcons();return;}
+    const fromIds=pendingReqs.map(r=>r.from_user_id);
+    const{data:mbrData}=await sb.from('group_members').select('user_id,display_name,avatar_url').in('user_id',fromIds);
+    const mbrMap={};
+    (mbrData||[]).forEach(m=>{if(!mbrMap[m.user_id])mbrMap[m.user_id]=m;});
+    el.innerHTML=pendingReqs.map(req=>{
+      const m=mbrMap[req.from_user_id]||{};
+      return`<div style="display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--border);">
+        <div class="avatar" style="width:36px;height:36px;font-size:.8rem;flex-shrink:0;">${m.avatar_url?`<img src="${esc(m.avatar_url)}" class="avatar-img">`:(m.display_name||'?')[0].toUpperCase()}</div>
+        <div style="flex:1;min-width:0;"><div style="font-size:.875rem;font-weight:500;">${esc(m.display_name||'Usuario')}</div></div>
+        <button class="btn btn-primary btn-sm" onclick="acceptFriendReq('${req.id}','${req.from_user_id}')"><i data-lucide="check" style="width:12px;height:12px;"></i> Aceptar</button>
+        <button class="btn btn-ghost btn-sm" onclick="rejectFriendReq('${req.id}')"><i data-lucide="x" style="width:12px;height:12px;"></i></button>
+      </div>`;
+    }).join('');
+    lucide.createIcons();
+  }
+}
+
+function fFriends(tab,el){
+  friendsTab=tab;
+  document.querySelectorAll('#friends-tabs .tab').forEach(t=>t.classList.remove('active'));
+  el?.classList.add('active');
+  loadFriends();
+}
+
+async function rejectFriendReq(reqId){
+  await sb.from('friend_requests').update({status:'rejected'}).eq('id',reqId);
+  toast('Solicitud rechazada','');
+  loadFriends();
+}
+
+function updateReqBadge(){
+  const count=pendingReqs.length;
+  ['friend-req-badge','req-tab-badge'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    if(count>0){el.style.display='';el.textContent=count;}
+    else el.style.display='none';
+  });
+}
+
 let _sessionReady=false;
 
 async function init(){
   const{data:{session}}=await sb.auth.getSession();
   _sessionReady=true;
   U=session?.user??null;
-  if(U){updateSbUser();showV('app-view');const h=location.hash.replace('#','')||'groups';if(PAGE[h])go(h);else showGroupsV();}
+  if(U){
+    updateSbUser();showV('app-view');
+    const h=location.hash.replace('#','')||'groups';
+    if(PAGE[h])go(h);else showGroupsV();
+    // Check pending friend requests
+    sb.from('friend_requests').select('id').eq('to_user_id',U.id).eq('status','pending').then(({data})=>{
+      pendingReqs=data||[];updateReqBadge();
+    });
+  }
   else showV('auth-view');
   lucide.createIcons();
 }
@@ -2148,6 +2540,9 @@ sb.auth.onAuthStateChange(async(event,session)=>{
     const h=location.hash.replace('#','')||'groups';
     if(PAGE[h])go(h);else showGroupsV();
     lucide.createIcons();
+    sb.from('friend_requests').select('id').eq('to_user_id',U.id).eq('status','pending').then(({data})=>{
+      pendingReqs=data||[];updateReqBadge();
+    });
   }
   if(event==='SIGNED_OUT'){
     U=null;G=null;M=null;mbrs=[];tasks=[];ideas=[];myV=new Set();
