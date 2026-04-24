@@ -66,9 +66,9 @@
   --sk-b: #edeae2;
  
   /* Layout */
-  --sb-w:    224px;
-  --sb-icon: 56px;
-  --bar-h:   52px;
+  --sb-w:    220px;
+  --sb-icon: 64px;
+  --bar-h:   56px;
  
   /* Spacing */
   --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px;
@@ -706,8 +706,8 @@ ul,ol{list-style:none}
 .auth-logo-wrap{text-align:center;margin-bottom:36px}
 .auth-logo-mark{
   width:56px;height:56px;border-radius:16px;margin:0 auto 14px;
-  background:linear-gradient(140deg,var(--primary) 0%,#029099 100%);
-  box-shadow:0 6px 22px oklch(from var(--primary) l c h / .40);
+  background:var(--primary);
+  box-shadow:0 4px 16px oklch(from var(--primary) l c h / .32);
   display:flex;align-items:center;justify-content:center;color:#fff;
 }
 .auth-logo-name{font-family:var(--font-d);font-size:1.85rem;font-weight:700;letter-spacing:-.035em;line-height:1}
@@ -718,20 +718,20 @@ ul,ol{list-style:none}
 }
 .auth-brand{display:none}
 
-/* Mark: gradient everywhere */
+/* Mark: flat primary */
 .auth-mark,.sb-mark{
-  background:linear-gradient(140deg,var(--primary) 0%,#029099 100%)!important;
-  box-shadow:0 3px 14px oklch(from var(--primary) l c h / .36)!important;
+  background:var(--primary)!important;
+  box-shadow:0 2px 8px oklch(from var(--primary) l c h / .28)!important;
 }
 
-/* Primary button: gradient + glow */
+/* Primary button: flat */
 .btn-primary{
-  background:linear-gradient(135deg,var(--primary) 0%,#029099 100%);
-  box-shadow:0 1px 4px oklch(from var(--primary) l c h / .25);
+  background:var(--primary);
+  box-shadow:none;
 }
 .btn-primary:hover{
-  filter:brightness(.91);
-  box-shadow:0 3px 12px oklch(from var(--primary) l c h / .36);
+  filter:brightness(.88);
+  box-shadow:none;
 }
 
 /* Group cards: colored avatar + accent bar */
@@ -759,15 +759,15 @@ ul,ol{list-style:none}
 .hero-stat-v{color:var(--primary)}
 .ring-bar{filter:drop-shadow(0 0 5px oklch(from var(--primary) l c h / .35))}
 
-/* Avatar + message avatars: gradient */
+/* Avatar + message avatars: flat */
 .avatar,.msg-av{
-  background:linear-gradient(140deg,var(--primary) 0%,#029099 100%);
+  background:var(--primary);
 }
 
-/* Chat send: gradient */
+/* Chat send: flat */
 .chat-send-btn{
-  background:linear-gradient(135deg,var(--primary),#029099);
-  box-shadow:0 2px 8px oklch(from var(--primary) l c h / .28);
+  background:var(--primary);
+  box-shadow:none;
 }
 
 /* Nav active: bolder */
@@ -776,17 +776,17 @@ ul,ol{list-style:none}
 /* Page title: tighter tracking */
 .page-title{letter-spacing:-.030em;line-height:1.06}
 
-/* Vote button voted: gradient */
+/* Vote button voted: flat */
 .vote-btn.voted{
-  background:linear-gradient(135deg,oklch(from var(--primary) l c h / .12),oklch(from var(--primary) l c h / .06));
+  background:var(--primary-faint);
 }
 
 /* Invite code: gradient text */
 .invite-code{color:var(--primary)}
 
-/* Board post pinned: subtle gradient */
+/* Board post pinned: flat tint */
 .board-post.pinned{
-  background:linear-gradient(135deg,oklch(from var(--primary) l c h / .08) 0%,var(--surface) 55%);
+  background:var(--primary-faint);
 }
 
 /* Sidebar top: brand name refinement */
@@ -834,7 +834,7 @@ ul,ol{list-style:none}
 .notif-sections-wrap{padding-top:6px;display:flex;flex-direction:column}
 
 /* ── FEATURE 1: CARD MICRO-ANIMATIONS ──────────── */
-.group-card{transition:transform var(--t) var(--ease), box-shadow var(--t) var(--ease), border-color var(--t) var(--ease)}
+.group-card{transition:transform 180ms var(--ease), box-shadow 180ms var(--ease), border-color 180ms var(--ease)}
 .group-card:hover{transform:translateY(-2px);box-shadow:var(--sh-3)}
 .task-item,.board-post,.file-item,.idea-item{transition:transform var(--t) var(--ease), box-shadow var(--t) var(--ease), border-color var(--t) var(--ease)}
 .task-item:hover,.file-item:hover{transform:translateY(-1px);box-shadow:var(--sh-2)}
@@ -849,7 +849,7 @@ ul,ol{list-style:none}
 .sb-av-status{position:absolute;bottom:-1px;right:-1px}
 .avatar-img{width:100%;height:100%;border-radius:50%;object-fit:cover}
 .profile-header{display:flex;align-items:center;gap:14px;padding:18px 20px;border-bottom:1px solid var(--border)}
-.profile-av{width:52px;height:52px;border-radius:50%;background:linear-gradient(140deg,var(--primary),#029099);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;flex-shrink:0}
+.profile-av{width:52px;height:52px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;flex-shrink:0}
 .profile-name{font-family:var(--font-d);font-size:1.1rem;font-weight:700;letter-spacing:-.015em}
 .profile-bio{font-size:.875rem;color:var(--text-3);margin-top:2px}
 .status-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
@@ -1027,6 +1027,27 @@ ul,ol{list-style:none}
 .page{animation:none}
 .page.active{animation:pgIn 150ms ease forwards}
 @keyframes pgIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+/* ═══════════════════════════════════════════════════
+   SETTINGS — TWO COLUMN DESKTOP
+═══════════════════════════════════════════════════ */
+#page-settings.active{flex-direction:column;overflow:hidden}
+.settings-wrap{display:flex;flex:1;overflow:hidden}
+.settings-nav-col{width:200px;flex-shrink:0;border-right:1px solid var(--border);overflow-y:auto;padding:16px 0}
+.settings-nav-item{display:flex;align-items:center;gap:8px;width:100%;padding:9px 16px;font-size:.8375rem;font-weight:500;color:var(--text-3);background:none;border:none;cursor:pointer;text-align:left;border-radius:0;transition:all var(--t) var(--ease);white-space:nowrap}
+.settings-nav-item:hover{color:var(--text);background:var(--surface-2)}
+.settings-nav-item.active{color:var(--primary);background:var(--primary-faint)}
+.settings-nav-item i{flex-shrink:0;opacity:.7}
+.settings-nav-item.active i{opacity:1}
+.settings-content-col{flex:1;overflow-y:auto;padding:24px 32px;display:flex;flex-direction:column;gap:16px}
+.set-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+@media(max-width:768px){
+  .settings-wrap{flex-direction:column}
+  .settings-nav-col{width:100%;border-right:none;border-bottom:1px solid var(--border);display:flex;flex-direction:row;overflow-x:auto;padding:8px 12px;gap:4px}
+  .settings-nav-item{white-space:nowrap;flex-shrink:0;padding:7px 12px;border-radius:var(--r-sm)}
+  .settings-content-col{padding:16px}
+  .set-form-grid{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
@@ -1378,89 +1399,105 @@ ul,ol{list-style:none}
  
     <!-- SETTINGS -->
     <div class="page" id="page-settings">
-      <div class="page-head"><div class="page-title-block"><h1 class="page-title">Ajustes del grupo</h1><p class="page-sub">Gestiona la información y los miembros</p></div></div>
-      <div class="page-body" style="max-width:640px;display:flex;flex-direction:column;gap:16px;">
-
-        <!-- Info del grupo -->
-        <div class="card">
-          <div class="card-head"><span class="card-title">Información del grupo</span></div>
-          <div class="card-body" style="display:flex;flex-direction:column;gap:13px;">
-            <div class="field"><label>Nombre del grupo</label><input id="set-name" type="text" placeholder="Nombre del grupo"></div>
-            <div class="field"><label>Nombre personalizado <span class="t-xxs muted">(apodo corto, opcional)</span></label><input id="set-cname" type="text" placeholder="Ej: Redes Q2, Squad Alpha…"></div>
-            <div class="field"><label>Descripción</label><textarea id="set-desc" placeholder="Descripción del grupo…" style="min-height:72px;"></textarea></div>
-            <div class="field"><label>Color del grupo</label><div class="color-swatches" id="set-color-swatches"></div><input type="hidden" id="set-accent-color"></div>
-            <div class="field"><label>Icono del grupo</label><div class="icon-grid" id="set-icon-grid"></div><input type="hidden" id="set-icon"></div>
-            <div id="set-info-msg" class="msg-banner hidden"></div>
-            <div style="display:flex;justify-content:flex-end;">
-              <button class="btn btn-primary btn-sm" id="btn-save-info" onclick="saveGroupInfo()"><span>Guardar cambios</span></button>
-            </div>
-          </div>
+      <div class="settings-wrap">
+        <!-- Settings nav -->
+        <div class="settings-nav-col">
+          <button class="settings-nav-item active" onclick="setNavGo('set-sec-info',this)"><i data-lucide="info" style="width:14px;height:14px;"></i> Información</button>
+          <button class="settings-nav-item" onclick="setNavGo('set-sec-dn',this)"><i data-lucide="user" style="width:14px;height:14px;"></i> Tu nombre</button>
+          <button class="settings-nav-item" onclick="setNavGo('set-sec-invite',this)"><i data-lucide="share-2" style="width:14px;height:14px;"></i> Invitación</button>
+          <button class="settings-nav-item" onclick="setNavGo('set-sec-members',this)"><i data-lucide="users" style="width:14px;height:14px;"></i> Miembros</button>
+          <button class="settings-nav-item" id="set-nav-channels" onclick="setNavGo('set-sec-channels',this)" style="display:none;"><i data-lucide="layout-grid" style="width:14px;height:14px;"></i> Canales</button>
+          <button class="settings-nav-item" onclick="setNavGo('set-sec-notif',this)"><i data-lucide="bell" style="width:14px;height:14px;"></i> Notificaciones</button>
+          <button class="settings-nav-item" onclick="setNavGo('set-sec-danger',this)"><i data-lucide="alert-triangle" style="width:14px;height:14px;"></i> Peligro</button>
         </div>
+        <!-- Settings content -->
+        <div class="settings-content-col" id="settings-content">
 
-        <!-- Tu nombre en el grupo -->
-        <div class="card">
-          <div class="card-head"><span class="card-title">Tu nombre en este grupo</span></div>
-          <div class="card-body" style="display:flex;flex-direction:column;gap:13px;">
-            <div class="field"><label>Nombre visible</label><input id="set-dn" type="text" placeholder="¿Cómo quieres que te llamen?"></div>
-            <div id="set-dn-msg" class="msg-banner hidden"></div>
-            <div style="display:flex;justify-content:flex-end;">
-              <button class="btn btn-primary btn-sm" id="btn-save-dn" onclick="saveDisplayName()"><span>Guardar</span></button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Código de invitación -->
-        <div class="card">
-          <div class="card-head"><span class="card-title">Código de invitación</span></div>
-          <div class="card-body" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-            <div class="invite-code" id="set-code" onclick="copyCode()" title="Clic para copiar" style="flex:1;min-width:140px;cursor:pointer;">——</div>
-            <button class="btn btn-secondary btn-sm" onclick="copyCode()"><i data-lucide="copy" style="width:13px;height:13px;"></i> Copiar</button>
-            <button class="btn btn-secondary btn-sm" id="btn-regen-code" onclick="regenCode()"><i data-lucide="refresh-cw" style="width:13px;height:13px;"></i> Regenerar</button>
-          </div>
-        </div>
-
-        <!-- Miembros -->
-        <div class="card">
-          <div class="card-head"><span class="card-title">Miembros</span><span id="set-mbr-count" class="badge badge-muted">—</span></div>
-          <div class="card-body" style="display:flex;flex-direction:column;gap:8px;" id="set-mbr-list">
-            <div class="sk" style="height:36px;border-radius:8px;"></div>
-            <div class="sk" style="height:36px;border-radius:8px;"></div>
-          </div>
-        </div>
-
-        <!-- Canales activos -->
-        <div class="card" id="card-channels" style="display:none;">
-          <div class="card-head"><span class="card-title">Canales activos</span></div>
-          <div class="card-body" style="display:flex;flex-direction:column;gap:0;padding:0 var(--s5);" id="channels-list"></div>
-        </div>
-
-        <!-- Notificaciones -->
-        <div class="card" id="notif-card">
-          <div class="card-head"><span class="card-title">Notificaciones</span></div>
-          <div class="card-body" style="padding:0 var(--s5);">
-            <div class="notif-row">
-              <div class="notif-row-label">
-                <i data-lucide="bell" style="width:15px;height:15px;color:var(--primary);flex-shrink:0;"></i>
-                <div><div>Activar notificaciones</div><div class="notif-row-sub">Alertas del navegador para este grupo</div></div>
+          <!-- Info del grupo -->
+          <div class="card" id="set-sec-info">
+            <div class="card-head"><span class="card-title">Información del grupo</span></div>
+            <div class="card-body" style="display:flex;flex-direction:column;gap:13px;">
+              <div class="set-form-grid">
+                <div class="field"><label>Nombre del grupo</label><input id="set-name" type="text" placeholder="Nombre del grupo"></div>
+                <div class="field"><label>Nombre personalizado <span class="t-xxs muted">(apodo corto)</span></label><input id="set-cname" type="text" placeholder="Ej: Redes Q2…"></div>
               </div>
-              <label class="toggle-sw"><input type="checkbox" id="notif-master" onchange="toggleNotifMaster()"><span class="toggle-track"></span></label>
-            </div>
-            <div id="notif-sections-wrap" class="notif-sections-wrap hidden"></div>
-          </div>
-        </div>
-
-        <!-- Zona de peligro -->
-        <div class="card" style="border-color:oklch(from var(--c-red) l c h / 0.28);">
-          <div class="card-head"><span class="card-title" style="color:var(--c-red);">Zona de peligro</span></div>
-          <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
-            <p class="t-sm muted">Estas acciones son irreversibles. Procede con precaución.</p>
-            <div style="display:flex;gap:9px;flex-wrap:wrap;">
-              <button class="btn btn-secondary btn-sm" onclick="leaveGrpConfirm()"><i data-lucide="log-out" style="width:13px;height:13px;"></i> Abandonar grupo</button>
-              <button class="btn btn-danger btn-sm" id="btn-del-grp" onclick="deleteGrp()"><i data-lucide="trash-2" style="width:13px;height:13px;"></i> Eliminar grupo</button>
+              <div class="field"><label>Descripción</label><textarea id="set-desc" placeholder="Descripción del grupo…" style="min-height:68px;"></textarea></div>
+              <div class="set-form-grid">
+                <div class="field"><label>Color del grupo</label><div class="color-swatches" id="set-color-swatches"></div><input type="hidden" id="set-accent-color"></div>
+                <div class="field"><label>Icono del grupo</label><div class="icon-grid" id="set-icon-grid"></div><input type="hidden" id="set-icon"></div>
+              </div>
+              <div id="set-info-msg" class="msg-banner hidden"></div>
+              <div style="display:flex;justify-content:flex-end;">
+                <button class="btn btn-primary btn-sm" id="btn-save-info" onclick="saveGroupInfo()"><span>Guardar cambios</span></button>
+              </div>
             </div>
           </div>
-        </div>
 
+          <!-- Tu nombre en el grupo -->
+          <div class="card" id="set-sec-dn">
+            <div class="card-head"><span class="card-title">Tu nombre en este grupo</span></div>
+            <div class="card-body" style="display:flex;flex-direction:column;gap:13px;">
+              <div class="field"><label>Nombre visible</label><input id="set-dn" type="text" placeholder="¿Cómo quieres que te llamen?"></div>
+              <div id="set-dn-msg" class="msg-banner hidden"></div>
+              <div style="display:flex;justify-content:flex-end;">
+                <button class="btn btn-primary btn-sm" id="btn-save-dn" onclick="saveDisplayName()"><span>Guardar</span></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Código de invitación -->
+          <div class="card" id="set-sec-invite">
+            <div class="card-head"><span class="card-title">Código de invitación</span></div>
+            <div class="card-body" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+              <div class="invite-code" id="set-code" onclick="copyCode()" title="Clic para copiar" style="flex:1;min-width:140px;cursor:pointer;">——</div>
+              <button class="btn btn-secondary btn-sm" onclick="copyCode()"><i data-lucide="copy" style="width:13px;height:13px;"></i> Copiar</button>
+              <button class="btn btn-secondary btn-sm" id="btn-regen-code" onclick="regenCode()"><i data-lucide="refresh-cw" style="width:13px;height:13px;"></i> Regenerar</button>
+            </div>
+          </div>
+
+          <!-- Miembros -->
+          <div class="card" id="set-sec-members">
+            <div class="card-head"><span class="card-title">Miembros</span><span id="set-mbr-count" class="badge badge-muted">—</span></div>
+            <div class="card-body" style="display:flex;flex-direction:column;gap:8px;" id="set-mbr-list">
+              <div class="sk" style="height:36px;border-radius:8px;"></div>
+              <div class="sk" style="height:36px;border-radius:8px;"></div>
+            </div>
+          </div>
+
+          <!-- Canales activos -->
+          <div class="card" id="set-sec-channels" style="display:none;">
+            <div class="card-head"><span class="card-title">Canales activos</span></div>
+            <div class="card-body" style="display:flex;flex-direction:column;gap:0;padding:0 var(--s5);" id="channels-list"></div>
+          </div>
+
+          <!-- Notificaciones -->
+          <div class="card" id="set-sec-notif">
+            <div class="card-head"><span class="card-title">Notificaciones</span></div>
+            <div class="card-body" style="padding:0 var(--s5);">
+              <div class="notif-row">
+                <div class="notif-row-label">
+                  <i data-lucide="bell" style="width:15px;height:15px;color:var(--primary);flex-shrink:0;"></i>
+                  <div><div>Activar notificaciones</div><div class="notif-row-sub">Alertas del navegador para este grupo</div></div>
+                </div>
+                <label class="toggle-sw"><input type="checkbox" id="notif-master" onchange="toggleNotifMaster()"><span class="toggle-track"></span></label>
+              </div>
+              <div id="notif-sections-wrap" class="notif-sections-wrap hidden"></div>
+            </div>
+          </div>
+
+          <!-- Zona de peligro -->
+          <div class="card" id="set-sec-danger" style="border-color:oklch(from var(--c-red) l c h / 0.28);">
+            <div class="card-head"><span class="card-title" style="color:var(--c-red);">Zona de peligro</span></div>
+            <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
+              <p class="t-sm muted">Estas acciones son irreversibles. Procede con precaución.</p>
+              <div style="display:flex;gap:9px;flex-wrap:wrap;">
+                <button class="btn btn-secondary btn-sm" onclick="leaveGrpConfirm()"><i data-lucide="log-out" style="width:13px;height:13px;"></i> Abandonar grupo</button>
+                <button class="btn btn-danger btn-sm" id="btn-del-grp" onclick="deleteGrp()"><i data-lucide="trash-2" style="width:13px;height:13px;"></i> Eliminar grupo</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
 
@@ -1759,23 +1796,23 @@ function go(hash,el){
   updateBreadcrumb(hash);
   location.hash=hash; closeMob(); lucide.createIcons();
   if(hash==='groups'){if(U)loadGroups()}
-  else if(hash==='friends') loadFriends();
-  else if(hash==='chat') loadChat();
-  else if(hash==='tasks') loadTasks();
-  else if(hash==='board') loadBoard();
-  else if(hash==='files') loadFiles();
-  else if(hash==='brainstorm') loadIdeas();
-  else if(hash==='dashboard') loadDash();
-  else if(hash==='settings') loadSettings();
+  else if(hash==='friends'){if(U)loadFriends()}
+  else if(hash==='chat'){if(G)loadChat();else if(U)showGroupsV()}
+  else if(hash==='tasks'){if(G)loadTasks();else if(U)showGroupsV()}
+  else if(hash==='board'){if(G)loadBoard();else if(U)showGroupsV()}
+  else if(hash==='files'){if(G)loadFiles();else if(U)showGroupsV()}
+  else if(hash==='brainstorm'){if(G)loadIdeas();else if(U)showGroupsV()}
+  else if(hash==='dashboard'){if(G)loadDash();else if(U)showGroupsV()}
+  else if(hash==='settings'){if(G)loadSettings();else if(U)showGroupsV()}
 }
 
 function setBnActive(id){document.querySelectorAll('.bn-item').forEach(b=>b.classList.toggle('active',b.id===id))}
 
 window.addEventListener('hashchange',()=>{
   const h=location.hash.replace('#','')||'landing';
-  if(h==='landing'){if(!U)showLanding();return}
-  if(h==='auth'){if(!U)showAuth();return}
-  if(PAGE[h])go(h);
+  if(h==='landing'||h===''){if(U){go('groups');return}showLanding();return}
+  if(h==='auth'){if(U){go('groups');return}showAuth();return}
+  if(PAGE[h]){if(!U){showLanding();return}go(h)}
 });
  
 /* ── HELPERS ────────────────────────────────────── */
@@ -1874,7 +1911,7 @@ function showGroupsV(){
   document.getElementById('nav-in-grp').classList.add('hidden');
   document.getElementById('nav-no-grp').classList.remove('hidden');
   go('groups',document.querySelector('[data-hash="groups"]'));
-  loadGroups();
+  if(U)loadGroups();
 }
 function resetAccent(){
   if(themeBasePrimary)document.documentElement.style.setProperty('--primary',themeBasePrimary);
@@ -2063,8 +2100,8 @@ async function loadDash(){
   const done=allT.filter(t=>t.status==='done').length;
   const pct=allT.length?Math.round(done/allT.length*100):0;
   const C=219.9;
-  document.getElementById('ring-pct-txt').textContent=pct+'%';
-  document.getElementById('ring-arc').style.strokeDashoffset=C-(pct/100)*C;
+  const rPct=document.getElementById('ring-pct-txt');if(rPct)rPct.textContent=pct+'%';
+  const rArc=document.getElementById('ring-arc');if(rArc)rArc.style.strokeDashoffset=C-(pct/100)*C;
  
   document.getElementById('dash-hero').innerHTML=`
     <div class="dash-hero-l">
@@ -2255,7 +2292,7 @@ async function delTask(id){
   if(!confirm('¿Eliminar esta tarea?'))return;
   const{error}=await sb.from('tasks').delete().eq('id',id);
   if(error){toast('Error: '+error.message,'err');return}
-  tasks=tasks.filter(t=>t.id!==id);renderKanban();
+  tasks=tasks.filter(t=>t.id!==id);renderKanban();toast('Tarea eliminada','');
 }
  
 /* ════════════════════════════════════════════════════
@@ -2607,7 +2644,7 @@ function renderColorSwatches(selected){
 }
 function selectColor(c){
   document.getElementById('set-accent-color').value=c;
-  document.querySelectorAll('.color-swatch').forEach(s=>s.classList.toggle('selected',s.style.background===c||s.style.backgroundColor===c));
+  document.querySelectorAll('.color-swatch').forEach(s=>s.classList.toggle('selected',s.title===c));
 }
 function renderIconGrid(selected){
   const el=document.getElementById('set-icon-grid');if(!el)return;
@@ -2618,6 +2655,18 @@ function renderIconGrid(selected){
 function selectIcon(n){
   document.getElementById('set-icon').value=n;
   document.querySelectorAll('.icon-opt').forEach(o=>o.classList.toggle('selected',o.getAttribute('onclick')===`selectIcon('${n}')`));
+}
+
+function setNavGo(sectionId,el){
+  document.querySelectorAll('.settings-nav-item').forEach(b=>b.classList.remove('active'));
+  if(el)el.classList.add('active');
+  const target=document.getElementById(sectionId);
+  const sc=document.getElementById('settings-content');
+  if(target&&sc){
+    const tRect=target.getBoundingClientRect();
+    const sRect=sc.getBoundingClientRect();
+    sc.scrollTop=sc.scrollTop+(tRect.top-sRect.top)-16;
+  }
 }
 
 function loadSettings(){
@@ -2635,10 +2684,12 @@ function loadSettings(){
   document.getElementById('btn-del-grp').style.display=isOwner?'':'none';
   document.getElementById('btn-save-info').closest('.card').style.display=isAdmin?'':'none';
   document.getElementById('btn-regen-code').style.display=isAdmin?'':'none';
-  // Channels card
-  const channelCard=document.getElementById('card-channels');
+  // Channels section
+  const channelSec=document.getElementById('set-sec-channels');
+  const channelNav=document.getElementById('set-nav-channels');
   if(isOwner){
-    channelCard.style.display='';
+    if(channelSec)channelSec.style.display='';
+    if(channelNav)channelNav.style.display='';
     const ch=G.active_channels||['chat','tasks','board','files','ideas'];
     const ALL_CH=[
       {id:'chat',label:'Chat',icon:'message-square'},
@@ -2654,10 +2705,12 @@ function loadSettings(){
       </div>`).join('');
     lucide.createIcons();
   }else{
-    channelCard.style.display='none';
+    if(channelSec)channelSec.style.display='none';
+    if(channelNav)channelNav.style.display='none';
   }
   renderSettingsMembers(isOwner);
   loadNotifUI();
+  lucide.createIcons();
 }
 
 function renderSettingsMembers(isOwner){
@@ -2693,7 +2746,7 @@ async function saveGroupInfo(){
   const accentColor=document.getElementById('set-accent-color').value||null;
   const icon=document.getElementById('set-icon').value||null;
   if(!name)return setMsg('set-info-msg','error','El nombre no puede estar vacío');
-  setLoad('btn-save-info',true);
+  setLoad('btn-save-info',true,'');
   const{error}=await sb.from('groups').update({name,custom_name:customName||null,description:desc,accent_color:accentColor,icon}).eq('id',G.id);
   setLoad('btn-save-info',false,'Guardar cambios');
   if(error)return setMsg('set-info-msg','error',error.message);
@@ -2725,10 +2778,11 @@ async function saveDisplayName(){
 
 async function regenCode(){
   if(!confirm('¿Regenerar el código? El código actual dejará de funcionar.'))return;
-  setLoad('btn-regen-code',true);
+  const btn=document.getElementById('btn-regen-code');
+  if(btn){btn.disabled=true;btn.innerHTML='<div class="spinner"></div>';}
   const code=Math.random().toString(36).slice(2,8).toUpperCase();
   const{error}=await sb.from('groups').update({code}).eq('id',G.id);
-  setLoad('btn-regen-code',false,'Regenerar');
+  if(btn){btn.disabled=false;btn.innerHTML='<i data-lucide="refresh-cw" style="width:13px;height:13px;"></i> Regenerar';lucide.createIcons();}
   if(error)return toast('Error: '+error.message,'err');
   G.code=code;
   document.getElementById('set-code').textContent=code;
@@ -2761,7 +2815,9 @@ async function deleteGrp(){
   await sb.from('messages').delete().eq('group_id',G.id);
   await sb.from('tasks').delete().eq('group_id',G.id);
   await sb.from('board_posts').delete().eq('group_id',G.id);
-  await sb.from('idea_votes').delete().in('idea_id',(await sb.from('ideas').select('id').eq('group_id',G.id)).data?.map(i=>i.id)||[]);
+  const{data:ideaIds}=await sb.from('ideas').select('id').eq('group_id',G.id);
+  const idsArr=(ideaIds||[]).map(i=>i.id);
+  if(idsArr.length)await sb.from('idea_votes').delete().in('idea_id',idsArr);
   await sb.from('ideas').delete().eq('group_id',G.id);
   await sb.from('files').delete().eq('group_id',G.id);
   await sb.from('group_members').delete().eq('group_id',G.id);
