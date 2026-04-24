@@ -857,10 +857,275 @@ ul,ol{list-style:none}
 .status-opt:hover{border-color:var(--border-2)}
 .status-opt.selected{border-color:var(--primary);background:var(--primary-faint);color:var(--primary)}
 .badge-count{min-width:17px;height:17px;padding:0 4px;border-radius:99px;background:var(--c-red);color:#fff;font-size:.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1}
+
+/* ═══════════════════════════════════════════════════
+   LANDING PAGE
+═══════════════════════════════════════════════════ */
+#landing-view{display:none;flex-direction:column;min-height:100dvh;background:var(--bg)}
+#landing-view.active{display:flex}
+.land-nav{position:sticky;top:0;z-index:50;height:60px;display:flex;align-items:center;padding:0 max(24px,calc(50% - 580px));gap:12px;background:oklch(from var(--bg) l c h / .92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+.land-nav-brand{font-family:var(--font-d);font-size:1.05rem;font-weight:700;letter-spacing:-.022em;display:flex;align-items:center;gap:8px;flex:1;color:var(--text)}
+.land-main{flex:1}
+.land-hero{max-width:1200px;margin:0 auto;padding:80px 24px 64px;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.land-h1{font-family:var(--font-d);font-size:clamp(2.2rem,4.5vw,3.6rem);font-weight:700;line-height:1.06;letter-spacing:-.04em;color:var(--text);margin-bottom:18px}
+.land-h1 em{font-style:normal;color:var(--primary)}
+.land-sub{font-size:1rem;color:var(--text-3);line-height:1.68;margin-bottom:32px;max-width:420px}
+.land-hero-btns{display:flex;gap:12px;flex-wrap:wrap}
+.btn-land-primary{background:var(--primary);color:#fff;min-height:46px;padding:0 22px;border-radius:var(--r-sm);font-size:.9375rem;font-weight:500;display:inline-flex;align-items:center;gap:8px;border:none;cursor:pointer;transition:all var(--t) var(--ease)}
+.btn-land-primary:hover{filter:brightness(.9);transform:translateY(-1px)}
+.btn-land-secondary{background:transparent;color:var(--text);border:1.5px solid var(--border-3);min-height:46px;padding:0 20px;border-radius:var(--r-sm);font-size:.9375rem;font-weight:500;display:inline-flex;align-items:center;gap:8px;cursor:pointer;transition:all var(--t) var(--ease)}
+.btn-land-secondary:hover{border-color:var(--border-2);background:var(--surface-2)}
+.land-hero-visual{background:var(--surface);border:1px solid var(--border-2);border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--sh-4);aspect-ratio:4/3;display:flex;flex-direction:column}
+.land-features{max-width:1200px;margin:0 auto;padding:56px 24px}
+.land-section-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--primary);margin-bottom:9px}
+.land-section-title{font-family:var(--font-d);font-size:clamp(1.5rem,3vw,2.1rem);font-weight:700;letter-spacing:-.03em;margin-bottom:36px;color:var(--text)}
+.land-feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.land-feat{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden}
+.land-feat-mock{height:170px;background:var(--bg-subtle);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;padding:20px}
+.land-feat-body{padding:18px 20px}
+.land-feat-title{font-family:var(--font-d);font-size:1rem;font-weight:700;margin-bottom:5px}
+.land-feat-desc{font-size:.8375rem;color:var(--text-3);line-height:1.6}
+.land-how{max-width:1200px;margin:0 auto;padding:56px 24px}
+.land-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+.land-step{position:relative;padding:28px 28px 28px 0}
+.land-step-num{font-family:var(--font-d);font-size:2.8rem;font-weight:700;color:var(--primary-faint2);line-height:1;margin-bottom:12px}
+.land-step-title{font-family:var(--font-d);font-size:1rem;font-weight:700;margin-bottom:7px}
+.land-step-desc{font-size:.8375rem;color:var(--text-3);line-height:1.6}
+.land-cta{background:var(--primary);padding:72px 24px;text-align:center;margin-top:24px}
+.land-cta h2{font-family:var(--font-d);font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;color:#fff;letter-spacing:-.03em;margin-bottom:12px}
+.land-cta p{font-size:.9375rem;color:oklch(from #fff l c h / .75);margin-bottom:32px}
+.btn-land-white{background:#fff;color:var(--primary);font-weight:600;padding:0 24px;min-height:48px;border-radius:var(--r-sm);display:inline-flex;align-items:center;gap:8px;font-size:.9375rem;border:none;cursor:pointer;transition:all var(--t) var(--ease)}
+.btn-land-white:hover{transform:translateY(-1px);box-shadow:0 8px 24px oklch(0% 0 0 / .22)}
+.btn-land-ghost{background:transparent;border:1.5px solid oklch(from #fff l c h / .36);color:#fff;font-weight:500;padding:0 20px;min-height:48px;border-radius:var(--r-sm);display:inline-flex;align-items:center;gap:8px;font-size:.9375rem;cursor:pointer;transition:all var(--t) var(--ease)}
+.btn-land-ghost:hover{border-color:#fff;background:oklch(from #fff l c h / .10)}
+.land-footer{padding:24px;text-align:center;font-size:.8125rem;color:var(--text-4);border-top:1px solid var(--border)}
+@media(max-width:768px){
+  .land-hero{grid-template-columns:1fr;gap:36px;padding:48px 20px 36px}
+  .land-hero-visual{display:none}
+  .land-feat-grid{grid-template-columns:1fr}
+  .land-steps{grid-template-columns:1fr}
+  .land-step{padding:20px 0}
+}
+
+/* ═══════════════════════════════════════════════════
+   THEMES
+═══════════════════════════════════════════════════ */
+[data-theme="coral"]{--primary:#e05c4b;--primary-hover:#c44c3b;--primary-faint:oklch(from var(--primary) l c h / 0.10);--primary-faint2:oklch(from var(--primary) l c h / 0.17)}
+[data-theme="slate"]{--primary:#2563eb;--primary-hover:#1d4ed8;--primary-faint:oklch(from var(--primary) l c h / 0.10);--primary-faint2:oklch(from var(--primary) l c h / 0.17)}
+[data-theme="sand"]{--primary:#b45309;--primary-hover:#92400e;--primary-faint:oklch(from var(--primary) l c h / 0.10);--primary-faint2:oklch(from var(--primary) l c h / 0.17)}
+[data-theme="midnight"]{
+  --bg:#0f0e0d;--bg-subtle:#141310;--surface:#161513;--surface-2:#1d1b17;--surface-3:#252319;
+  --surface-inv:#f3f1ea;
+  --border:oklch(from #f3f1ea l c h / 0.07);--border-2:oklch(from #f3f1ea l c h / 0.12);--border-3:oklch(from #f3f1ea l c h / 0.20);
+  --primary:#a78bfa;--primary-hover:#c4b5fd;
+  --primary-faint:oklch(from var(--primary) l c h / 0.14);--primary-faint2:oklch(from var(--primary) l c h / 0.22);
+  --text:#f3f1ea;--text-2:#ccc9be;--text-3:#9c9990;--text-4:#6c6a60;
+  --sh-1:0 1px 2px oklch(0% 0 0 / 0.32);--sh-2:0 1px 4px oklch(0% 0 0 / 0.38),0 4px 12px oklch(0% 0 0 / 0.26);
+  --sh-3:0 4px 16px oklch(0% 0 0 / 0.44),0 14px 40px oklch(0% 0 0 / 0.32);--sh-4:0 8px 32px oklch(0% 0 0 / 0.50),0 24px 64px oklch(0% 0 0 / 0.40);
+  --sk-a:#211f1a;--sk-b:#2a2820;
+}
+[data-theme="dark"].coral-accent,[data-theme="midnight"]{--primary:#a78bfa}
+.theme-picker{display:flex;gap:8px;padding:8px 9px;align-items:center;border-top:1px solid var(--border)}
+.theme-dot{width:16px;height:16px;border-radius:50%;cursor:pointer;transition:all var(--t) var(--ease);border:2.5px solid transparent;flex-shrink:0}
+.theme-dot:hover{transform:scale(1.18)}
+.theme-dot.active{box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--text);transform:scale(1.12)}
+.theme-label{font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-4);flex:1;text-align:right}
+
+/* ═══════════════════════════════════════════════════
+   WHITEBOARD (IDEAS)
+═══════════════════════════════════════════════════ */
+#page-brainstorm.active{display:flex;flex-direction:column;overflow:hidden;height:100dvh}
+.wb-toolbar{flex-shrink:0;padding:9px 20px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.wb-canvas-wrap{flex:1;overflow:auto;position:relative}
+.wb-canvas{
+  position:absolute;width:2400px;height:1800px;
+  background-color:var(--bg-subtle);
+  background-image:radial-gradient(circle,var(--border-2) 1.2px,transparent 1.2px);
+  background-size:28px 28px;
+}
+.postit{position:absolute;width:190px;min-height:130px;border-radius:var(--r-md);padding:13px;box-shadow:2px 4px 14px oklch(0% 0 0 / .14),0 1px 3px oklch(0% 0 0 / .10);cursor:grab;user-select:none;display:flex;flex-direction:column;gap:8px;transition:box-shadow var(--t) var(--ease);border:1px solid oklch(0% 0 0 / .06)}
+.postit:hover{box-shadow:4px 8px 22px oklch(0% 0 0 / .18),0 2px 6px oklch(0% 0 0 / .12)}
+.postit.dragging-active{cursor:grabbing;box-shadow:6px 12px 32px oklch(0% 0 0 / .24);transform:rotate(2deg) scale(1.04);z-index:1000}
+.postit-content{flex:1;font-size:.875rem;line-height:1.55;word-break:break-word;min-height:52px;outline:none;color:oklch(20% 0 0);font-family:var(--font-b)}
+.postit-content[contenteditable="true"]{border-bottom:1.5px dashed oklch(0% 0 0 / .20);padding-bottom:4px;min-height:60px}
+.postit-foot{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.postit-meta{font-size:.65rem;font-weight:600;color:oklch(20% 0 0 / .5);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.postit-like{display:flex;align-items:center;gap:4px;padding:3px 8px;border-radius:99px;background:oklch(0% 0 0 / .09);border:none;cursor:pointer;font-size:.72rem;font-weight:700;color:oklch(20% 0 0);transition:all var(--t) var(--ease)}
+.postit-like:hover,.postit-like.liked{background:oklch(0% 0 0 / .16)}
+.postit-del{width:20px;height:20px;border-radius:50%;background:transparent;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:oklch(20% 0 0 / .45);transition:all var(--t) var(--ease);flex-shrink:0}
+.postit-del:hover{background:oklch(0% 0 0 / .12);color:oklch(20% 0 0)}
+.wb-color-pick{display:flex;gap:5px;align-items:center}
+.wb-col-dot{width:16px;height:16px;border-radius:50%;cursor:pointer;border:2.5px solid transparent;transition:all var(--t) var(--ease);flex-shrink:0}
+.wb-col-dot:hover,.wb-col-dot.sel{transform:scale(1.2);border-color:var(--text)}
+
+/* ═══════════════════════════════════════════════════
+   KANBAN
+═══════════════════════════════════════════════════ */
+#page-tasks.active{display:flex;flex-direction:column}
+.kanban-wrap{flex:1;padding:16px var(--s7) var(--s8);overflow-x:auto}
+@media(max-width:768px){.kanban-wrap{padding:12px var(--s4) var(--s7)}}
+.kanban-board{display:grid;grid-template-columns:repeat(3,minmax(240px,1fr));gap:14px;height:100%}
+@media(max-width:600px){.kanban-board{grid-template-columns:1fr}}
+.kanban-col{background:var(--bg-subtle);border:1px solid var(--border);border-radius:var(--r-md);display:flex;flex-direction:column;min-height:300px;transition:border-color var(--t) var(--ease),background var(--t) var(--ease)}
+.kanban-col.drag-over{background:var(--primary-faint);border-color:var(--primary-faint2)}
+.kanban-col-head{padding:11px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.kanban-col-title{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-3);flex:1}
+.kanban-col-count{font-size:.72rem;font-weight:700;color:var(--text-4);background:var(--surface);border:1px solid var(--border);border-radius:99px;padding:0 7px;min-height:18px;display:flex;align-items:center}
+.kanban-col-body{padding:8px;display:flex;flex-direction:column;gap:6px;flex:1}
+.kanban-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;cursor:grab;transition:all var(--t) var(--ease);box-shadow:var(--sh-1)}
+.kanban-card:hover{box-shadow:var(--sh-2);transform:translateY(-1px);border-color:var(--border-2)}
+.kanban-card.dragging{opacity:.4;cursor:grabbing;transform:scale(.97)}
+.kanban-card-title{font-size:.875rem;font-weight:500;margin-bottom:5px;line-height:1.4}
+.kanban-card-title.done{text-decoration:line-through;color:var(--text-3)}
+.kanban-card-meta{font-size:.7rem;color:var(--text-4);display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.kanban-placeholder{border:2px dashed var(--primary-faint2);border-radius:var(--r-sm);height:54px;background:var(--primary-faint);pointer-events:none}
+.kanban-add{margin:6px 8px 8px;padding:8px;border-radius:var(--r-sm);border:1.5px dashed var(--border-2);background:transparent;color:var(--text-3);font-size:.8125rem;cursor:pointer;transition:all var(--t) var(--ease);display:flex;align-items:center;justify-content:center;gap:5px;width:calc(100% - 16px)}
+.kanban-add:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-faint)}
+
+/* ═══════════════════════════════════════════════════
+   MEMBER SLIDE PANEL
+═══════════════════════════════════════════════════ */
+.slide-backdrop{position:fixed;inset:0;z-index:180;background:oklch(0% 0 0 / .28);backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity var(--t) var(--ease)}
+.slide-backdrop.open{opacity:1;pointer-events:all}
+.slide-panel{position:fixed;top:0;right:0;height:100dvh;width:min(340px,100vw);z-index:181;background:var(--surface);border-left:1px solid var(--border-2);box-shadow:var(--sh-4);transform:translateX(100%);transition:transform var(--t) var(--ease);display:flex;flex-direction:column;overflow:hidden}
+.slide-panel.open{transform:translateX(0)}
+.slide-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.slide-body{flex:1;overflow-y:auto;padding:18px}
+
+/* ═══════════════════════════════════════════════════
+   BOTTOM NAV (mobile only)
+═══════════════════════════════════════════════════ */
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:97;height:56px;background:var(--surface);border-top:1px solid var(--border);align-items:stretch;justify-content:space-around;safe-area-inset-bottom:env(safe-area-inset-bottom)}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:none;background:none;cursor:pointer;color:var(--text-3);transition:all var(--t) var(--ease);padding:6px 4px;font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.bn-item.active{color:var(--primary)}
+.bn-item i{width:18px!important;height:18px!important}
+@media(max-width:768px){
+  .bottom-nav{display:flex}
+  .main{padding-bottom:56px}
+}
+
+/* ═══════════════════════════════════════════════════
+   DESKTOP TOPBAR (always visible)
+═══════════════════════════════════════════════════ */
+@media(min-width:769px){
+  .topbar{display:flex;position:sticky;top:0;z-index:90;height:56px;background:oklch(from var(--surface) l c h / .95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+  .topbar .btn-icon:first-child{display:none}
+  .topbar-brand{display:none}
+  .topbar-crumb{display:flex;align-items:center;gap:6px;font-size:.875rem;color:var(--text-3);flex:1}
+  .topbar-crumb .crumb-grp{color:var(--text);font-weight:500}
+  .topbar-crumb .crumb-sep{opacity:.35}
+  .topbar-crumb .crumb-page{color:var(--text-2)}
+  .topbar-actions{display:flex;align-items:center;gap:8px}
+  .main{padding-top:0;margin-top:0}
+  .page-head{padding:var(--s7) var(--s7) 0}
+  .page-body{padding:var(--s6) var(--s7) var(--s8)}
+}
+
+/* ═══════════════════════════════════════════════════
+   PAGE TRANSITIONS
+═══════════════════════════════════════════════════ */
+.page{animation:none}
+.page.active{animation:pgIn 150ms ease forwards}
+@keyframes pgIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
  
+<!-- ════════════════════ LANDING ════════════════════ -->
+<div id="landing-view" class="view">
+  <nav class="land-nav">
+    <div class="land-nav-brand">
+      <div class="sb-mark" style="width:24px;height:24px;border-radius:6px;flex-shrink:0;"><i data-lucide="layers" style="width:12px;height:12px;"></i></div>
+      GroupUp
+    </div>
+    <button class="btn-land-secondary" style="min-height:36px;padding:0 14px;font-size:.875rem;" onclick="showAuth('login')">Iniciar sesión</button>
+    <button class="btn-land-primary" style="min-height:36px;padding:0 14px;font-size:.875rem;" onclick="showAuth('register')">Empezar gratis</button>
+  </nav>
+  <div class="land-main">
+    <section class="land-hero">
+      <div class="land-hero-text">
+        <h1 class="land-h1">Trabaja en equipo,<br>sin <em>complicaciones</em></h1>
+        <p class="land-sub">Organiza tareas, comparte archivos, debate ideas y mantén a todos sincronizados en un solo lugar.</p>
+        <div class="land-hero-btns">
+          <button class="btn-land-primary" onclick="showAuth('register')">Empezar gratis</button>
+          <button class="btn-land-secondary" onclick="showAuth('login')">Iniciar sesión</button>
+        </div>
+      </div>
+      <div class="land-hero-visual">
+        <div style="padding:16px 20px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;">
+          <div style="width:8px;height:8px;border-radius:50%;background:#f87171;"></div>
+          <div style="width:8px;height:8px;border-radius:50%;background:#fbbf24;"></div>
+          <div style="width:8px;height:8px;border-radius:50%;background:#4ade80;"></div>
+          <span style="margin-left:6px;font-size:.75rem;color:var(--text-4);font-weight:500;">Chat del equipo</span>
+        </div>
+        <div style="flex:1;padding:16px;display:flex;flex-direction:column;gap:10px;background:var(--bg-subtle);overflow:hidden;">
+          <div style="display:flex;gap:8px;align-items:flex-end;"><div style="width:22px;height:22px;border-radius:50%;background:var(--primary);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.6rem;font-weight:700;">A</div><div style="background:var(--surface);padding:7px 11px;border-radius:0 10px 10px 10px;font-size:.8rem;color:var(--text-2);border:1px solid var(--border);max-width:80%;">¿Ya terminaron el diseño?</div></div>
+          <div style="display:flex;gap:8px;align-items:flex-end;flex-direction:row-reverse;"><div style="width:22px;height:22px;border-radius:50%;background:#8b5e52;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.6rem;font-weight:700;">M</div><div style="background:oklch(from var(--primary) l c h / .11);padding:7px 11px;border-radius:10px 0 10px 10px;font-size:.8rem;color:var(--text-2);border:1px solid oklch(from var(--primary) l c h / .18);max-width:80%;">Sí, lo subí en Archivos</div></div>
+          <div style="display:flex;gap:8px;align-items:flex-end;"><div style="width:22px;height:22px;border-radius:50%;background:#4a4e69;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.6rem;font-weight:700;">L</div><div style="background:var(--surface);padding:7px 11px;border-radius:0 10px 10px 10px;font-size:.8rem;color:var(--text-2);border:1px solid var(--border);max-width:80%;">Perfecto, ahora reviso las tareas asignadas</div></div>
+          <div style="margin-top:auto;background:var(--surface);border:1px solid var(--border-2);border-radius:var(--r-sm);padding:9px 12px;display:flex;align-items:center;gap:8px;"><span style="flex:1;font-size:.8rem;color:var(--text-4);">Escribe un mensaje…</span><div style="width:26px;height:26px;border-radius:var(--r-xs);background:var(--primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i data-lucide="send" style="width:11px;height:11px;color:#fff;"></i></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="land-features">
+      <div class="land-section-label">Funcionalidades</div>
+      <div class="land-section-title">Todo lo que tu equipo necesita</div>
+      <div class="land-feat-grid">
+        <div class="land-feat">
+          <div class="land-feat-mock">
+            <div style="width:100%;display:flex;flex-direction:column;gap:6px;">
+              <div style="display:flex;gap:6px;align-items:center;"><div style="width:17px;height:17px;border-radius:50%;background:var(--primary);flex-shrink:0;"></div><div style="background:var(--surface);padding:5px 9px;border-radius:8px;font-size:.72rem;color:var(--text-2);border:1px solid var(--border);">¿Terminaste el informe?</div></div>
+              <div style="display:flex;gap:6px;align-items:center;flex-direction:row-reverse;"><div style="width:17px;height:17px;border-radius:50%;background:#8b5e52;flex-shrink:0;"></div><div style="background:oklch(from var(--primary) l c h / .11);padding:5px 9px;border-radius:8px;font-size:.72rem;color:var(--text-2);border:1px solid oklch(from var(--primary) l c h / .18);">Sí, en 5 minutos</div></div>
+              <div style="display:flex;gap:6px;align-items:center;"><div style="width:17px;height:17px;border-radius:50%;background:#4a4e69;flex-shrink:0;"></div><div style="background:var(--surface);padding:5px 9px;border-radius:8px;font-size:.72rem;color:var(--text-2);border:1px solid var(--border);">Entendido</div></div>
+            </div>
+          </div>
+          <div class="land-feat-body"><div class="land-feat-title">Chat en tiempo real</div><div class="land-feat-desc">Mensajes instantáneos con historial completo y notificaciones personalizables por sección.</div></div>
+        </div>
+        <div class="land-feat">
+          <div class="land-feat-mock">
+            <div style="width:100%;display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start;">
+              <div style="background:#fef9c3;width:76px;min-height:62px;border-radius:6px;padding:7px;font-size:.67rem;color:#5a4800;box-shadow:2px 3px 8px oklch(0% 0 0 / .12);">Rediseñar logo del grupo</div>
+              <div style="background:#dcfce7;width:76px;min-height:62px;border-radius:6px;padding:7px;font-size:.67rem;color:#14532d;box-shadow:2px 3px 8px oklch(0% 0 0 / .12);">Reunión semanal</div>
+              <div style="background:#fce7f3;width:76px;min-height:62px;border-radius:6px;padding:7px;font-size:.67rem;color:#701a75;box-shadow:2px 3px 8px oklch(0% 0 0 / .12);">Ver presupuesto</div>
+            </div>
+          </div>
+          <div class="land-feat-body"><div class="land-feat-title">Pizarra de ideas</div><div class="land-feat-desc">Post-its arrastrables para organizar y votar propuestas. Colaboración visual en tiempo real.</div></div>
+        </div>
+        <div class="land-feat">
+          <div class="land-feat-mock">
+            <div style="width:100%;display:flex;gap:6px;">
+              <div style="flex:1;background:var(--surface);border-radius:6px;border:1px solid var(--border);padding:6px;"><div style="font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-4);margin-bottom:5px;">Pendiente</div><div style="background:var(--bg-subtle);border-radius:4px;padding:5px;font-size:.67rem;border:1px solid var(--border);">Diseño UI</div></div>
+              <div style="flex:1;background:var(--surface);border-radius:6px;border:1px solid var(--border);padding:6px;"><div style="font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-4);margin-bottom:5px;">En progreso</div><div style="background:var(--bg-blue);border-radius:4px;padding:5px;font-size:.67rem;border:1px solid oklch(from var(--c-blue) l c h / .18);color:var(--c-blue);">Backend</div></div>
+              <div style="flex:1;background:var(--surface);border-radius:6px;border:1px solid var(--border);padding:6px;"><div style="font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-4);margin-bottom:5px;">Hecho</div><div style="background:var(--bg-green);border-radius:4px;padding:5px;font-size:.67rem;border:1px solid oklch(from var(--c-green) l c h / .18);color:var(--c-green);">Auth</div></div>
+            </div>
+          </div>
+          <div class="land-feat-body"><div class="land-feat-title">Tareas Kanban</div><div class="land-feat-desc">Arrastra tareas entre columnas. Asigna responsables y da seguimiento al progreso del equipo.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="land-how">
+      <div class="land-section-label">Proceso</div>
+      <div class="land-section-title">Tres pasos para empezar</div>
+      <div class="land-steps">
+        <div class="land-step"><div class="land-step-num">01</div><div class="land-step-title">Crea tu cuenta</div><div class="land-step-desc">Regístrate gratis en segundos. Sin tarjeta de crédito, sin compromisos.</div></div>
+        <div class="land-step"><div class="land-step-num">02</div><div class="land-step-title">Crea o únete a un grupo</div><div class="land-step-desc">Crea un espacio para tu equipo o únete con el código que te comparten.</div></div>
+        <div class="land-step"><div class="land-step-num">03</div><div class="land-step-title">Colabora en tiempo real</div><div class="land-step-desc">Chat, tareas, ideas y archivos sincronizados al instante con todo el equipo.</div></div>
+      </div>
+    </section>
+
+    <section class="land-cta">
+      <h2>¿Listo para empezar?</h2>
+      <p>Únete gratis y empieza a colaborar hoy mismo.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn-land-white" onclick="showAuth('register')"><i data-lucide="arrow-right" style="width:15px;height:15px;"></i> Empezar gratis</button>
+        <button class="btn-land-ghost" onclick="showAuth('login')">Iniciar sesión</button>
+      </div>
+    </section>
+    <footer class="land-footer">GroupUp — Trabajo en equipo sin complicaciones</footer>
+  </div>
+</div>
+
 <!-- ════════════════════ AUTH ════════════════════ -->
 <div id="auth-view" class="view">
   <div class="auth-wrap">
@@ -939,6 +1204,14 @@ ul,ol{list-style:none}
     </nav>
  
     <div class="sb-foot">
+      <div class="theme-picker">
+        <span class="theme-label">Tema</span>
+        <div class="theme-dot active" data-theme="default" style="background:#01696f;" onclick="applyTheme('default')" title="Default"></div>
+        <div class="theme-dot" data-theme="coral" style="background:#e05c4b;" onclick="applyTheme('coral')" title="Coral"></div>
+        <div class="theme-dot" data-theme="slate" style="background:#2563eb;" onclick="applyTheme('slate')" title="Slate"></div>
+        <div class="theme-dot" data-theme="sand" style="background:#b45309;" onclick="applyTheme('sand')" title="Sand"></div>
+        <div class="theme-dot" data-theme="midnight" style="background:#a78bfa;" onclick="applyTheme('midnight')" title="Midnight"></div>
+      </div>
       <div class="user-row" style="cursor:pointer;" onclick="openOwnProfile()" title="Mi perfil">
         <div class="sb-av-wrap">
           <div class="avatar" id="sb-av">?</div>
@@ -954,6 +1227,12 @@ ul,ol{list-style:none}
   <div class="topbar" id="topbar">
     <button class="btn-icon" onclick="openMob()"><i data-lucide="menu" style="width:20px;height:20px;"></i></button>
     <span class="topbar-brand" id="topbar-title">GroupUp</span>
+    <div class="topbar-crumb" id="topbar-crumb" style="display:none;">
+      <span class="crumb-grp" id="crumb-grp">GroupUp</span>
+      <span class="crumb-sep">/</span>
+      <span class="crumb-page" id="crumb-page"></span>
+    </div>
+    <div style="flex:1"></div>
     <button class="theme-btn" id="theme-btn-top"><i data-lucide="sun" class="ic-sun" style="width:14px;height:14px;"></i><i data-lucide="moon" class="ic-moon" style="width:14px;height:14px;display:none;"></i></button>
   </div>
  
@@ -1040,12 +1319,27 @@ ul,ol{list-style:none}
       </div>
     </div>
  
-    <!-- TASKS -->
+    <!-- TASKS / KANBAN -->
     <div class="page" id="page-tasks">
-      <div class="page-head"><div class="page-title-block"><h1 class="page-title">Tareas</h1><p class="page-sub">Organiza y asigna el trabajo del grupo</p></div><div class="page-actions"><button class="btn btn-primary" onclick="openM('m-task')"><i data-lucide="plus" style="width:15px;height:15px;"></i> Nueva tarea</button></div></div>
-      <div class="page-body">
-        <div class="tabs" id="task-tabs"><button class="tab active" onclick="fTasks('all',this)">Todas</button><button class="tab" onclick="fTasks('pending',this)">Pendiente</button><button class="tab" onclick="fTasks('in_progress',this)">En progreso</button><button class="tab" onclick="fTasks('done',this)">Hecho</button></div>
-        <div id="tasks-list" class="task-list"><div class="sk" style="height:64px;border-radius:8px;"></div><div class="sk" style="height:64px;border-radius:8px;margin-top:7px;"></div></div>
+      <div class="page-head" style="padding-bottom:var(--s4);"><div class="page-title-block"><h1 class="page-title">Tareas</h1><p class="page-sub">Organiza y asigna el trabajo del grupo</p></div><div class="page-actions"><button class="btn btn-primary" onclick="openM('m-task')"><i data-lucide="plus" style="width:15px;height:15px;"></i> Nueva tarea</button></div></div>
+      <div class="kanban-wrap">
+        <div class="kanban-board" id="kanban-board">
+          <div class="kanban-col" id="kcol-pending" data-status="pending" ondragover="kDragOver(event,this)" ondragleave="kDragLeave(this)" ondrop="kDrop(event,this)">
+            <div class="kanban-col-head"><span class="kanban-col-title">Pendiente</span><span class="kanban-col-count" id="kc-pending">0</span></div>
+            <div class="kanban-col-body" id="kb-pending"><div class="sk" style="height:60px;border-radius:6px;"></div><div class="sk" style="height:60px;border-radius:6px;margin-top:6px;"></div></div>
+            <button class="kanban-add" onclick="openTaskModal('pending')"><i data-lucide="plus" style="width:12px;height:12px;"></i> Añadir</button>
+          </div>
+          <div class="kanban-col" id="kcol-in_progress" data-status="in_progress" ondragover="kDragOver(event,this)" ondragleave="kDragLeave(this)" ondrop="kDrop(event,this)">
+            <div class="kanban-col-head"><span class="kanban-col-title" style="color:var(--c-blue);">En progreso</span><span class="kanban-col-count" id="kc-in_progress">0</span></div>
+            <div class="kanban-col-body" id="kb-in_progress"></div>
+            <button class="kanban-add" onclick="openTaskModal('in_progress')"><i data-lucide="plus" style="width:12px;height:12px;"></i> Añadir</button>
+          </div>
+          <div class="kanban-col" id="kcol-done" data-status="done" ondragover="kDragOver(event,this)" ondragleave="kDragLeave(this)" ondrop="kDrop(event,this)">
+            <div class="kanban-col-head"><span class="kanban-col-title" style="color:var(--c-green);">Hecho</span><span class="kanban-col-count" id="kc-done">0</span></div>
+            <div class="kanban-col-body" id="kb-done"></div>
+            <button class="kanban-add" onclick="openTaskModal('done')"><i data-lucide="plus" style="width:12px;height:12px;"></i> Añadir</button>
+          </div>
+        </div>
       </div>
     </div>
  
@@ -1061,12 +1355,24 @@ ul,ol{list-style:none}
       <div class="page-body"><div id="files-list" class="file-list"><div class="sk" style="height:58px;border-radius:8px;"></div><div class="sk" style="height:58px;border-radius:8px;margin-top:7px;"></div></div></div>
     </div>
  
-    <!-- BRAINSTORM -->
+    <!-- BRAINSTORM / WHITEBOARD -->
     <div class="page" id="page-brainstorm">
-      <div class="page-head"><div class="page-title-block"><h1 class="page-title">Ideas</h1><p class="page-sub">Propón y vota propuestas del grupo</p></div><div class="page-actions"><button class="btn btn-primary" onclick="openM('m-idea')"><i data-lucide="lightbulb" style="width:15px;height:15px;"></i> Proponer</button></div></div>
-      <div class="page-body">
-        <div class="tabs"><button class="tab active" onclick="sIdeas('votes',this)"><i data-lucide="trending-up" style="width:13px;height:13px;"></i> Más votadas</button><button class="tab" onclick="sIdeas('new',this)"><i data-lucide="clock" style="width:13px;height:13px;"></i> Recientes</button></div>
-        <div id="ideas-list" class="ideas-list"><div class="sk" style="height:70px;border-radius:8px;"></div><div class="sk" style="height:70px;border-radius:8px;margin-top:7px;"></div></div>
+      <div class="wb-toolbar">
+        <span style="font-family:var(--font-d);font-weight:700;font-size:.9rem;">Ideas</span>
+        <div class="wb-color-pick" id="wb-color-pick">
+          <span style="font-size:.72rem;color:var(--text-4);font-weight:600;">Color:</span>
+          <div class="wb-col-dot sel" data-col="#fef9c3" style="background:#fef9c3;" onclick="setWbColor('#fef9c3',this)"></div>
+          <div class="wb-col-dot" data-col="#dcfce7" style="background:#dcfce7;" onclick="setWbColor('#dcfce7',this)"></div>
+          <div class="wb-col-dot" data-col="#dbeafe" style="background:#dbeafe;" onclick="setWbColor('#dbeafe',this)"></div>
+          <div class="wb-col-dot" data-col="#fce7f3" style="background:#fce7f3;" onclick="setWbColor('#fce7f3',this)"></div>
+          <div class="wb-col-dot" data-col="#ffedd5" style="background:#ffedd5;" onclick="setWbColor('#ffedd5',this)"></div>
+          <div class="wb-col-dot" data-col="#ede9fe" style="background:#ede9fe;" onclick="setWbColor('#ede9fe',this)"></div>
+        </div>
+        <div style="flex:1"></div>
+        <button class="btn btn-primary btn-sm" onclick="openM('m-idea')"><i data-lucide="plus" style="width:13px;height:13px;"></i> Nueva idea</button>
+      </div>
+      <div class="wb-canvas-wrap" id="wb-canvas-wrap">
+        <div class="wb-canvas" id="wb-canvas"></div>
       </div>
     </div>
  
@@ -1308,6 +1614,24 @@ ul,ol{list-style:none}
   </div>
 </div>
  
+<!-- MEMBER SLIDE PANEL -->
+<div class="slide-backdrop" id="slide-backdrop" onclick="closeSlide()"></div>
+<div class="slide-panel" id="slide-panel">
+  <div class="slide-head">
+    <span style="font-family:var(--font-d);font-weight:700;font-size:.95rem;">Perfil</span>
+    <button class="btn-icon" onclick="closeSlide()"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
+  </div>
+  <div class="slide-body" id="slide-body"></div>
+</div>
+
+<!-- BOTTOM NAV (mobile) -->
+<nav class="bottom-nav" id="bottom-nav">
+  <button class="bn-item active" id="bn-groups" onclick="go('groups',this);setBnActive('bn-groups')"><i data-lucide="users"></i>Grupos</button>
+  <button class="bn-item" id="bn-chat" onclick="go('chat',this);setBnActive('bn-chat')"><i data-lucide="message-square"></i>Chat</button>
+  <button class="bn-item" id="bn-tasks" onclick="go('tasks',this);setBnActive('bn-tasks')"><i data-lucide="check-square"></i>Tareas</button>
+  <button class="bn-item" id="bn-friends" onclick="go('friends',this);setBnActive('bn-friends')"><i data-lucide="user-check"></i>Equipo</button>
+</nav>
+
 <div id="toasts"></div>
  
 <!-- ════════════════════ JS ════════════════════ -->
@@ -1328,17 +1652,67 @@ let friendsTab='friends';
 let myGlobalStatus='active';
  
 /* ── THEME ──────────────────────────────────────── */
+let currentTheme='default';
+let themeBasePrimary=null;
+
+const THEME_DATA={
+  default:{primary:null,dark:null},
+  coral:{primary:'#e05c4b',dark:null},
+  slate:{primary:'#2563eb',dark:null},
+  sand:{primary:'#b45309',dark:null},
+  midnight:{primary:'#a78bfa',dark:true},
+};
+
 function setTheme(d){
   dark=d;
-  document.documentElement.setAttribute('data-theme',d?'dark':'light');
+  const html=document.documentElement;
+  if(currentTheme==='midnight'){
+    html.setAttribute('data-theme','midnight');
+  }else if(currentTheme&&currentTheme!=='default'){
+    html.setAttribute('data-theme',d?`dark`:''+currentTheme);
+    if(d) html.setAttribute('data-theme','dark');
+    else html.setAttribute('data-theme',currentTheme);
+  }else{
+    html.setAttribute('data-theme',d?'dark':'light');
+  }
   document.querySelectorAll('.ic-sun').forEach(e=>e.style.display=d?'none':'');
   document.querySelectorAll('.ic-moon').forEach(e=>e.style.display=d?'':'none');
   lucide.createIcons();
 }
-function toggleTheme(){setTheme(!dark)}
+function toggleTheme(){if(currentTheme==='midnight')return;setTheme(!dark)}
+
+function applyTheme(id){
+  const t=THEME_DATA[id]||THEME_DATA.default;
+  currentTheme=id;
+  localStorage.setItem('groupup_theme',id);
+  themeBasePrimary=t.primary;
+  const root=document.documentElement;
+  if(!G){
+    if(t.primary)root.style.setProperty('--primary',t.primary);
+    else root.style.removeProperty('--primary');
+  }
+  if(t.dark===true)setTheme(true);
+  else if(id==='midnight')root.setAttribute('data-theme','midnight');
+  else setTheme(dark);
+  document.querySelectorAll('.theme-dot').forEach(d=>d.classList.toggle('active',d.dataset.theme===id));
+}
+
 document.getElementById('theme-btn-sb').onclick=toggleTheme;
 document.getElementById('theme-btn-top').onclick=toggleTheme;
-setTheme(window.matchMedia('(prefers-color-scheme: dark)').matches);
+(function(){
+  const saved=localStorage.getItem('groupup_theme')||'default';
+  const sysDark=window.matchMedia('(prefers-color-scheme: dark)').matches;
+  dark=sysDark;
+  currentTheme=saved;
+  const t=THEME_DATA[saved]||THEME_DATA.default;
+  themeBasePrimary=t.primary;
+  if(t.primary)document.documentElement.style.setProperty('--primary',t.primary);
+  if(t.dark===true){dark=true;document.documentElement.setAttribute('data-theme','midnight');}
+  else if(saved!=='default')document.documentElement.setAttribute('data-theme',sysDark?'dark':saved);
+  else document.documentElement.setAttribute('data-theme',sysDark?'dark':'light');
+  document.querySelectorAll('.ic-sun').forEach(e=>e.style.display=dark?'none':'');
+  document.querySelectorAll('.ic-moon').forEach(e=>e.style.display=dark?'':'none');
+})();
  
 /* ── MOBILE SIDEBAR ─────────────────────────────── */
 function openMob(){document.getElementById('sidebar').classList.add('mob-open');document.getElementById('sb-backdrop').classList.add('open')}
@@ -1351,14 +1725,38 @@ function showV(id){document.querySelectorAll('.view').forEach(v=>v.classList.rem
 const PAGE={groups:'page-groups',friends:'page-friends',dashboard:'page-dashboard',chat:'page-chat',tasks:'page-tasks',board:'page-board',files:'page-files',brainstorm:'page-brainstorm',settings:'page-settings'};
 const PTITLE={groups:'Mis grupos',friends:'Compañeros',dashboard:'Panel',chat:'Chat',tasks:'Tareas',board:'Tablón',files:'Archivos',brainstorm:'Ideas',settings:'Ajustes'};
  
+function showAuth(tab='login'){
+  showV('auth-view');
+  switchTab(tab);
+  location.hash='auth';
+}
+function showLanding(){showV('landing-view');location.hash='landing';lucide.createIcons()}
+
+function updateBreadcrumb(hash){
+  const inGrp=['dashboard','chat','tasks','board','files','brainstorm','settings'].includes(hash);
+  const crumbWrap=document.getElementById('topbar-crumb');
+  const crumbGrp=document.getElementById('crumb-grp');
+  const crumbPage=document.getElementById('crumb-page');
+  const title=document.getElementById('topbar-title');
+  if(inGrp&&G){
+    crumbWrap&&(crumbWrap.style.display='flex');
+    title&&(title.style.display='none');
+    if(crumbGrp)crumbGrp.textContent=G.custom_name||G.name;
+    if(crumbPage)crumbPage.textContent=PTITLE[hash]||'';
+  }else{
+    crumbWrap&&(crumbWrap.style.display='none');
+    title&&(title.style.display='');
+    if(title)title.textContent=PTITLE[hash]||'GroupUp';
+  }
+}
+
 function go(hash,el){
   const pid=PAGE[hash]; if(!pid) return;
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById(pid)?.classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   (el||document.querySelector(`[data-hash="${hash}"]`))?.classList.add('active');
-  const inGrp=['dashboard','chat','tasks','board','files','brainstorm','settings'].includes(hash);
-  document.getElementById('topbar-title').textContent=inGrp&&G?(G.custom_name||G.name):(PTITLE[hash]||'GroupUp');
+  updateBreadcrumb(hash);
   location.hash=hash; closeMob(); lucide.createIcons();
   if(hash==='groups'){if(U)loadGroups()}
   else if(hash==='friends') loadFriends();
@@ -1370,7 +1768,15 @@ function go(hash,el){
   else if(hash==='dashboard') loadDash();
   else if(hash==='settings') loadSettings();
 }
-window.addEventListener('hashchange',()=>{const h=location.hash.replace('#','')||'groups';go(h)});
+
+function setBnActive(id){document.querySelectorAll('.bn-item').forEach(b=>b.classList.toggle('active',b.id===id))}
+
+window.addEventListener('hashchange',()=>{
+  const h=location.hash.replace('#','')||'landing';
+  if(h==='landing'){if(!U)showLanding();return}
+  if(h==='auth'){if(!U)showAuth();return}
+  if(PAGE[h])go(h);
+});
  
 /* ── HELPERS ────────────────────────────────────── */
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
@@ -1452,8 +1858,7 @@ async function doLogout(){
   await sb.auth.signOut();
   U=null;G=null;M=null;mbrs=[];tasks=[];ideas=[];myV=new Set();
   killRT();resetAccent();
-  location.hash='';
-  showGroupsV();showV('auth-view');
+  showLanding();
 }
 function updateSbUser(){
   if(!U)return;
@@ -1471,7 +1876,10 @@ function showGroupsV(){
   go('groups',document.querySelector('[data-hash="groups"]'));
   loadGroups();
 }
-function resetAccent(){document.documentElement.style.removeProperty('--primary')}
+function resetAccent(){
+  if(themeBasePrimary)document.documentElement.style.setProperty('--primary',themeBasePrimary);
+  else document.documentElement.style.removeProperty('--primary');
+}
 function leaveGrp(){G=null;M=null;mbrs=[];killRT();resetAccent();showGroupsV()}
  
 function grpColor(name){
@@ -1764,34 +2172,64 @@ function autoH(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeig
 /* ════════════════════════════════════════════════════
    TASKS
 ════════════════════════════════════════════════════ */
+let kDragId=null;
+
 async function loadTasks(){
-  document.getElementById('tasks-list').innerHTML=`<div class="sk" style="height:64px;border-radius:8px;"></div><div class="sk" style="height:64px;border-radius:8px;margin-top:7px;"></div>`;
+  ['pending','in_progress','done'].forEach(s=>{
+    const b=document.getElementById('kb-'+s);
+    if(b)b.innerHTML=`<div class="sk" style="height:58px;border-radius:6px;"></div><div class="sk" style="height:58px;border-radius:6px;margin-top:6px;"></div>`;
+  });
   const{data,error}=await sb.from('tasks').select('*').eq('group_id',G.id).order('created_at',{ascending:false});
   if(error){toast('Error: '+error.message,'err');return}
-  tasks=data||[];fillSel('t-assign');renderTasks();
+  tasks=data||[];fillSel('t-assign');renderKanban();
 }
-function renderTasks(){
-  const el=document.getElementById('tasks-list');
-  const list=tFilt==='all'?tasks:tasks.filter(t=>t.status===tFilt);
-  if(list.length===0){el.innerHTML=mkEmpty('tasks','Sin tareas','Añade la primera tarea del grupo.',`openM('m-task')`,'Nueva tarea');lucide.createIcons();return}
-  el.innerHTML=list.map(t=>{
-    const dt=new Date(t.created_at).toLocaleDateString('es-ES',{day:'numeric',month:'short'});
-    const asgn=t.assigned_name?`<span style="display:flex;align-items:center;gap:3px;"><i data-lucide="user" style="width:10px;height:10px;"></i>${esc(t.assigned_name)}</span>`:'';
-    return`<div class="task-item">
-      <div class="task-cb ${t.status==='done'?'checked':''}" onclick="toggleTask('${t.id}','${t.status}')">
-        ${t.status==='done'?'<i data-lucide="check" style="width:10px;height:10px;"></i>':''}
-      </div>
-      <div class="task-content">
-        <div class="task-title-text ${t.status==='done'?'done':''}">${esc(t.title)}</div>
-        ${t.description?`<div class="task-desc-text">${esc(t.description)}</div>`:''}
-        <div class="task-meta"><span class="badge ${stCls(t.status)}">${stLbl(t.status)}</span>${asgn}<span style="display:flex;align-items:center;gap:3px;"><i data-lucide="calendar" style="width:10px;height:10px;"></i>${dt}</span></div>
-      </div>
-      <button class="btn-icon btn-sm" onclick="delTask('${t.id}')"><i data-lucide="trash-2" style="width:13px;height:13px;color:var(--text-3);"></i></button>
-    </div>`;
-  }).join('');
-  lucide.createIcons();
+
+function renderKanban(){
+  const statuses=['pending','in_progress','done'];
+  statuses.forEach(s=>{
+    const body=document.getElementById('kb-'+s);
+    const count=document.getElementById('kc-'+s);
+    if(!body)return;
+    const col=tasks.filter(t=>t.status===s);
+    if(count)count.textContent=col.length;
+    if(col.length===0){
+      body.innerHTML=`<div style="padding:20px;text-align:center;font-size:.8125rem;color:var(--text-4);">Sin tareas</div>`;
+      return;
+    }
+    body.innerHTML=col.map(t=>{
+      const dt=new Date(t.created_at).toLocaleDateString('es-ES',{day:'numeric',month:'short'});
+      const asgn=t.assigned_name?`<span style="display:flex;align-items:center;gap:3px;"><i data-lucide="user" style="width:9px;height:9px;"></i>${esc(t.assigned_name)}</span>`:'';
+      return`<div class="kanban-card" draggable="true" data-id="${t.id}" ondragstart="kDragStart(event,'${t.id}')" ondragend="kDragEnd(event)">
+        <div class="kanban-card-title ${t.status==='done'?'done':''}">${esc(t.title)}</div>
+        ${t.description?`<div style="font-size:.78rem;color:var(--text-3);margin-bottom:5px;line-height:1.4;">${esc(t.description.slice(0,60))}${t.description.length>60?'…':''}</div>`:''}
+        <div class="kanban-card-meta">${asgn}<span style="margin-left:auto;display:flex;align-items:center;gap:3px;"><i data-lucide="calendar" style="width:9px;height:9px;"></i>${dt}</span><button class="btn-icon" style="min-height:20px;min-width:20px;margin-left:2px;" onclick="event.stopPropagation();delTask('${t.id}')"><i data-lucide="trash-2" style="width:11px;height:11px;color:var(--text-4);"></i></button></div>
+      </div>`;
+    }).join('');
+    lucide.createIcons({nodes:[body]});
+  });
 }
-function fTasks(f,el){tFilt=f;document.querySelectorAll('#task-tabs .tab').forEach(t=>t.classList.remove('active'));el?.classList.add('active');renderTasks()}
+
+function kDragStart(e,id){kDragId=id;e.currentTarget.classList.add('dragging');e.dataTransfer.effectAllowed='move'}
+function kDragEnd(e){e.currentTarget.classList.remove('dragging');kDragId=null;document.querySelectorAll('.kanban-col').forEach(c=>c.classList.remove('drag-over'))}
+function kDragOver(e,col){e.preventDefault();e.dataTransfer.dropEffect='move';col.classList.add('drag-over')}
+function kDragLeave(col){col.classList.remove('drag-over')}
+async function kDrop(e,col){
+  e.preventDefault();col.classList.remove('drag-over');
+  if(!kDragId)return;
+  const newStatus=col.dataset.status;
+  const task=tasks.find(t=>t.id===kDragId);
+  if(!task||task.status===newStatus)return;
+  task.status=newStatus;
+  renderKanban();
+  await sb.from('tasks').update({status:newStatus}).eq('id',kDragId);
+}
+
+function openTaskModal(status){
+  document.getElementById('t-status').value=status;
+  openM('m-task');
+}
+
+function fTasks(f,el){tFilt=f;renderKanban()}
 async function addTask(){
   const title=document.getElementById('t-title').value.trim();
   if(!title)return setMsg('m-task-msg','error','El título es obligatorio');
@@ -1807,15 +2245,17 @@ async function addTask(){
   toast('Tarea añadida','ok');loadTasks();
 }
 async function toggleTask(id,status){
-  const{error}=await sb.from('tasks').update({status:status==='done'?'pending':'done'}).eq('id',id);
+  const newSt=status==='done'?'pending':'done';
+  const{error}=await sb.from('tasks').update({status:newSt}).eq('id',id);
   if(error){toast('Error: '+error.message,'err');return}
-  loadTasks();
+  const t=tasks.find(x=>x.id===id);if(t)t.status=newSt;
+  renderKanban();
 }
 async function delTask(id){
   if(!confirm('¿Eliminar esta tarea?'))return;
   const{error}=await sb.from('tasks').delete().eq('id',id);
   if(error){toast('Error: '+error.message,'err');return}
-  loadTasks();
+  tasks=tasks.filter(t=>t.id!==id);renderKanban();
 }
  
 /* ════════════════════════════════════════════════════
@@ -1920,9 +2360,18 @@ async function delFile(id,path){
   loadFiles();
 }
  
-/* ── IDEAS ──────────────────────────────────────── */
+/* ── WHITEBOARD ─────────────────────────────────── */
+let wbColor='#fef9c3';
+let wbDragging=null,wbDragOffX=0,wbDragOffY=0;
+
+function setWbColor(c,el){
+  wbColor=c;
+  document.querySelectorAll('.wb-col-dot').forEach(d=>d.classList.toggle('sel',d.dataset.col===c));
+}
+
 async function loadIdeas(){
-  document.getElementById('ideas-list').innerHTML=`<div class="sk" style="height:70px;border-radius:8px;"></div><div class="sk" style="height:70px;border-radius:8px;margin-top:7px;"></div>`;
+  const canvas=document.getElementById('wb-canvas');
+  canvas.innerHTML=`<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:flex;gap:12px;"><div class="sk" style="width:180px;height:130px;border-radius:10px;"></div><div class="sk" style="width:180px;height:130px;border-radius:10px;"></div><div class="sk" style="width:180px;height:130px;border-radius:10px;"></div></div>`;
   const{data,error}=await sb.from('ideas').select('*').eq('group_id',G.id);
   if(error){toast('Error: '+error.message,'err');return}
   ideas=data||[];
@@ -1930,63 +2379,178 @@ async function loadIdeas(){
     const{data:v}=await sb.from('idea_votes').select('idea_id').eq('user_id',U.id).in('idea_id',ideas.map(i=>i.id));
     myV=new Set((v||[]).map(x=>x.idea_id));
   }else myV=new Set();
-  renderIdeas();
+  renderWhiteboard();
 }
-function renderIdeas(){
-  const el=document.getElementById('ideas-list');
-  if(ideas.length===0){el.innerHTML=mkEmpty('ideas','Sin ideas','Propón algo y otros podrán votarlo.',`openM('m-idea')`,'Proponer');lucide.createIcons();return}
-  let sorted=[...ideas];
-  if(iSort==='votes')sorted.sort((a,b)=>b.votes-a.votes);
-  else sorted.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
-  el.innerHTML=sorted.map(idea=>{
-    const voted=myV.has(idea.id);
-    const dt=new Date(idea.created_at).toLocaleDateString('es-ES',{day:'numeric',month:'short'});
-    return`<div class="idea-item">
-      <button class="vote-btn ${voted?'voted':''}" onclick="voteIdea('${idea.id}',${voted})">
-        <i data-lucide="chevron-up" style="width:14px;height:14px;"></i>
-        <span class="vote-n">${idea.votes}</span>
-      </button>
-      <div class="idea-body">
-        <div class="idea-text-content">${esc(idea.content)}</div>
-        <div class="idea-meta-text">${esc(idea.display_name||'Miembro')} · ${dt}</div>
-      </div>
-      ${idea.user_id===U.id?`<button class="btn-icon btn-sm" onclick="delIdea('${idea.id}')"><i data-lucide="trash-2" style="width:13px;height:13px;color:var(--text-3);"></i></button>`:''}
+
+function renderWhiteboard(){
+  const canvas=document.getElementById('wb-canvas');
+  if(!canvas)return;
+  if(ideas.length===0){
+    canvas.innerHTML=`<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">
+      ${ESVG.ideas}
+      <h3 style="font-family:var(--font-d);font-size:1.1rem;margin-top:14px;">Sin ideas</h3>
+      <p style="font-size:.875rem;color:var(--text-3);margin-top:5px;">Propón algo y otros podrán votar</p>
     </div>`;
-  }).join('');
-  lucide.createIcons();
+    return;
+  }
+  canvas.innerHTML='';
+  ideas.forEach(idea=>canvas.appendChild(makePostit(idea)));
 }
-function sIdeas(by,el){iSort=by;document.querySelectorAll('#page-brainstorm .tab').forEach(t=>t.classList.remove('active'));el?.classList.add('active');renderIdeas()}
-async function voteIdea(ideaId,already){
+
+function makePostit(idea){
+  const voted=myV.has(idea.id);
+  const x=idea.pos_x!=null?idea.pos_x:40+Math.random()*800;
+  const y=idea.pos_y!=null?idea.pos_y:40+Math.random()*600;
+  const color=idea.color||'#fef9c3';
+  const el=document.createElement('div');
+  el.className='postit';
+  el.dataset.id=idea.id;
+  el.style.left=x+'px';
+  el.style.top=y+'px';
+  el.style.background=color;
+  const isAuthor=idea.user_id===U.id;
+  el.innerHTML=`
+    <div class="postit-content" ondblclick="editPostit('${idea.id}',this)">${esc(idea.content)}</div>
+    <div class="postit-foot">
+      <span class="postit-meta">${esc(idea.display_name||'Miembro')}</span>
+      <button class="postit-like ${voted?'liked':''}" onclick="wbVote('${idea.id}',${voted},this)">
+        <i data-lucide="heart" style="width:10px;height:10px;"></i> ${idea.votes}
+      </button>
+      ${isAuthor?`<button class="postit-del" onclick="delIdea('${idea.id}')"><i data-lucide="x" style="width:11px;height:11px;"></i></button>`:''}
+    </div>`;
+  el.addEventListener('mousedown',wbMouseDown);
+  el.addEventListener('touchstart',wbTouchStart,{passive:false});
+  lucide.createIcons({nodes:[el]});
+  return el;
+}
+
+function wbMouseDown(e){
+  if(e.target.closest('.postit-like')||e.target.closest('.postit-del')||e.target.closest('.postit-content[contenteditable="true"]'))return;
+  const el=e.currentTarget;
+  const rect=el.getBoundingClientRect();
+  const wrap=document.getElementById('wb-canvas-wrap');
+  const wrapRect=wrap.getBoundingClientRect();
+  wbDragging=el;
+  wbDragOffX=e.clientX-rect.left;
+  wbDragOffY=e.clientY-rect.top;
+  el.classList.add('dragging-active');
+  el.style.zIndex=999;
+  e.preventDefault();
+}
+function wbTouchStart(e){
+  if(e.target.closest('.postit-like')||e.target.closest('.postit-del')||e.target.closest('.postit-content[contenteditable="true"]'))return;
+  const touch=e.touches[0];
+  const el=e.currentTarget;
+  const rect=el.getBoundingClientRect();
+  wbDragging=el;
+  wbDragOffX=touch.clientX-rect.left;
+  wbDragOffY=touch.clientY-rect.top;
+  el.classList.add('dragging-active');
+  el.style.zIndex=999;
+  e.preventDefault();
+}
+
+document.addEventListener('mousemove',e=>{
+  if(!wbDragging)return;
+  const wrap=document.getElementById('wb-canvas-wrap');
+  if(!wrap)return;
+  const wrapRect=wrap.getBoundingClientRect();
+  const x=e.clientX-wrapRect.left+wrap.scrollLeft-wbDragOffX;
+  const y=e.clientY-wrapRect.top+wrap.scrollTop-wbDragOffY;
+  wbDragging.style.left=Math.max(0,x)+'px';
+  wbDragging.style.top=Math.max(0,y)+'px';
+});
+document.addEventListener('touchmove',e=>{
+  if(!wbDragging)return;
+  const touch=e.touches[0];
+  const wrap=document.getElementById('wb-canvas-wrap');
+  if(!wrap)return;
+  const wrapRect=wrap.getBoundingClientRect();
+  const x=touch.clientX-wrapRect.left+wrap.scrollLeft-wbDragOffX;
+  const y=touch.clientY-wrapRect.top+wrap.scrollTop-wbDragOffY;
+  wbDragging.style.left=Math.max(0,x)+'px';
+  wbDragging.style.top=Math.max(0,y)+'px';
+  e.preventDefault();
+},{passive:false});
+document.addEventListener('mouseup',wbDropEnd);
+document.addEventListener('touchend',wbDropEnd);
+
+async function wbDropEnd(){
+  if(!wbDragging)return;
+  const el=wbDragging;
+  wbDragging=null;
+  el.classList.remove('dragging-active');
+  el.style.zIndex='';
+  const id=el.dataset.id;
+  const x=parseFloat(el.style.left);
+  const y=parseFloat(el.style.top);
+  await sb.from('ideas').update({pos_x:Math.round(x),pos_y:Math.round(y)}).eq('id',id);
+  const idea=ideas.find(i=>i.id===id);
+  if(idea){idea.pos_x=Math.round(x);idea.pos_y=Math.round(y)}
+}
+
+function editPostit(id,contentEl){
+  contentEl.contentEditable='true';
+  contentEl.focus();
+  const range=document.createRange();range.selectNodeContents(contentEl);const sel=window.getSelection();sel.removeAllRanges();sel.addRange(range);
+  const save=async()=>{
+    contentEl.contentEditable='false';
+    const newText=contentEl.textContent.trim();
+    if(!newText){contentEl.textContent=ideas.find(i=>i.id===id)?.content||'';return}
+    await sb.from('ideas').update({content:newText}).eq('id',id);
+    const idea=ideas.find(i=>i.id===id);if(idea)idea.content=newText;
+    toast('Actualizado','ok');
+  };
+  contentEl.addEventListener('blur',save,{once:true});
+  contentEl.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();contentEl.blur()}},{once:true});
+}
+
+async function wbVote(ideaId,already,btn){
   const idea=ideas.find(i=>i.id===ideaId);if(!idea)return;
   if(already){
-    const{error}=await sb.from('idea_votes').delete().eq('idea_id',ideaId).eq('user_id',U.id);
-    if(error){toast('Error: '+error.message,'err');return}
+    await sb.from('idea_votes').delete().eq('idea_id',ideaId).eq('user_id',U.id);
     myV.delete(ideaId);idea.votes=Math.max(0,idea.votes-1);
     await sb.from('ideas').update({votes:idea.votes}).eq('id',ideaId);
+    btn.classList.remove('liked');
   }else{
     const{data:ex}=await sb.from('idea_votes').select('id').eq('idea_id',ideaId).eq('user_id',U.id).maybeSingle();
-    if(ex){myV.add(ideaId);renderIdeas();return}
-    const{error}=await sb.from('idea_votes').insert({idea_id:ideaId,user_id:U.id});
-    if(error){toast('Error: '+error.message,'err');return}
+    if(!ex){await sb.from('idea_votes').insert({idea_id:ideaId,user_id:U.id});}
     myV.add(ideaId);idea.votes++;
     await sb.from('ideas').update({votes:idea.votes}).eq('id',ideaId);
+    btn.classList.add('liked');
   }
-  renderIdeas();
+  btn.innerHTML=`<i data-lucide="heart" style="width:10px;height:10px;"></i> ${idea.votes}`;
+  lucide.createIcons({nodes:[btn]});
 }
+
 async function addIdea(){
   const content=document.getElementById('idea-txt').value.trim();
   if(!content)return setMsg('m-idea-msg','error','Escribe tu idea');
   setLoad('btn-add-idea',true);
   const dn=M?.display_name||'Miembro';
-  const{error}=await sb.from('ideas').insert({group_id:G.id,user_id:U.id,display_name:dn,content,votes:0});
+  const wrap=document.getElementById('wb-canvas-wrap');
+  const startX=wrap?(wrap.scrollLeft+60+Math.random()*300):60;
+  const startY=wrap?(wrap.scrollTop+60+Math.random()*300):60;
+  const{data,error}=await sb.from('ideas').insert({group_id:G.id,user_id:U.id,display_name:dn,content,votes:0,pos_x:Math.round(startX),pos_y:Math.round(startY),color:wbColor}).select().single();
   setLoad('btn-add-idea',false,'Proponer');
   if(error)return setMsg('m-idea-msg','error',error.message);
   closeM('m-idea');document.getElementById('idea-txt').value='';
-  toast('Idea añadida','ok');loadIdeas();
+  ideas.push(data);
+  const canvas=document.getElementById('wb-canvas');
+  if(canvas){
+    const empty=canvas.querySelector('.empty-art');
+    if(empty)canvas.innerHTML='';
+    canvas.appendChild(makePostit(data));
+  }
+  toast('Idea añadida','ok');
 }
+
 async function delIdea(id){
   if(!confirm('¿Eliminar?'))return;
-  await sb.from('ideas').delete().eq('id',id);loadIdeas();
+  await sb.from('ideas').delete().eq('id',id);
+  ideas=ideas.filter(i=>i.id!==id);
+  document.querySelector(`.postit[data-id="${id}"]`)?.remove();
+  if(ideas.length===0)renderWhiteboard();
 }
  
 /* ── REALTIME ────────────────────────────────────── */
@@ -2382,10 +2946,16 @@ function updateStatusDot(status){
 /* ════════════════════════════════════════════════════
    PERFIL DE MIEMBRO
 ════════════════════════════════════════════════════ */
+function openSlide(){document.getElementById('slide-backdrop').classList.add('open');document.getElementById('slide-panel').classList.add('open')}
+function closeSlide(){document.getElementById('slide-backdrop').classList.remove('open');document.getElementById('slide-panel').classList.remove('open')}
+
 async function openMemberProfile(userId){
   if(userId===U.id){openOwnProfile();return;}
   const mbr=mbrs.find(m=>m.user_id===userId);
   if(!mbr)return;
+  const body=document.getElementById('slide-body');
+  body.innerHTML=`<div style="display:flex;justify-content:center;padding:40px;"><div class="spinner" style="width:24px;height:24px;border-width:3px;border-color:var(--primary);border-top-color:transparent;"></div></div>`;
+  openSlide();
   const[{data:fr1},{data:fr2},{data:fs}]=await Promise.all([
     sb.from('friend_requests').select('id,status').eq('from_user_id',U.id).eq('to_user_id',userId).maybeSingle(),
     sb.from('friend_requests').select('id,status').eq('from_user_id',userId).eq('to_user_id',U.id).maybeSingle(),
@@ -2394,32 +2964,25 @@ async function openMemberProfile(userId){
   const isFriend=!!fs;
   const hasSent=!!fr1;
   const hasIncoming=!!fr2&&fr2.status==='pending';
-  const statusDotHtml=(mbr.status&&mbr.status!=='ghost')?`<span class="status-dot status-${mbr.status}" style="display:inline-block;"></span>`:'';
+  const statusDotHtml=(mbr.status&&mbr.status!=='ghost')?`<span class="status-dot status-${mbr.status}" style="display:inline-block;margin-left:4px;"></span>`:'';
   const avatarHtml=mbr.avatar_url
-    ?`<img src="${esc(mbr.avatar_url)}" style="width:52px;height:52px;border-radius:50%;object-fit:cover;">`
-    :`<div class="profile-av">${(mbr.display_name||'?')[0].toUpperCase()}</div>`;
-  document.getElementById('member-profile-body').innerHTML=`
-    <div class="profile-header">
+    ?`<img src="${esc(mbr.avatar_url)}" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">`
+    :`<div class="profile-av" style="width:64px;height:64px;font-size:1.4rem;">${(mbr.display_name||'?')[0].toUpperCase()}</div>`;
+  let friendBtn='';
+  if(isFriend)friendBtn=`<div style="display:flex;align-items:center;gap:6px;font-size:.875rem;color:var(--c-green);font-weight:500;margin-top:12px;"><i data-lucide="check-circle" style="width:14px;height:14px;"></i>Compañeros</div>`;
+  else if(hasSent)friendBtn=`<div style="font-size:.875rem;color:var(--text-3);margin-top:12px;">Solicitud enviada</div>`;
+  else if(hasIncoming)friendBtn=`<button class="btn btn-primary btn-sm" style="margin-top:12px;" onclick="acceptFriendReq('${fr2.id}','${userId}')"><i data-lucide="user-check" style="width:13px;height:13px;"></i> Aceptar solicitud</button>`;
+  else friendBtn=`<button class="btn btn-secondary btn-sm" id="btn-add-friend" style="margin-top:12px;" onclick="sendFriendReq('${userId}')"><i data-lucide="user-plus" style="width:13px;height:13px;"></i> Añadir compañero</button>`;
+  const roleCls=mbr.role==='owner'?'badge-primary':mbr.role==='admin'?'badge-blue':'badge-muted';
+  body.innerHTML=`
+    <div style="display:flex;flex-direction:column;align-items:flex-start;gap:0;">
       ${avatarHtml}
-      <div>
-        <div class="profile-name" style="display:flex;align-items:center;gap:7px;">${esc(mbr.display_name||'Miembro')} ${statusDotHtml}</div>
-        ${mbr.bio?`<div class="profile-bio">${esc(mbr.bio)}</div>`:'<div class="profile-bio" style="color:var(--text-4);">Sin bio</div>'}
-        ${mbr.role?`<span class="badge ${mbr.role==='owner'?'badge-primary':mbr.role==='admin'?'badge-blue':'badge-muted'}" style="margin-top:5px;">${mbr.role}</span>`:''}
-      </div>
+      <div style="margin-top:14px;display:flex;align-items:center;gap:6px;"><span style="font-family:var(--font-d);font-size:1.15rem;font-weight:700;">${esc(mbr.display_name||'Miembro')}</span>${statusDotHtml}</div>
+      ${mbr.role?`<span class="badge ${roleCls}" style="margin-top:6px;">${mbr.role}</span>`:''}
+      <div style="font-size:.875rem;color:var(--text-3);margin-top:10px;line-height:1.55;">${mbr.bio?esc(mbr.bio):'<span style="color:var(--text-4);">Sin bio</span>'}</div>
+      ${friendBtn}
     </div>`;
-  let footHtml='';
-  if(isFriend){
-    footHtml=`<span style="display:flex;align-items:center;gap:6px;font-size:.875rem;color:var(--c-green);font-weight:500;"><i data-lucide="check-circle" style="width:15px;height:15px;"></i>Compañeros</span>`;
-  }else if(hasSent){
-    footHtml=`<span style="font-size:.875rem;color:var(--text-3);">Solicitud enviada</span>`;
-  }else if(hasIncoming){
-    footHtml=`<button class="btn btn-primary btn-sm" onclick="acceptFriendReq('${fr2.id}','${userId}')"><i data-lucide="user-check" style="width:13px;height:13px;"></i> Aceptar solicitud</button>`;
-  }else{
-    footHtml=`<button class="btn btn-secondary btn-sm" id="btn-add-friend" onclick="sendFriendReq('${userId}')"><i data-lucide="user-plus" style="width:13px;height:13px;"></i> Añadir compañero</button>`;
-  }
-  document.getElementById('member-profile-foot').innerHTML=`<div style="flex:1;"></div>${footHtml}`;
-  openM('m-member-profile');
-  lucide.createIcons();
+  lucide.createIcons({nodes:[body]});
 }
 
 async function sendFriendReq(toUserId){
@@ -2428,7 +2991,7 @@ async function sendFriendReq(toUserId){
   const{error}=await sb.from('friend_requests').insert({from_user_id:U.id,to_user_id:toUserId,status:'pending'});
   if(error){toast('Error: '+error.message,'err');if(btn){btn.disabled=false;btn.innerHTML='<i data-lucide="user-plus" style="width:13px;height:13px;"></i> Añadir compañero';lucide.createIcons();}return;}
   toast('Solicitud enviada','ok');
-  closeM('m-member-profile');
+  closeSlide();
 }
 
 async function acceptFriendReq(reqId,fromUserId){
@@ -2437,7 +3000,7 @@ async function acceptFriendReq(reqId,fromUserId){
   const u2=U.id<fromUserId?fromUserId:U.id;
   await sb.from('friendships').insert({user1_id:u1,user2_id:u2});
   toast('Solicitud aceptada','ok');
-  closeM('m-member-profile');
+  closeSlide();
   loadFriends();
 }
 
@@ -2523,12 +3086,15 @@ async function init(){
     updateSbUser();showV('app-view');
     const h=location.hash.replace('#','')||'groups';
     if(PAGE[h])go(h);else showGroupsV();
-    // Check pending friend requests
     sb.from('friend_requests').select('id').eq('to_user_id',U.id).eq('status','pending').then(({data})=>{
       pendingReqs=data||[];updateReqBadge();
     });
+  }else{
+    const h=location.hash.replace('#','')||'landing';
+    if(h==='auth')showV('auth-view');
+    else showLanding();
   }
-  else showV('auth-view');
+  document.querySelectorAll('.theme-dot').forEach(d=>d.classList.toggle('active',d.dataset.theme===currentTheme));
   lucide.createIcons();
 }
 
@@ -2546,7 +3112,7 @@ sb.auth.onAuthStateChange(async(event,session)=>{
   }
   if(event==='SIGNED_OUT'){
     U=null;G=null;M=null;mbrs=[];tasks=[];ideas=[];myV=new Set();
-    killRT();location.hash='';showGroupsV();showV('auth-view');
+    killRT();resetAccent();showLanding();
   }
 });
 
