@@ -190,8 +190,16 @@ export default function Chat() {
     <div className="flex flex-col h-full">
       <div className="flex-1 overflow-y-auto py-4">
         {messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-center px-6">
-            <p className="text-ink-3 dark:text-white/30 text-sm">Aún no hay mensajes. ¡Sé el primero!</p>
+          <div className="flex flex-col items-center justify-center h-full gap-4 text-center px-6">
+            <div className="w-14 h-14 rounded-2xl bg-surface-2 dark:bg-surface-dark-2 flex items-center justify-center">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" className="text-ink-4 dark:text-white/20">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            <div>
+              <p className="font-medium text-ink dark:text-white">Sé el primero en decir algo</p>
+              <p className="text-sm text-ink-3 dark:text-white/40 mt-1">Rompe el hielo.</p>
+            </div>
           </div>
         ) : (
           messages.map(m => (

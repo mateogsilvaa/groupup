@@ -20,25 +20,25 @@ const steps = [
 const plans = [
   {
     name: 'Free', price: '0', period: '',
-    features: ['1 grupo', 'Hasta 5 miembros', 'Chat + Tareas básicas', '100 MB almacenamiento'],
+    features: ['Hasta 3 grupos', '500 MB almacenamiento', 'Historial de 30 días', 'Chat + Tareas + Ideas'],
     cta: 'Empezar gratis', highlight: false,
   },
   {
-    name: 'Pro', price: '9', period: '/mes',
-    features: ['5 grupos', 'Miembros ilimitados', 'Todo Free + Board + Ideas', '5 GB almacenamiento', 'Prioridad en soporte'],
-    cta: 'Probar Pro', highlight: true,
+    name: 'Estudiante', price: '1,99', period: '/mes',
+    features: ['Grupos ilimitados', '5 GB almacenamiento', 'Historial ilimitado', 'Verificación .edu', 'Todo Free + Board'],
+    cta: 'Activar plan Estudiante', highlight: true,
   },
   {
-    name: 'Team', price: '19', period: '/mes',
-    features: ['Grupos ilimitados', 'Miembros ilimitados', 'Todo Pro + API + SSO', '50 GB almacenamiento', 'Soporte dedicado'],
+    name: 'Team', price: '4,99', period: '/mes',
+    features: ['Todo ilimitado', '20 GB almacenamiento', 'Analíticas del equipo', 'Exportar datos', 'Soporte dedicado'],
     cta: 'Hablar con ventas', highlight: false,
   },
 ]
 
 const testimonials = [
-  { name: 'Lucía Martín', role: 'Product Manager', text: 'Sustituimos cuatro herramientas por GroupUp. El equipo lo adoptó en un día.' },
-  { name: 'Carlos Reyes', role: 'CTO, Startups.es', text: 'El kanban integrado con chat es justo lo que nos faltaba. Sin saltar de app.' },
-  { name: 'Ana Torres', role: 'Diseñadora UX', text: 'Las ideas con post-its arrastrables son perfectas para nuestras retrospectivas.' },
+  { name: 'Lucía M.', role: 'Estudiante de Diseño, UPM', text: 'Usamos GroupUp para el TFG y fue un game-changer. Nada de WhatsApp, todo organizado en un sitio.' },
+  { name: 'Alejandro R.', role: 'Ing. Informática, UAM', text: 'El kanban con fechas en color nos salvó de perder entregas. Y los templates al crear el grupo son geniales.' },
+  { name: 'Sara V.', role: 'Erasmus, Salamanca', text: 'Me lo recomendaron para el proyecto de lab. Fácil, rápido y sin dramas de configuración.' },
 ]
 
 function Navbar() {
@@ -77,13 +77,13 @@ export default function Landing() {
       <section className="pt-40 pb-24 px-6 md:px-10 max-w-5xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
           <span className="inline-flex items-center gap-2 px-3 py-1 bg-primary-faint text-primary dark:text-primary-dark text-xs font-semibold rounded-full mb-6">
-            <Zap size={12} /> Colaboración real, sin fricción
+            <Zap size={12} /> Hecho para equipos universitarios
           </span>
           <h1 className="font-display text-5xl md:text-6xl font-bold leading-[1.12] mb-6 max-w-3xl">
-            Tu equipo, <span className="text-primary">sincronizado</span><br />desde el primer día
+            Deja el <span className="text-primary">caos de WhatsApp</span><br />donde se merece
           </h1>
           <p className="text-lg text-ink-2 dark:text-white/60 mb-10 max-w-xl">
-            Chat, tareas, archivos e ideas en un solo espacio. Sin apps extra, sin reuniones innecesarias, sin caos.
+            Chat, tareas con fechas de entrega, archivos e ideas en un solo sitio. Sin apps extra, sin hilos perdidos, sin sustos.
           </p>
           <div className="flex items-center gap-4 flex-wrap">
             <Link to="/auth?tab=register">

@@ -146,7 +146,7 @@ export default function Files() {
 
       <div className="flex-1 overflow-y-auto p-5">
         {files.length === 0 ? (
-          <Empty icon={File} title="Sin archivos" description="Sube el primer archivo al grupo." />
+          <Empty icon={File} title="Nada subido aún" description="Añade el primer documento del grupo." />
         ) : view === 'grid' ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {files.map(f => <FileCard key={f.id} file={f} view="grid" onDelete={handleDelete} isAdmin={isAdmin} />)}

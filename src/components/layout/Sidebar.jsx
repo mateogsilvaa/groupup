@@ -13,75 +13,92 @@ const groupNav = [
   { to: 'settings', icon: Settings, label: 'Ajustes' },
 ]
 
+const GROUP_COLORS = [
+  'bg-teal-600', 'bg-indigo-500', 'bg-violet-500', 'bg-rose-500',
+  'bg-amber-500', 'bg-emerald-600', 'bg-sky-500', 'bg-pink-500',
+]
+
+function groupColor(id) {
+  if (!id) return GROUP_COLORS[0]
+  const n = id.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)
+  return GROUP_COLORS[n % GROUP_COLORS.length]
+}
+
+function NavItem({ to, icon: Icon, label }) {
+  return (
+    <NavLink
+      to={to}
+      className={({ isActive }) => clsx(
+        'flex items-center gap-2.5 px-3 py-2 rounded-md text-sm transition-colors',
+        isActive
+          ? 'bg-primary-faint text-primary dark:text-primary-dark font-medium'
+          : 'text-ink-2 dark:text-white/60 hover:bg-surface-2 dark:hover:bg-surface-dark-2 hover:text-ink dark:hover:text-white',
+      )}
+    >
+      <Icon size={15} />
+      {label}
+    </NavLink>
+  )
+}
+
 export default function Sidebar({ onCreateGroup, onJoinGroup }) {
   const { groupId } = useParams()
   const { groups, currentGroup, profile, theme, toggleTheme, signOut } = useStore()
   const navigate = useNavigate()
 
   return (
-    <aside className="w-[220px] h-full flex flex-col bg-surface dark:bg-surface-dark border-r border-border dark:border-white/8 flex-shrink-0">
-      {/* Logo */}
+    <aside className="w-52 h-full flex flex-col bg-surface dark:bg-surface-dark border-r border-border dark:border-white/8 flex-shrink-0">
       <div className="h-14 flex items-center px-4 border-b border-border dark:border-white/8">
-        <span className="font-display text-xl font-bold text-primary">GroupUp</span>
+        <span className="font-display text-xl font-bold text-primary tracking-tight">GroupUp</span>
       </div>
 
-      {/* Nav */}
       <div className="flex-1 overflow-y-auto py-3 flex flex-col gap-0.5 px-2">
-        <NavLink
-          to="/dashboard"
-          className={({ isActive }) => clsx(
-            'flex items-center gap-2.5 px-3 py-2 rounded text-sm transition-colors',
-            isActive
-              ? 'bg-primary-faint text-primary dark:text-primary-dark font-medium'
-              : 'text-ink-2 dark:text-white/60 hover:bg-surface-2 dark:hover:bg-surface-dark-2 hover:text-ink dark:hover:text-white',
-          )}
-        >
-          <Home size={16} />
-          Inicio
-        </NavLink>
+        <NavItem to="/dashboard" icon={Home} label="Inicio" />
 
-        {/* Groups list */}
-        <div className="mt-3 mb-1 px-3">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-ink-4 dark:text-white/25">Grupos</p>
+        <div className="mt-4 mb-1.5 px-3 flex items-center justify-between">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-ink-4 dark:text-white/25">Grupos</p>
         </div>
+
         {groups.map(g => (
           <button
             key={g.id}
             onClick={() => navigate(`/group/${g.id}/chat`)}
             className={clsx(
-              'flex items-center gap-2.5 px-3 py-2 rounded text-sm transition-colors w-full text-left',
+              'flex items-center gap-2.5 px-3 py-2 rounded-md text-sm transition-colors w-full text-left',
               g.id === groupId
                 ? 'bg-primary-faint text-primary dark:text-primary-dark font-medium'
                 : 'text-ink-2 dark:text-white/60 hover:bg-surface-2 dark:hover:bg-surface-dark-2 hover:text-ink dark:hover:text-white',
             )}
           >
-            <span className="w-6 h-6 rounded bg-primary text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0">
+            <span className={`w-5 h-5 rounded-sm text-white text-[9px] font-bold flex items-center justify-center flex-shrink-0 ${groupColor(g.id)}`}>
               {g.name?.[0]?.toUpperCase()}
             </span>
             <span className="truncate">{g.name}</span>
+            {g.role === 'admin' && (
+              <span className="ml-auto text-[9px] text-ink-4 dark:text-white/25 font-medium flex-shrink-0">ADM</span>
+            )}
           </button>
         ))}
 
         <button
           onClick={onCreateGroup}
-          className="flex items-center gap-2.5 px-3 py-2 rounded text-sm text-ink-3 dark:text-white/40 hover:bg-surface-2 dark:hover:bg-surface-dark-2 hover:text-ink dark:hover:text-white transition-colors w-full text-left"
+          className="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-ink-3 dark:text-white/40 hover:bg-surface-2 dark:hover:bg-surface-dark-2 hover:text-ink dark:hover:text-white transition-colors w-full text-left mt-0.5"
         >
-          <Plus size={16} />
+          <Plus size={15} className="flex-shrink-0" />
           Nuevo grupo
         </button>
         <button
           onClick={onJoinGroup}
-          className="flex items-center gap-2.5 px-3 py-2 rounded text-sm text-ink-3 dark:text-white/40 hover:bg-surface-2 dark:hover:bg-surface-dark-2 hover:text-ink dark:hover:text-white transition-colors w-full text-left"
+          className="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-ink-3 dark:text-white/40 hover:bg-surface-2 dark:hover:bg-surface-dark-2 hover:text-ink dark:hover:text-white transition-colors w-full text-left"
         >
-          <Users size={16} />
+          <Users size={15} className="flex-shrink-0" />
           Unirse con código
         </button>
 
-        {/* Group sub-nav */}
         {groupId && (
           <>
-            <div className="mt-3 mb-1 px-3">
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-ink-4 dark:text-white/25 truncate">
+            <div className="mt-4 mb-1.5 px-3">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-ink-4 dark:text-white/25 truncate">
                 {currentGroup?.name || 'Grupo'}
               </p>
             </div>
@@ -90,13 +107,13 @@ export default function Sidebar({ onCreateGroup, onJoinGroup }) {
                 key={to}
                 to={`/group/${groupId}/${to}`}
                 className={({ isActive }) => clsx(
-                  'flex items-center gap-2.5 px-3 py-2 rounded text-sm transition-colors',
+                  'flex items-center gap-2.5 px-3 py-2 rounded-md text-sm transition-colors',
                   isActive
                     ? 'bg-primary-faint text-primary dark:text-primary-dark font-medium'
                     : 'text-ink-2 dark:text-white/60 hover:bg-surface-2 dark:hover:bg-surface-dark-2 hover:text-ink dark:hover:text-white',
                 )}
               >
-                <Icon size={16} />
+                <Icon size={15} />
                 {label}
               </NavLink>
             ))}
@@ -104,20 +121,24 @@ export default function Sidebar({ onCreateGroup, onJoinGroup }) {
         )}
       </div>
 
-      {/* Footer */}
-      <div className="p-3 border-t border-border dark:border-white/8 flex flex-col gap-1">
+      <div className="px-2 pb-3 pt-2 border-t border-border dark:border-white/8 flex flex-col gap-0.5">
         <button
           onClick={toggleTheme}
-          className="flex items-center gap-2.5 px-3 py-2 rounded text-sm text-ink-3 dark:text-white/40 hover:bg-surface-2 dark:hover:bg-surface-dark-2 hover:text-ink dark:hover:text-white transition-colors w-full"
+          className="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-ink-3 dark:text-white/40 hover:bg-surface-2 dark:hover:bg-surface-dark-2 hover:text-ink dark:hover:text-white transition-colors w-full"
         >
-          {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+          {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
           {theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}
         </button>
-        <div className="flex items-center gap-2.5 px-3 py-2">
+
+        <div className="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-surface-2 dark:hover:bg-surface-dark-2 transition-colors group">
           <Avatar name={profile?.full_name || profile?.username} url={profile?.avatar_url} size="sm" />
           <span className="flex-1 text-sm text-ink dark:text-white truncate">{profile?.full_name || profile?.username || 'Usuario'}</span>
-          <button onClick={signOut} className="text-ink-4 dark:text-white/25 hover:text-red-500 transition-colors">
-            <LogOut size={15} />
+          <button
+            onClick={signOut}
+            className="text-ink-4 dark:text-white/25 hover:text-red-500 dark:hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100"
+            title="Cerrar sesión"
+          >
+            <LogOut size={14} />
           </button>
         </div>
       </div>

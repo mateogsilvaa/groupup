@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { Pin, Heart, Plus, Trash2, Lock, Layout } from 'lucide-react'
+import { Pin, Heart, Plus, Trash2, Layout } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import useStore from '../../store/useStore'
 import { useToast } from '../../hooks/useToast'
@@ -143,20 +143,14 @@ export default function Board() {
     <div className="flex flex-col h-full overflow-y-auto">
       <div className="flex items-center justify-between px-5 py-3 border-b border-border dark:border-white/8 flex-shrink-0">
         <span className="text-sm text-ink-3 dark:text-white/40">{posts.length} publicaciones</span>
-        {isAdmin ? (
-          <Button size="sm" className="gap-1.5" onClick={() => setCreateOpen(true)}>
-            <Plus size={14} /> Publicar
-          </Button>
-        ) : (
-          <span className="flex items-center gap-1.5 text-xs text-ink-4 dark:text-white/25">
-            <Lock size={12} /> Solo admins pueden publicar
-          </span>
-        )}
+        <Button size="sm" className="gap-1.5" onClick={() => setCreateOpen(true)}>
+          <Plus size={14} /> Publicar
+        </Button>
       </div>
 
       <div className="flex-1 overflow-y-auto p-5">
         {posts.length === 0 ? (
-          <Empty icon={Layout} title="Sin publicaciones" description={isAdmin ? 'Crea la primera publicación.' : 'Los admins aún no han publicado nada.'} />
+          <Empty icon={Layout} title="Sin publicaciones aún" description="Sé el primero en publicar algo para el grupo." />
         ) : (
           <div className="max-w-2xl mx-auto flex flex-col gap-4">
             {posts.map(p => (

@@ -4,7 +4,7 @@ import {
   DndContext, closestCorners, PointerSensor, useSensor, useSensors,
   DragOverlay, useDroppable, useDraggable,
 } from '@dnd-kit/core'
-import { Plus, GripVertical, Calendar, User } from 'lucide-react'
+import { Plus, GripVertical, Calendar, AlertTriangle } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import useStore from '../../store/useStore'
 import { useToast } from '../../hooks/useToast'
@@ -12,9 +12,7 @@ import Modal from '../../components/ui/Modal'
 import Button from '../../components/ui/Button'
 import { Input, Textarea, FormField } from '../../components/ui/Input'
 import Avatar from '../../components/ui/Avatar'
-import Badge from '../../components/ui/Badge'
 import Empty from '../../components/ui/Empty'
-import { timeAgo } from '../../utils/format'
 
 const COLUMNS = [
   { id: 'todo', label: 'Por hacer' },
@@ -22,23 +20,53 @@ const COLUMNS = [
   { id: 'done', label: 'Hecho' },
 ]
 
-const PRIORITY_COLORS = {
-  high: 'bg-red-500',
-  medium: 'bg-amber-400',
-  low: 'bg-emerald-400',
+const PRIORITY_COLORS = { high: 'bg-red-500', medium: 'bg-amber-400', low: 'bg-emerald-400' }
+const PRIORITY_LABELS = { high: 'Alta', medium: 'Media', low: 'Baja' }
+const PRIORITY_BORDER = { high: 'border-l-red-400', medium: 'border-l-amber-400', low: 'border-l-emerald-400' }
+
+const COLUMN_EMPTY = {
+  todo: 'Todo tranquilo por aquí... ¿o es que nadie ha empezado aún? 👀',
+  in_progress: 'Nada en marcha todavía.',
+  done: 'Nada completado aún. ¡Ánimo!',
 }
 
-const PRIORITY_LABELS = { high: 'Alta', medium: 'Media', low: 'Baja' }
+function DeadlineBadge({ dueDate }) {
+  const now = Date.now()
+  const due = new Date(dueDate).getTime()
+  const h = (due - now) / 3600000
+
+  if (h < 0) return (
+    <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-sm bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">
+      <AlertTriangle size={9} /> Vencida
+    </span>
+  )
+  if (h < 24) return (
+    <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-sm bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400">
+      <Calendar size={9} /> &lt;24h
+    </span>
+  )
+  if (h < 72) return (
+    <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-sm bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400">
+      <Calendar size={9} /> {Math.ceil(h / 24)}d
+    </span>
+  )
+  return (
+    <span className="inline-flex items-center gap-1 text-[10px] text-ink-4 dark:text-white/25">
+      <Calendar size={9} /> {new Date(dueDate).toLocaleDateString('es', { day: '2-digit', month: 'short' })}
+    </span>
+  )
+}
 
 function TaskCard({ task, members }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: task.id })
   const assignee = members.find(m => m.id === task.assigned_to)
+  const priorityBorder = task.priority ? PRIORITY_BORDER[task.priority] : ''
 
   return (
     <div
       ref={setNodeRef}
       style={transform ? { transform: `translate(${transform.x}px,${transform.y}px)` } : undefined}
-      className={`bg-surface dark:bg-surface-dark rounded border border-border dark:border-white/8 p-3 flex flex-col gap-2 cursor-default ${isDragging ? 'opacity-40' : 'hover:shadow-1'} transition-shadow`}
+      className={`bg-surface dark:bg-surface-dark rounded border border-border dark:border-white/8 border-l-2 ${priorityBorder || 'border-l-border dark:border-l-white/8'} p-3 flex flex-col gap-2 cursor-default ${isDragging ? 'opacity-40' : 'hover:shadow-2'} transition-all`}
     >
       <div className="flex items-start gap-2">
         <button {...attributes} {...listeners} className="mt-0.5 text-ink-4 dark:text-white/20 hover:text-ink-2 cursor-grab active:cursor-grabbing flex-shrink-0">
@@ -49,15 +77,14 @@ function TaskCard({ task, members }) {
       {task.description && (
         <p className="text-xs text-ink-3 dark:text-white/40 line-clamp-2 ml-5">{task.description}</p>
       )}
-      <div className="flex items-center gap-2 ml-5">
+      <div className="flex items-center gap-2 ml-5 flex-wrap">
         {task.priority && (
-          <span className={`w-2 h-2 rounded-full flex-shrink-0 ${PRIORITY_COLORS[task.priority]}`} title={PRIORITY_LABELS[task.priority]} />
+          <span
+            className={`w-2 h-2 rounded-full flex-shrink-0 ${PRIORITY_COLORS[task.priority]}`}
+            title={PRIORITY_LABELS[task.priority]}
+          />
         )}
-        {task.due_date && (
-          <span className="flex items-center gap-1 text-[10px] text-ink-4 dark:text-white/25">
-            <Calendar size={10} /> {new Date(task.due_date).toLocaleDateString('es', { day: '2-digit', month: 'short' })}
-          </span>
-        )}
+        {task.due_date && <DeadlineBadge dueDate={task.due_date} />}
         {assignee && (
           <span className="ml-auto">
             <Avatar name={assignee.full_name || assignee.username} url={assignee.avatar_url} size="xs" />
@@ -81,6 +108,11 @@ function Column({ column, tasks, members }) {
         className={`flex flex-col gap-2 flex-1 rounded-lg p-2 min-h-[120px] transition-colors ${isOver ? 'bg-primary-faint' : 'bg-bg dark:bg-bg-dark'}`}
       >
         {tasks.map(t => <TaskCard key={t.id} task={t} members={members} />)}
+        {tasks.length === 0 && (
+          <p className="text-center text-xs text-ink-4 dark:text-white/20 pt-5 px-3 leading-relaxed">
+            {COLUMN_EMPTY[column.id]}
+          </p>
+        )}
       </div>
     </div>
   )
@@ -147,7 +179,9 @@ function CreateTaskModal({ open, onClose, groupId, members, onCreated }) {
             className="h-9 px-3 rounded border border-border-2 dark:border-white/10 bg-surface dark:bg-surface-dark text-sm text-ink dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/40"
           >
             <option value="">Sin asignar</option>
-            {members.map(m => <option key={m.id} value={m.id}>{m.full_name || m.username}</option>)}
+            {members.map(m => (
+              <option key={m.id} value={m.id}>{m.full_name || m.username || m.id?.slice(0, 8)}</option>
+            ))}
           </select>
         </FormField>
         <div className="flex justify-end gap-2 mt-1">
@@ -215,7 +249,9 @@ export default function Tasks() {
           className="h-8 px-2 text-xs rounded border border-border-2 dark:border-white/10 bg-surface dark:bg-surface-dark text-ink dark:text-white"
         >
           <option value="">Todos los miembros</option>
-          {currentGroupMembers.map(m => <option key={m.id} value={m.id}>{m.full_name || m.username}</option>)}
+          {currentGroupMembers.map(m => (
+            <option key={m.id} value={m.id}>{m.full_name || m.username || m.id?.slice(0, 8)}</option>
+          ))}
         </select>
         <select
           value={filterPriority}

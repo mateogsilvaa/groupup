@@ -67,7 +67,7 @@ const useStore = create((set, get) => ({
       .from('group_members')
       .select('*, profiles(*)')
       .eq('group_id', groupId)
-    const members = (data || []).map(m => ({ ...m.profiles, role: m.role, joined_at: m.joined_at }))
+    const members = (data || []).map(m => ({ id: m.user_id, ...m.profiles, role: m.role, joined_at: m.joined_at }))
     set({ currentGroupMembers: members })
     return members
   },
