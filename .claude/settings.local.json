@@ -3,7 +3,10 @@
     "allow": [
       "Bash(dir \"C:\\\\Users\\\\mateo_rw\\\\OneDrive\\\\Escritorio\\\\groupup\")",
       "Bash(npm install *)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(git remote *)",
+      "Bash(gh api *)",
+      "Bash(where gh *)"
     ]
   },
   "enableAllProjectMcpServers": true,
