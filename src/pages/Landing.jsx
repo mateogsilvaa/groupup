@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { MessageSquare, CheckSquare, Layout, Lightbulb, ArrowRight, Users, Zap, Shield, Check, Star } from 'lucide-react'
+import { MessageSquare, CheckSquare, Layout, Lightbulb, ArrowRight, Zap, Star } from 'lucide-react'
 import Button from '../components/ui/Button'
 import useStore from '../store/useStore'
 
@@ -17,23 +17,6 @@ const steps = [
   { n: '03', title: 'Colabora sin fricción', desc: 'Chat, tareas, archivos e ideas en un solo lugar.' },
 ]
 
-const plans = [
-  {
-    name: 'Free', price: '0', period: '',
-    features: ['Hasta 3 grupos', '500 MB almacenamiento', 'Historial de 30 días', 'Chat + Tareas + Ideas'],
-    cta: 'Empezar gratis', highlight: false,
-  },
-  {
-    name: 'Estudiante', price: '1,99', period: '/mes',
-    features: ['Grupos ilimitados', '5 GB almacenamiento', 'Historial ilimitado', 'Verificación .edu', 'Todo Free + Board'],
-    cta: 'Activar plan Estudiante', highlight: true,
-  },
-  {
-    name: 'Team', price: '4,99', period: '/mes',
-    features: ['Todo ilimitado', '20 GB almacenamiento', 'Analíticas del equipo', 'Exportar datos', 'Soporte dedicado'],
-    cta: 'Hablar con ventas', highlight: false,
-  },
-]
 
 const testimonials = [
   { name: 'Lucía M.', role: 'Estudiante de Diseño, UPM', text: 'Usamos GroupUp para el TFG y fue un game-changer. Nada de WhatsApp, todo organizado en un sitio.' },
@@ -48,8 +31,7 @@ function Navbar() {
       <span className="font-display text-xl font-bold text-primary flex-1">GroupUp</span>
       <nav className="hidden md:flex items-center gap-6 text-sm text-ink-2 dark:text-white/60 mr-6">
         <a href="#features" className="hover:text-ink dark:hover:text-white transition-colors">Funciones</a>
-        <a href="#pricing" className="hover:text-ink dark:hover:text-white transition-colors">Precios</a>
-        <Link to="/pricing" className="hover:text-ink dark:hover:text-white transition-colors">Pricing</Link>
+        <a href="#how" className="hover:text-ink dark:hover:text-white transition-colors">Cómo funciona</a>
       </nav>
       <div className="flex items-center gap-3">
         <button onClick={toggleTheme} className="w-8 h-8 flex items-center justify-center rounded text-ink-3 dark:text-white/40 hover:bg-surface-2 dark:hover:bg-surface-dark-2 transition-colors text-xs">
@@ -158,7 +140,7 @@ export default function Landing() {
       </section>
 
       {/* How it works */}
-      <section className="py-24 px-6 md:px-10 bg-surface-2 dark:bg-surface-dark-2">
+      <section id="how" className="py-24 px-6 md:px-10 bg-surface-2 dark:bg-surface-dark-2">
         <div className="max-w-5xl mx-auto">
           <p className="text-sm font-semibold text-primary mb-3">Cómo funciona</p>
           <h2 className="font-display text-4xl font-bold mb-12">Tres pasos para empezar</h2>
@@ -175,35 +157,6 @@ export default function Landing() {
               </motion.div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Pricing */}
-      <section id="pricing" className="py-24 px-6 md:px-10 max-w-5xl mx-auto">
-        <p className="text-sm font-semibold text-primary mb-3">Precios</p>
-        <h2 className="font-display text-4xl font-bold mb-4">Planes para cada equipo</h2>
-        <p className="text-ink-2 dark:text-white/60 mb-12">Sin sorpresas, sin compromisos anuales forzados.</p>
-        <div className="grid md:grid-cols-3 gap-6">
-          {plans.map(({ name, price, period, features: fs, cta, highlight }) => (
-            <div key={name} className={`rounded-lg p-6 border flex flex-col ${highlight ? 'border-primary bg-primary-faint dark:bg-primary/10' : 'border-border dark:border-white/8 bg-surface dark:bg-surface-dark'}`}>
-              <div className="mb-1 text-sm font-semibold text-ink-2 dark:text-white/60">{name}</div>
-              <div className="flex items-end gap-1 mb-6">
-                <span className="font-display text-4xl font-bold">{price === '0' ? 'Gratis' : `€${price}`}</span>
-                {period && <span className="text-ink-3 dark:text-white/40 text-sm mb-1">{period}</span>}
-              </div>
-              <ul className="flex flex-col gap-2.5 mb-8 flex-1">
-                {fs.map(f => (
-                  <li key={f} className="flex items-center gap-2 text-sm">
-                    <Check size={14} className="text-primary flex-shrink-0" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <Link to="/auth?tab=register">
-                <Button variant={highlight ? 'primary' : 'outline'} className="w-full">{cta}</Button>
-              </Link>
-            </div>
-          ))}
         </div>
       </section>
 
@@ -247,7 +200,7 @@ export default function Landing() {
         <div className="max-w-5xl mx-auto flex items-center justify-between text-sm text-ink-3 dark:text-white/30">
           <span className="font-display font-bold text-primary">GroupUp</span>
           <div className="flex gap-6">
-            <Link to="/pricing" className="hover:text-ink dark:hover:text-white transition-colors">Precios</Link>
+            <a href="#features" className="hover:text-ink dark:hover:text-white transition-colors">Funciones</a>
             <a href="mailto:hola@groupup.app" className="hover:text-ink dark:hover:text-white transition-colors">Contacto</a>
           </div>
           <span>© 2025 GroupUp</span>

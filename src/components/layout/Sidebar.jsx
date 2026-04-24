@@ -1,6 +1,6 @@
 import { NavLink, useNavigate, useParams } from 'react-router-dom'
 import { clsx } from 'clsx'
-import { MessageSquare, CheckSquare, Layout, Paperclip, Lightbulb, Settings, Users, Plus, Sun, Moon, LogOut, Home } from 'lucide-react'
+import { MessageSquare, CheckSquare, Layout, Paperclip, Lightbulb, Settings, Users, Plus, Sun, Moon, LogOut, Home, X } from 'lucide-react'
 import useStore from '../../store/useStore'
 import Avatar from '../ui/Avatar'
 
@@ -24,124 +24,147 @@ function groupColor(id) {
   return GROUP_COLORS[n % GROUP_COLORS.length]
 }
 
-function NavItem({ to, icon: Icon, label }) {
-  return (
-    <NavLink
-      to={to}
-      className={({ isActive }) => clsx(
-        'flex items-center gap-2.5 px-3 py-2 rounded-md text-sm transition-colors',
-        isActive
-          ? 'bg-primary-faint text-primary dark:text-primary-dark font-medium'
-          : 'text-ink-2 dark:text-white/60 hover:bg-surface-2 dark:hover:bg-surface-dark-2 hover:text-ink dark:hover:text-white',
-      )}
-    >
-      <Icon size={15} />
-      {label}
-    </NavLink>
-  )
-}
-
-export default function Sidebar({ onCreateGroup, onJoinGroup }) {
+export default function Sidebar({ onCreateGroup, onJoinGroup, open, onClose }) {
   const { groupId } = useParams()
   const { groups, currentGroup, profile, theme, toggleTheme, signOut } = useStore()
   const navigate = useNavigate()
 
+  function goTo(path) {
+    navigate(path)
+    onClose?.()
+  }
+
   return (
-    <aside className="w-52 h-full flex flex-col bg-surface dark:bg-surface-dark border-r border-border dark:border-white/8 flex-shrink-0">
-      <div className="h-14 flex items-center px-4 border-b border-border dark:border-white/8">
-        <span className="font-display text-xl font-bold text-primary tracking-tight">GroupUp</span>
-      </div>
+    <>
+      <div
+        className={clsx(
+          'fixed inset-0 bg-black/50 z-40 md:hidden transition-opacity duration-200',
+          open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        )}
+        onClick={onClose}
+      />
 
-      <div className="flex-1 overflow-y-auto py-3 flex flex-col gap-0.5 px-2">
-        <NavItem to="/dashboard" icon={Home} label="Inicio" />
-
-        <div className="mt-4 mb-1.5 px-3 flex items-center justify-between">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-ink-4 dark:text-white/25">Grupos</p>
+      <aside className={clsx(
+        'flex flex-col bg-surface dark:bg-surface-dark border-r border-border dark:border-white/8 flex-shrink-0',
+        'fixed inset-y-0 left-0 w-[260px] z-50 transition-transform duration-200 ease-in-out',
+        'md:relative md:w-52 md:z-auto md:transition-none md:translate-x-0',
+        open ? 'translate-x-0' : '-translate-x-full'
+      )}>
+        <div className="h-14 flex items-center px-4 border-b border-border dark:border-white/8">
+          <span className="font-display text-xl font-bold text-primary tracking-tight flex-1">GroupUp</span>
+          <button
+            onClick={onClose}
+            className="md:hidden w-8 h-8 flex items-center justify-center rounded text-ink-3 dark:text-white/40 hover:bg-surface-2 dark:hover:bg-surface-dark-2 transition-colors"
+            aria-label="Cerrar menú"
+          >
+            <X size={16} />
+          </button>
         </div>
 
-        {groups.map(g => (
-          <button
-            key={g.id}
-            onClick={() => navigate(`/group/${g.id}/chat`)}
-            className={clsx(
-              'flex items-center gap-2.5 px-3 py-2 rounded-md text-sm transition-colors w-full text-left',
-              g.id === groupId
+        <div className="flex-1 overflow-y-auto py-3 flex flex-col gap-0.5 px-2">
+          <NavLink
+            to="/dashboard"
+            onClick={() => onClose?.()}
+            className={({ isActive }) => clsx(
+              'flex items-center gap-2.5 px-3 py-2 rounded-md text-sm transition-colors',
+              isActive
                 ? 'bg-primary-faint text-primary dark:text-primary-dark font-medium'
                 : 'text-ink-2 dark:text-white/60 hover:bg-surface-2 dark:hover:bg-surface-dark-2 hover:text-ink dark:hover:text-white',
             )}
           >
-            <span className={`w-5 h-5 rounded-sm text-white text-[9px] font-bold flex items-center justify-center flex-shrink-0 ${groupColor(g.id)}`}>
-              {g.name?.[0]?.toUpperCase()}
-            </span>
-            <span className="truncate">{g.name}</span>
-            {g.role === 'admin' && (
-              <span className="ml-auto text-[9px] text-ink-4 dark:text-white/25 font-medium flex-shrink-0">ADM</span>
-            )}
-          </button>
-        ))}
+            <Home size={15} />
+            Inicio
+          </NavLink>
 
-        <button
-          onClick={onCreateGroup}
-          className="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-ink-3 dark:text-white/40 hover:bg-surface-2 dark:hover:bg-surface-dark-2 hover:text-ink dark:hover:text-white transition-colors w-full text-left mt-0.5"
-        >
-          <Plus size={15} className="flex-shrink-0" />
-          Nuevo grupo
-        </button>
-        <button
-          onClick={onJoinGroup}
-          className="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-ink-3 dark:text-white/40 hover:bg-surface-2 dark:hover:bg-surface-dark-2 hover:text-ink dark:hover:text-white transition-colors w-full text-left"
-        >
-          <Users size={15} className="flex-shrink-0" />
-          Unirse con código
-        </button>
+          <div className="mt-4 mb-1.5 px-3">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-ink-4 dark:text-white/25">Grupos</p>
+          </div>
 
-        {groupId && (
-          <>
-            <div className="mt-4 mb-1.5 px-3">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-ink-4 dark:text-white/25 truncate">
-                {currentGroup?.name || 'Grupo'}
-              </p>
-            </div>
-            {groupNav.map(({ to, icon: Icon, label }) => (
-              <NavLink
-                key={to}
-                to={`/group/${groupId}/${to}`}
-                className={({ isActive }) => clsx(
-                  'flex items-center gap-2.5 px-3 py-2 rounded-md text-sm transition-colors',
-                  isActive
-                    ? 'bg-primary-faint text-primary dark:text-primary-dark font-medium'
-                    : 'text-ink-2 dark:text-white/60 hover:bg-surface-2 dark:hover:bg-surface-dark-2 hover:text-ink dark:hover:text-white',
-                )}
-              >
-                <Icon size={15} />
-                {label}
-              </NavLink>
-            ))}
-          </>
-        )}
-      </div>
+          {groups.map(g => (
+            <button
+              key={g.id}
+              onClick={() => goTo(`/group/${g.id}/chat`)}
+              className={clsx(
+                'flex items-center gap-2.5 px-3 py-2 rounded-md text-sm transition-colors w-full text-left',
+                g.id === groupId
+                  ? 'bg-primary-faint text-primary dark:text-primary-dark font-medium'
+                  : 'text-ink-2 dark:text-white/60 hover:bg-surface-2 dark:hover:bg-surface-dark-2 hover:text-ink dark:hover:text-white',
+              )}
+            >
+              <span className={`w-5 h-5 rounded-sm text-white text-[9px] font-bold flex items-center justify-center flex-shrink-0 ${groupColor(g.id)}`}>
+                {g.name?.[0]?.toUpperCase()}
+              </span>
+              <span className="truncate">{g.name}</span>
+              {g.role === 'admin' && (
+                <span className="ml-auto text-[9px] text-ink-4 dark:text-white/25 font-medium flex-shrink-0">ADM</span>
+              )}
+            </button>
+          ))}
 
-      <div className="px-2 pb-3 pt-2 border-t border-border dark:border-white/8 flex flex-col gap-0.5">
-        <button
-          onClick={toggleTheme}
-          className="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-ink-3 dark:text-white/40 hover:bg-surface-2 dark:hover:bg-surface-dark-2 hover:text-ink dark:hover:text-white transition-colors w-full"
-        >
-          {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
-          {theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}
-        </button>
-
-        <div className="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-surface-2 dark:hover:bg-surface-dark-2 transition-colors group">
-          <Avatar name={profile?.full_name || profile?.username} url={profile?.avatar_url} size="sm" />
-          <span className="flex-1 text-sm text-ink dark:text-white truncate">{profile?.full_name || profile?.username || 'Usuario'}</span>
           <button
-            onClick={signOut}
-            className="text-ink-4 dark:text-white/25 hover:text-red-500 dark:hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100"
-            title="Cerrar sesión"
+            onClick={() => { onCreateGroup(); onClose?.() }}
+            className="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-ink-3 dark:text-white/40 hover:bg-surface-2 dark:hover:bg-surface-dark-2 hover:text-ink dark:hover:text-white transition-colors w-full text-left mt-0.5"
           >
-            <LogOut size={14} />
+            <Plus size={15} className="flex-shrink-0" />
+            Nuevo grupo
           </button>
+          <button
+            onClick={() => { onJoinGroup(); onClose?.() }}
+            className="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-ink-3 dark:text-white/40 hover:bg-surface-2 dark:hover:bg-surface-dark-2 hover:text-ink dark:hover:text-white transition-colors w-full text-left"
+          >
+            <Users size={15} className="flex-shrink-0" />
+            Unirse con código
+          </button>
+
+          {groupId && (
+            <>
+              <div className="mt-4 mb-1.5 px-3">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-ink-4 dark:text-white/25 truncate">
+                  {currentGroup?.name || 'Grupo'}
+                </p>
+              </div>
+              {groupNav.map(({ to, icon: Icon, label }) => (
+                <NavLink
+                  key={to}
+                  to={`/group/${groupId}/${to}`}
+                  onClick={() => onClose?.()}
+                  className={({ isActive }) => clsx(
+                    'flex items-center gap-2.5 px-3 py-2 rounded-md text-sm transition-colors',
+                    isActive
+                      ? 'bg-primary-faint text-primary dark:text-primary-dark font-medium'
+                      : 'text-ink-2 dark:text-white/60 hover:bg-surface-2 dark:hover:bg-surface-dark-2 hover:text-ink dark:hover:text-white',
+                  )}
+                >
+                  <Icon size={15} />
+                  {label}
+                </NavLink>
+              ))}
+            </>
+          )}
         </div>
-      </div>
-    </aside>
+
+        <div className="px-2 pb-3 pt-2 border-t border-border dark:border-white/8 flex flex-col gap-0.5">
+          <button
+            onClick={toggleTheme}
+            className="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-ink-3 dark:text-white/40 hover:bg-surface-2 dark:hover:bg-surface-dark-2 hover:text-ink dark:hover:text-white transition-colors w-full"
+          >
+            {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
+            {theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}
+          </button>
+
+          <div className="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-surface-2 dark:hover:bg-surface-dark-2 transition-colors group cursor-pointer">
+            <Avatar name={profile?.full_name || profile?.username} url={profile?.avatar_url} size="sm" />
+            <span className="flex-1 text-sm text-ink dark:text-white truncate">{profile?.full_name || profile?.username || 'Usuario'}</span>
+            <button
+              onClick={signOut}
+              className="text-ink-4 dark:text-white/25 hover:text-red-500 dark:hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100"
+              title="Cerrar sesión"
+            >
+              <LogOut size={14} />
+            </button>
+          </div>
+        </div>
+      </aside>
+    </>
   )
 }

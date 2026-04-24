@@ -18,6 +18,8 @@
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: rgba(24,23,15,.2); border-radius: 99px; }
   button { font-family: inherit; cursor: pointer; }
+  button, a, [role="button"] { touch-action: manipulation; }
+  a { cursor: pointer; }
   input, textarea, select { font-family: inherit; font-size: inherit; }
   svg { display: block; flex-shrink: 0; }
   ul, ol { list-style: none; }

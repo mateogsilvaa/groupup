@@ -213,12 +213,18 @@ function JoinGroupModal({ open, onClose }) {
 export default function AppLayout() {
   const [createOpen, setCreateOpen] = useState(false)
   const [joinOpen, setJoinOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
     <div className="flex h-screen bg-bg dark:bg-bg-dark overflow-hidden">
-      <Sidebar onCreateGroup={() => setCreateOpen(true)} onJoinGroup={() => setJoinOpen(true)} />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <Topbar />
+      <Sidebar
+        onCreateGroup={() => setCreateOpen(true)}
+        onJoinGroup={() => setJoinOpen(true)}
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
+      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+        <Topbar onMenuClick={() => setSidebarOpen(true)} />
         <main className="flex-1 overflow-hidden">
           <motion.div
             className="h-full"

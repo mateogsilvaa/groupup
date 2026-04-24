@@ -90,7 +90,7 @@ export default function App() {
   }, [])
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, '')}>
       <AnimatedRoutes />
       <div className="fixed bottom-4 right-4 z-[200] flex flex-col gap-2 items-end">
         {toasts.map(t => (
