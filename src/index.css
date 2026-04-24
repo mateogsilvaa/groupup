@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #f7f6f2;
+    color: #18170f;
+    line-height: 1.57;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100dvh;
+  }
+  .dark body { background: #171614; color: #f3f1ea; }
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(24,23,15,.2); border-radius: 99px; }
+  button { font-family: inherit; cursor: pointer; }
+  input, textarea, select { font-family: inherit; font-size: inherit; }
+  svg { display: block; flex-shrink: 0; }
+  ul, ol { list-style: none; }
+}
+
+@layer utilities {
+  .sk {
+    background: linear-gradient(90deg,#e6e4db 25%,#edeae2 50%,#e6e4db 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease infinite;
+    border-radius: 5px;
+  }
+  .dark .sk {
+    background: linear-gradient(90deg,#27261d 25%,#2f2e24 50%,#27261d 75%);
+    background-size: 200% 100%;
+  }
+  .font-display { font-family: 'Boska', Georgia, serif; }
+  .animate-in { animation: fadeIn 150ms ease forwards; }
+}
