@@ -6,7 +6,8 @@
       "Bash(npm run *)",
       "Bash(git remote *)",
       "Bash(gh api *)",
-      "Bash(where gh *)"
+      "Bash(where gh *)",
+      "Bash(node scripts/deploy.mjs)"
     ]
   },
   "enableAllProjectMcpServers": true,
