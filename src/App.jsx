@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { HashRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import useStore from './store/useStore'
 import { supabase } from './lib/supabase'
@@ -90,13 +90,13 @@ export default function App() {
   }, [])
 
   return (
-    <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, '')}>
+    <HashRouter basename={import.meta.env.BASE_URL.replace(/\/$/, '')}>
       <AnimatedRoutes />
       <div className="fixed bottom-4 right-4 z-[200] flex flex-col gap-2 items-end">
         {toasts.map(t => (
           <Toast key={t.id} toast={t} onClose={() => removeToast(t.id)} />
         ))}
       </div>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
