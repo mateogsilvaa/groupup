@@ -70,7 +70,7 @@ export default function Dashboard() {
     }
   }, [user])
 
-  const firstName = profile?.full_name?.split(' ')[0] || profile?.username || 'Usuario'
+  const firstName = profile?.full_name?.split(' ')[0] || profile?.username || 'Cargando...'
   const today = new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })
 
   return (

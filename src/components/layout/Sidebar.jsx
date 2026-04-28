@@ -154,7 +154,7 @@ export default function Sidebar({ onCreateGroup, onJoinGroup, open, onClose }) {
 
           <div className="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-surface-2 dark:hover:bg-surface-dark-2 transition-colors group cursor-pointer">
             <Avatar name={profile?.full_name || profile?.username} url={profile?.avatar_url} size="sm" />
-            <span className="flex-1 text-sm text-ink dark:text-white truncate">{profile?.full_name || profile?.username || 'Usuario'}</span>
+            <span className="flex-1 text-sm text-ink dark:text-white truncate">{profile?.full_name || profile?.username || 'Cargando...'}</span>
             <button
               onClick={signOut}
               className="text-ink-4 dark:text-white/25 hover:text-red-500 dark:hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100"
