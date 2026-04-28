@@ -65,6 +65,8 @@ create table if not exists public.files (
   storage_path text not null,
   created_at   timestamptz default now() not null
 );
+-- Ensure uploaded_by exists (handles existing tables from prior runs)
+alter table public.files add column if not exists uploaded_by uuid references auth.users(id) on delete set null;
 
 -- Mensajes de chat
 create table if not exists public.messages (

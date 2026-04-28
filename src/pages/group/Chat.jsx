@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
-import { Send, Smile, Paperclip } from 'lucide-react'
+import { Send, Smile, Paperclip, Trash2 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { supabase } from '../../lib/supabase'
 import useStore from '../../store/useStore'
@@ -10,7 +10,7 @@ import { useToast } from '../../hooks/useToast'
 
 const REACTIONS = ['👍', '❤️', '😂', '😮', '😢', '🔥']
 
-function MessageItem({ msg, currentUserId, onReact }) {
+function MessageItem({ msg, currentUserId, onReact, onDelete }) {
   const [showEmoji, setShowEmoji] = useState(false)
   const isMe = msg.user_id === currentUserId
   const reactions = msg.reactions || {}

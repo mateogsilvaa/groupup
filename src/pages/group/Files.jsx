@@ -67,6 +67,7 @@ export default function Files() {
   const [files, setFiles] = useState([])
   const [loading, setLoading] = useState(true)
   const [uploading, setUploading] = useState(false)
+  const [isDragOver, setIsDragOver] = useState(false)
   const [view, setView] = useState('list')
   const fileRef = useRef(null)
   const { success, error } = useToast()
@@ -82,12 +83,9 @@ export default function Files() {
       .then(({ data }) => { setFiles(data || []); setLoading(false) })
   }, [groupId])
 
-  async function handleUpload(e) {
-    const file = e.target.files?.[0]
-    if (!file) return
+  async function uploadFile(file) {
     if (file.size > 50 * 1024 * 1024) { error('Máximo 50 MB'); return }
     setUploading(true)
-    const ext = file.name.split('.').pop()
     const path = `${groupId}/${Date.now()}-${file.name}`
     const { error: upErr } = await supabase.storage.from('group-files').upload(path, file)
     if (upErr) { error('Error al subir archivo'); setUploading(false); return }
@@ -104,7 +102,20 @@ export default function Files() {
     if (dbFile) setFiles(prev => [dbFile, ...prev])
     success('Archivo subido')
     setUploading(false)
+  }
+
+  async function handleUpload(e) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    await uploadFile(file)
     e.target.value = ''
+  }
+
+  async function handleDrop(e) {
+    e.preventDefault()
+    setIsDragOver(false)
+    const file = e.dataTransfer.files?.[0]
+    if (file) await uploadFile(file)
   }
 
   async function handleDelete(file) {
@@ -144,9 +155,24 @@ export default function Files() {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-5">
+      <div
+        className={`flex-1 overflow-y-auto p-5 relative transition-colors ${isDragOver ? 'bg-primary-faint/40 dark:bg-primary/5' : ''}`}
+        onDragEnter={e => { e.preventDefault(); setIsDragOver(true) }}
+        onDragOver={e => { e.preventDefault(); setIsDragOver(true) }}
+        onDragLeave={e => { if (!e.currentTarget.contains(e.relatedTarget)) setIsDragOver(false) }}
+        onDrop={handleDrop}
+      >
+        {isDragOver && (
+          <div className="absolute inset-4 border-2 border-dashed border-primary rounded-xl flex items-center justify-center pointer-events-none z-10 bg-surface/90 dark:bg-surface-dark/90 backdrop-blur-sm">
+            <div className="text-center">
+              <Upload size={32} className="text-primary mx-auto mb-2" />
+              <p className="font-semibold text-ink dark:text-white">Suelta para subir</p>
+            </div>
+          </div>
+        )}
+
         {files.length === 0 ? (
-          <Empty icon={File} title="Nada subido aún" description="Añade el primer documento del grupo." />
+          <Empty icon={File} title="Nada subido aún" description="Arrastra un archivo aquí o usa el botón Subir." />
         ) : view === 'grid' ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {files.map(f => <FileCard key={f.id} file={f} view="grid" onDelete={handleDelete} isAdmin={isAdmin} />)}

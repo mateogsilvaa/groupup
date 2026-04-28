@@ -46,6 +46,25 @@ function StickyNote({ idea, currentUserId, onUpdate, onDelete, onVote, onDragEnd
     onDragEnd(idea.id, pos.x, pos.y)
   }
 
+  function onTouchStart(e) {
+    if (e.target.closest('button') || e.target.closest('textarea')) return
+    const touch = e.touches[0]
+    dragging.current = true
+    offset.current = { x: touch.clientX - pos.x, y: touch.clientY - pos.y }
+  }
+
+  function onTouchMove(e) {
+    if (!dragging.current) return
+    const touch = e.touches[0]
+    setPos({ x: touch.clientX - offset.current.x, y: touch.clientY - offset.current.y })
+  }
+
+  function onTouchEnd() {
+    if (!dragging.current) return
+    dragging.current = false
+    onDragEnd(idea.id, pos.x, pos.y)
+  }
+
   async function saveEdit() {
     if (!text.trim()) return
     await onUpdate(idea.id, text.trim())

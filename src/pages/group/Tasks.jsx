@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import {
-  DndContext, closestCorners, PointerSensor, useSensor, useSensors,
-  DragOverlay, useDroppable, useDraggable,
+  DndContext, closestCorners, PointerSensor, useSensor, useSensors, useDroppable, useDraggable,
 } from '@dnd-kit/core'
-import { Plus, GripVertical, Calendar, AlertTriangle } from 'lucide-react'
+import { Plus, GripVertical, Calendar, AlertTriangle, Trash2, Check } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import useStore from '../../store/useStore'
 import { useToast } from '../../hooks/useToast'
@@ -15,18 +14,16 @@ import Avatar from '../../components/ui/Avatar'
 import Empty from '../../components/ui/Empty'
 
 const COLUMNS = [
-  { id: 'todo', label: 'Por hacer' },
-  { id: 'in_progress', label: 'En progreso' },
-  { id: 'done', label: 'Hecho' },
+  { id: 'todo', label: 'Por hacer', color: 'text-ink-3 dark:text-white/40' },
+  { id: 'in_progress', label: 'En progreso', color: 'text-amber-600 dark:text-amber-400' },
+  { id: 'done', label: 'Hecho', color: 'text-emerald-600 dark:text-emerald-400' },
 ]
 
-const PRIORITY_COLORS = { high: 'bg-red-500', medium: 'bg-amber-400', low: 'bg-emerald-400' }
-const PRIORITY_LABELS = { high: 'Alta', medium: 'Media', low: 'Baja' }
 const PRIORITY_BORDER = { high: 'border-l-red-400', medium: 'border-l-amber-400', low: 'border-l-emerald-400' }
 
 const COLUMN_EMPTY = {
-  todo: 'Todo tranquilo por aquí... ¿o es que nadie ha empezado aún? 👀',
-  in_progress: 'Nada en marcha todavía.',
+  todo: '¡Todo listo! Añade la primera tarea.',
+  in_progress: 'Nada en progreso todavía.',
   done: 'Nada completado aún. ¡Ánimo!',
 }
 
@@ -34,56 +31,69 @@ function DeadlineBadge({ dueDate }) {
   const now = Date.now()
   const due = new Date(dueDate).getTime()
   const h = (due - now) / 3600000
-
   if (h < 0) return (
-    <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-sm bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">
+    <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-sm bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">
       <AlertTriangle size={9} /> Vencida
     </span>
   )
   if (h < 24) return (
-    <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-sm bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400">
+    <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-sm bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400">
       <Calendar size={9} /> &lt;24h
     </span>
   )
   if (h < 72) return (
-    <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-sm bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400">
+    <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-sm bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400">
       <Calendar size={9} /> {Math.ceil(h / 24)}d
     </span>
   )
   return (
-    <span className="inline-flex items-center gap-1 text-[10px] text-ink-4 dark:text-white/25">
+    <span className="inline-flex items-center gap-0.5 text-[10px] text-ink-4 dark:text-white/25">
       <Calendar size={9} /> {new Date(dueDate).toLocaleDateString('es', { day: '2-digit', month: 'short' })}
     </span>
   )
 }
 
-function TaskCard({ task, members }) {
+function TaskCard({ task, members, onToggle, onDelete }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: task.id })
   const assignee = members.find(m => m.id === task.assigned_to)
-  const priorityBorder = task.priority ? PRIORITY_BORDER[task.priority] : ''
+  const isDone = task.status === 'done'
 
   return (
     <div
       ref={setNodeRef}
       style={transform ? { transform: `translate(${transform.x}px,${transform.y}px)` } : undefined}
-      className={`bg-surface dark:bg-surface-dark rounded border border-border dark:border-white/8 border-l-2 ${priorityBorder || 'border-l-border dark:border-l-white/8'} p-3 flex flex-col gap-2 cursor-default ${isDragging ? 'opacity-40' : 'hover:shadow-2'} transition-all`}
+      className={`group bg-surface dark:bg-surface-dark rounded-lg border border-border dark:border-white/8 border-l-2 ${task.priority ? PRIORITY_BORDER[task.priority] : 'border-l-border dark:border-l-white/8'} p-3 flex flex-col gap-2 ${isDragging ? 'opacity-40 shadow-4' : 'hover:shadow-2'} transition-all`}
     >
       <div className="flex items-start gap-2">
+        <button
+          onClick={() => onToggle(task.id, task.status)}
+          className={`mt-0.5 w-4 h-4 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all ${
+            isDone
+              ? 'bg-emerald-500 border-emerald-500'
+              : 'border-border-3 dark:border-white/20 hover:border-primary dark:hover:border-primary-dark'
+          }`}
+          title={isDone ? 'Marcar como pendiente' : 'Marcar como hecho'}
+        >
+          {isDone && <Check size={9} className="text-white" />}
+        </button>
         <button {...attributes} {...listeners} className="mt-0.5 text-ink-4 dark:text-white/20 hover:text-ink-2 cursor-grab active:cursor-grabbing flex-shrink-0">
           <GripVertical size={14} />
         </button>
-        <p className="flex-1 text-sm text-ink dark:text-white leading-snug">{task.title}</p>
+        <p className={`flex-1 text-sm leading-snug ${isDone ? 'line-through text-ink-3 dark:text-white/30' : 'text-ink dark:text-white'}`}>
+          {task.title}
+        </p>
+        <button
+          onClick={() => onDelete(task.id)}
+          className="opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-red-50 dark:hover:bg-red-900/20 text-ink-4 dark:text-white/25 hover:text-red-500 transition-all flex-shrink-0"
+          title="Eliminar tarea"
+        >
+          <Trash2 size={12} />
+        </button>
       </div>
       {task.description && (
-        <p className="text-xs text-ink-3 dark:text-white/40 line-clamp-2 ml-5">{task.description}</p>
+        <p className="text-xs text-ink-3 dark:text-white/40 line-clamp-2 ml-10">{task.description}</p>
       )}
-      <div className="flex items-center gap-2 ml-5 flex-wrap">
-        {task.priority && (
-          <span
-            className={`w-2 h-2 rounded-full flex-shrink-0 ${PRIORITY_COLORS[task.priority]}`}
-            title={PRIORITY_LABELS[task.priority]}
-          />
-        )}
+      <div className="flex items-center gap-2 ml-10 flex-wrap">
         {task.due_date && <DeadlineBadge dueDate={task.due_date} />}
         {assignee && (
           <span className="ml-auto">
@@ -95,21 +105,21 @@ function TaskCard({ task, members }) {
   )
 }
 
-function Column({ column, tasks, members }) {
+function Column({ column, tasks, members, onToggle, onDelete }) {
   const { setNodeRef, isOver } = useDroppable({ id: column.id })
   return (
     <div className="flex flex-col min-h-0">
       <div className="flex items-center gap-2 mb-3">
-        <span className="font-semibold text-sm text-ink dark:text-white">{column.label}</span>
+        <span className={`font-semibold text-sm ${column.color}`}>{column.label}</span>
         <span className="text-xs text-ink-4 dark:text-white/25 bg-surface-2 dark:bg-surface-dark-2 px-1.5 py-0.5 rounded">{tasks.length}</span>
       </div>
       <div
         ref={setNodeRef}
-        className={`flex flex-col gap-2 flex-1 rounded-lg p-2 min-h-[120px] transition-colors ${isOver ? 'bg-primary-faint' : 'bg-bg dark:bg-bg-dark'}`}
+        className={`flex flex-col gap-2 flex-1 rounded-lg p-2 min-h-[120px] transition-colors ${isOver ? 'bg-primary-faint dark:bg-primary/5' : 'bg-bg dark:bg-bg-dark'}`}
       >
-        {tasks.map(t => <TaskCard key={t.id} task={t} members={members} />)}
+        {tasks.map(t => <TaskCard key={t.id} task={t} members={members} onToggle={onToggle} onDelete={onDelete} />)}
         {tasks.length === 0 && (
-          <p className="text-center text-xs text-ink-4 dark:text-white/20 pt-5 px-3 leading-relaxed">
+          <p className="text-center text-xs text-ink-4 dark:text-white/20 pt-6 px-3 leading-relaxed">
             {COLUMN_EMPTY[column.id]}
           </p>
         )}
@@ -158,11 +168,7 @@ function CreateTaskModal({ open, onClose, groupId, members, onCreated }) {
         </FormField>
         <div className="grid grid-cols-2 gap-4">
           <FormField label="Prioridad">
-            <select
-              value={priority}
-              onChange={e => setPriority(e.target.value)}
-              className="h-9 px-3 rounded border border-border-2 dark:border-white/10 bg-surface dark:bg-surface-dark text-sm text-ink dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/40"
-            >
+            <select value={priority} onChange={e => setPriority(e.target.value)} className="h-9 px-3 rounded border border-border-2 dark:border-white/10 bg-surface dark:bg-surface-dark text-sm text-ink dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/40">
               <option value="high">Alta</option>
               <option value="medium">Media</option>
               <option value="low">Baja</option>
@@ -173,11 +179,7 @@ function CreateTaskModal({ open, onClose, groupId, members, onCreated }) {
           </FormField>
         </div>
         <FormField label="Asignar a">
-          <select
-            value={assignee}
-            onChange={e => setAssignee(e.target.value)}
-            className="h-9 px-3 rounded border border-border-2 dark:border-white/10 bg-surface dark:bg-surface-dark text-sm text-ink dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/40"
-          >
+          <select value={assignee} onChange={e => setAssignee(e.target.value)} className="h-9 px-3 rounded border border-border-2 dark:border-white/10 bg-surface dark:bg-surface-dark text-sm text-ink dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/40">
             <option value="">Sin asignar</option>
             {members.map(m => (
               <option key={m.id} value={m.id}>{m.full_name || m.username || m.id?.slice(0, 8)}</option>
@@ -212,6 +214,18 @@ export default function Tasks() {
       .eq('group_id', groupId)
       .order('created_at', { ascending: true })
       .then(({ data }) => { setTasks(data || []); setLoading(false) })
+
+    const sub = supabase
+      .channel(`tasks:${groupId}`)
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'tasks', filter: `group_id=eq.${groupId}` },
+        (p) => setTasks(prev => prev.find(t => t.id === p.new.id) ? prev : [...prev, p.new]))
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'tasks', filter: `group_id=eq.${groupId}` },
+        (p) => setTasks(prev => prev.map(t => t.id === p.new.id ? { ...t, ...p.new } : t)))
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'tasks', filter: `group_id=eq.${groupId}` },
+        (p) => setTasks(prev => prev.filter(t => t.id !== p.old.id)))
+      .subscribe()
+
+    return () => supabase.removeChannel(sub)
   }, [groupId])
 
   async function handleDragEnd({ active, over }) {
@@ -228,6 +242,17 @@ export default function Tasks() {
     }
   }
 
+  async function handleToggle(taskId, currentStatus) {
+    const newStatus = currentStatus === 'done' ? 'todo' : 'done'
+    setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: newStatus } : t))
+    await supabase.from('tasks').update({ status: newStatus }).eq('id', taskId)
+  }
+
+  async function handleDelete(taskId) {
+    setTasks(prev => prev.filter(t => t.id !== taskId))
+    await supabase.from('tasks').delete().eq('id', taskId)
+  }
+
   const filtered = tasks.filter(t => {
     if (filterAssignee && t.assigned_to !== filterAssignee) return false
     if (filterPriority && t.priority !== filterPriority) return false
@@ -242,7 +267,7 @@ export default function Tasks() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex items-center gap-3 px-5 py-3 border-b border-border dark:border-white/8 flex-shrink-0">
+      <div className="flex items-center gap-3 px-5 py-3 border-b border-border dark:border-white/8 flex-shrink-0 flex-wrap gap-y-2">
         <select
           value={filterAssignee}
           onChange={e => setFilterAssignee(e.target.value)}
@@ -276,6 +301,8 @@ export default function Tasks() {
               column={col}
               tasks={filtered.filter(t => t.status === col.id)}
               members={currentGroupMembers}
+              onToggle={handleToggle}
+              onDelete={handleDelete}
             />
           ))}
         </div>

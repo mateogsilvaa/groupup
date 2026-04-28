@@ -26,11 +26,13 @@ function PostCard({ post, isAdmin, currentUserId, onDelete, onPin, onLike }) {
           <p className="text-sm font-semibold text-ink dark:text-white">{post.profiles?.full_name || post.profiles?.username}</p>
           <p className="text-xs text-ink-4 dark:text-white/25">{timeAgo(post.created_at)}</p>
         </div>
-        {isAdmin && (
+        {(isAdmin || post.user_id === currentUserId) && (
           <div className="flex gap-1">
-            <button onClick={() => onPin(post)} className={`p-1.5 rounded hover:bg-surface-2 dark:hover:bg-surface-dark-2 transition-colors ${post.pinned ? 'text-primary' : 'text-ink-4 dark:text-white/25'}`}>
-              <Pin size={14} />
-            </button>
+            {isAdmin && (
+              <button onClick={() => onPin(post)} className={`p-1.5 rounded hover:bg-surface-2 dark:hover:bg-surface-dark-2 transition-colors ${post.pinned ? 'text-primary' : 'text-ink-4 dark:text-white/25'}`}>
+                <Pin size={14} />
+              </button>
+            )}
             <button onClick={() => onDelete(post.id)} className="p-1.5 rounded hover:bg-red-50 dark:hover:bg-red-900/20 text-ink-4 dark:text-white/25 hover:text-red-500 transition-colors">
               <Trash2 size={14} />
             </button>

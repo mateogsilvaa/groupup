@@ -58,28 +58,21 @@ function CreateGroupModal({ open, onClose }) {
     e.preventDefault()
     if (!name.trim()) return
     setLoading(true)
+    const groupId = crypto.randomUUID()
     const code = Math.random().toString(36).slice(2, 8).toUpperCase()
-    const { data: group, error: err } = await supabase
+    const { error: err } = await supabase
       .from('groups')
-      .insert({ name: name.trim(), description: desc.trim(), invite_code: code, created_by: user.id })
-      .select()
-      .single()
+      .insert({ id: groupId, name: name.trim(), description: desc.trim(), invite_code: code, created_by: user.id })
     if (err) { error('Error al crear el grupo'); setLoading(false); return }
 
-    const { error: memberErr } = await supabase
+    await supabase
       .from('group_members')
-      .insert({ group_id: group.id, user_id: user.id, role: 'admin' })
-    if (memberErr) {
-      await supabase.from('group_members')
-        .update({ role: 'admin' })
-        .eq('group_id', group.id)
-        .eq('user_id', user.id)
-    }
+      .insert({ group_id: groupId, user_id: user.id, role: 'admin' })
 
     if (template?.tasks?.length) {
       await supabase.from('tasks').insert(
         template.tasks.map(title => ({
-          group_id: group.id,
+          group_id: groupId,
           title,
           status: 'todo',
           priority: 'medium',
@@ -89,10 +82,10 @@ function CreateGroupModal({ open, onClose }) {
     }
 
     await fetchGroups()
-    success(`Grupo "${group.name}" creado`)
+    success(`Grupo "${name.trim()}" creado`)
     setLoading(false)
     handleClose()
-    navigate(`/group/${group.id}/chat`)
+    navigate(`/group/${groupId}/chat`)
   }
 
   function handleClose() {
