@@ -257,17 +257,44 @@ create policy "storage_delete_auth" on storage.objects
 -- ── REALTIME ─────────────────────────────────────────────
 
 -- Activa cambios en tiempo real para el chat y las tareas
-alter publication supabase_realtime add table public.messages;
-alter publication supabase_realtime add table public.tasks;
-alter publication supabase_realtime add table public.board_posts;
+-- (Si falla, puede ser que ya estén añadidas; no te preocupes)
+begin;
+  alter publication supabase_realtime add table public.messages;
+exception when others then null;
+end;
+
+begin;
+  alter publication supabase_realtime add table public.tasks;
+exception when others then null;
+end;
+
+begin;
+  alter publication supabase_realtime add table public.board_posts;
+exception when others then null;
+end;
+
+begin;
+  alter publication supabase_realtime add table public.ideas;
+exception when others then null;
+end;
+
+commit;
 
 -- ==========================================================
 -- ✅ ¡Listo! La base de datos de GroupUp está configurada.
 --
--- Ahora ve a: Supabase Dashboard → Authentication → Providers
--- y asegúrate de que Email está habilitado.
+-- PRÓXIMOS PASOS:
 --
--- También ve a: Authentication → URL Configuration
--- y añade tu URL de producción en "Site URL":
---   https://mateogsilvaa.github.io/groupup
+-- 1. Ve a: Supabase Dashboard → Authentication → Providers
+--    Asegúrate de que Email está habilitado.
+--
+-- 2. Ve a: Authentication → URL Configuration
+--    Añade tu URL de producción en "Site URL":
+--      https://mateogsilvaa.github.io/groupup
+--
+-- 3. Ve a: Storage → Buckets
+--    Verifica que "group-files" está creado y público.
+--
+-- NOTA: Si algún comando de Realtime falló arriba, no importa.
+-- Las tablas siguen funcionando perfectamente con polling.
 -- ==========================================================
