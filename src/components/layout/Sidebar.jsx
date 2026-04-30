@@ -1,8 +1,10 @@
+import { useState } from 'react'
 import { NavLink, useNavigate, useParams } from 'react-router-dom'
 import { clsx } from 'clsx'
 import { MessageSquare, CheckSquare, Layout, Paperclip, Lightbulb, Settings, Users, Plus, Sun, Moon, LogOut, Home, X } from 'lucide-react'
 import useStore from '../../store/useStore'
 import Avatar from '../ui/Avatar'
+import ProfileEditModal from '../ui/ProfileEditModal'
 
 const groupNav = [
   { to: 'chat', icon: MessageSquare, label: 'Chat' },
@@ -28,6 +30,7 @@ export default function Sidebar({ onCreateGroup, onJoinGroup, open, onClose }) {
   const { groupId } = useParams()
   const { groups, currentGroup, profile, theme, toggleTheme, signOut } = useStore()
   const navigate = useNavigate()
+  const [profileModalOpen, setProfileModalOpen] = useState(false)
 
   function goTo(path) {
     navigate(path)
@@ -152,18 +155,26 @@ export default function Sidebar({ onCreateGroup, onJoinGroup, open, onClose }) {
             {theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}
           </button>
 
-          <div className="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-surface-2 dark:hover:bg-surface-dark-2 transition-colors group cursor-pointer">
+          <button
+            onClick={() => setProfileModalOpen(true)}
+            className="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-surface-2 dark:hover:bg-surface-dark-2 transition-colors group cursor-pointer text-left w-full"
+          >
             <Avatar name={profile?.full_name || profile?.username} url={profile?.avatar_url} size="sm" />
-            <span className="flex-1 text-sm text-ink dark:text-white truncate">{profile?.full_name || profile?.username || 'Cargando...'}</span>
+            <span className="flex-1 text-sm text-ink dark:text-white truncate font-medium">{profile?.full_name || profile?.username || 'Cargando...'}</span>
             <button
-              onClick={signOut}
+              onClick={(e) => {
+                e.stopPropagation()
+                signOut()
+              }}
               className="text-ink-4 dark:text-white/25 hover:text-red-500 dark:hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100"
               title="Cerrar sesión"
             >
               <LogOut size={14} />
             </button>
-          </div>
+          </button>
         </div>
+
+        <ProfileEditModal open={profileModalOpen} onClose={() => setProfileModalOpen(false)} />
       </aside>
     </>
   )

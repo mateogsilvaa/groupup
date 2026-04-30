@@ -51,15 +51,23 @@ const useStore = create((set, get) => ({
     const ids = memberships.map(m => m.group_id)
     const { data: groups } = await supabase
       .from('groups')
-      .select('*, group_members(count)')
+      .select('*')
       .in('id', ids)
-    const merged = (groups || []).map(g => ({
-      ...g,
-      role: memberships.find(m => m.group_id === g.id)?.role || 'member',
-      member_count: g.group_members?.[0]?.count || 0,
+    
+    // Obtener count de miembros para cada grupo
+    const groupsWithCounts = await Promise.all((groups || []).map(async (g) => {
+      const { count } = await supabase
+        .from('group_members')
+        .select('*', { count: 'exact', head: true })
+        .eq('group_id', g.id)
+      return {
+        ...g,
+        role: memberships.find(m => m.group_id === g.id)?.role || 'member',
+        member_count: count || 0,
+      }
     }))
-    set({ groups: merged })
-    return merged
+    set({ groups: groupsWithCounts })
+    return groupsWithCounts
   },
 
   fetchGroupMembers: async (groupId) => {

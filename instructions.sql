@@ -128,6 +128,25 @@ create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
 
+-- ── TRIGGER: agregar creador como admin al crear grupo ────
+
+create or replace function public.add_group_creator_as_admin()
+returns trigger language plpgsql security definer as $$
+begin
+  if new.created_by is not null then
+    insert into public.group_members (group_id, user_id, role)
+    values (new.id, new.created_by, 'admin')
+    on conflict (group_id, user_id) do nothing;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists on_group_created on public.groups;
+create trigger on_group_created
+  after insert on public.groups
+  for each row execute procedure public.add_group_creator_as_admin();
+
 -- ── FUNCIONES HELPER PARA RLS ────────────────────────────
 
 create or replace function public.is_group_member(gid uuid)
@@ -170,7 +189,7 @@ drop policy if exists "groups_select_member" on public.groups;
 drop policy if exists "groups_insert_auth"   on public.groups;
 drop policy if exists "groups_update_admin"  on public.groups;
 drop policy if exists "groups_delete_admin"  on public.groups;
-create policy "groups_select_member" on public.groups for select using (public.is_group_member(id));
+create policy "groups_select_member" on public.groups for select using (public.is_group_member(id) or created_by = auth.uid());
 create policy "groups_insert_auth"   on public.groups for insert with check (auth.uid() is not null);
 create policy "groups_update_admin"  on public.groups for update using (public.is_group_admin(id));
 create policy "groups_delete_admin"  on public.groups for delete using (public.is_group_admin(id));
@@ -181,7 +200,7 @@ drop policy if exists "gm_insert"       on public.group_members;
 drop policy if exists "gm_update_admin" on public.group_members;
 drop policy if exists "gm_delete"       on public.group_members;
 create policy "gm_select"       on public.group_members for select using (user_id = auth.uid() or public.is_group_member(group_id));
-create policy "gm_insert"       on public.group_members for insert with check (auth.uid() is not null);
+create policy "gm_insert"       on public.group_members for insert with check (auth.uid() is not null and (auth.uid() = user_id or public.is_group_member(group_id)));
 create policy "gm_update_admin" on public.group_members for update using (public.is_group_admin(group_id));
 create policy "gm_delete"       on public.group_members for delete using (user_id = auth.uid() or public.is_group_admin(group_id));
 
@@ -258,27 +277,33 @@ create policy "storage_delete_auth" on storage.objects
 
 -- Activa cambios en tiempo real para el chat y las tareas
 -- (Si falla, puede ser que ya estén añadidas; no te preocupes)
-begin;
+do $$
+begin
   alter publication supabase_realtime add table public.messages;
 exception when others then null;
 end;
+$$;
 
-begin;
+do $$
+begin
   alter publication supabase_realtime add table public.tasks;
 exception when others then null;
 end;
+$$;
 
-begin;
+do $$
+begin
   alter publication supabase_realtime add table public.board_posts;
 exception when others then null;
 end;
+$$;
 
-begin;
+do $$
+begin
   alter publication supabase_realtime add table public.ideas;
 exception when others then null;
 end;
-
-commit;
+$$;
 
 -- ==========================================================
 -- ✅ ¡Listo! La base de datos de GroupUp está configurada.

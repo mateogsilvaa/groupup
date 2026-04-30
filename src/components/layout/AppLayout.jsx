@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import Sidebar from './Sidebar'
 import Topbar from './Topbar'
 import Modal from '../ui/Modal'
+import GroupTutorialCarousel from '../ui/GroupTutorialCarousel'
 import { Input, FormField } from '../ui/Input'
 import Button from '../ui/Button'
 import useStore from '../../store/useStore'
@@ -59,10 +60,11 @@ function CreateGroupModal({ open, onClose }) {
     if (!name.trim()) return
     setLoading(true)
     const groupId = crypto.randomUUID()
+    const groupName = name.trim()
     const code = Math.random().toString(36).slice(2, 8).toUpperCase()
     const { error: err } = await supabase
       .from('groups')
-      .insert({ id: groupId, name: name.trim(), description: desc.trim(), invite_code: code, created_by: user.id })
+      .insert({ id: groupId, name: groupName, description: desc.trim(), invite_code: code, created_by: user.id })
     if (err) { error('Error al crear el grupo'); setLoading(false); return }
 
     await supabase
@@ -82,9 +84,11 @@ function CreateGroupModal({ open, onClose }) {
     }
 
     await fetchGroups()
-    success(`Grupo "${name.trim()}" creado`)
+    success(`Grupo "${groupName}" creado`)
     setLoading(false)
     handleClose()
+    setTutorialGroupName(groupName)
+    setTutorialOpen(true)
     navigate(`/group/${groupId}/chat`)
   }
 
@@ -149,7 +153,7 @@ function CreateGroupModal({ open, onClose }) {
   )
 }
 
-function JoinGroupModal({ open, onClose }) {
+function JoinGroupModal({ open, onClose, onSuccess }) {
   const [code, setCode] = useState('')
   const [loading, setLoading] = useState(false)
   const { user, fetchGroups } = useStore()
@@ -179,6 +183,7 @@ function JoinGroupModal({ open, onClose }) {
     setLoading(false)
     setCode('')
     onClose()
+    onSuccess?.(group.name)
     navigate(`/group/${group.id}/chat`)
   }
 
@@ -207,6 +212,8 @@ export default function AppLayout() {
   const [createOpen, setCreateOpen] = useState(false)
   const [joinOpen, setJoinOpen] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [tutorialOpen, setTutorialOpen] = useState(false)
+  const [tutorialGroupName, setTutorialGroupName] = useState('')
 
   return (
     <div className="flex h-screen bg-bg dark:bg-bg-dark overflow-hidden">
@@ -230,7 +237,19 @@ export default function AppLayout() {
         </main>
       </div>
       <CreateGroupModal open={createOpen} onClose={() => setCreateOpen(false)} />
-      <JoinGroupModal open={joinOpen} onClose={() => setJoinOpen(false)} />
+      <JoinGroupModal 
+        open={joinOpen} 
+        onClose={() => setJoinOpen(false)}
+        onSuccess={(groupName) => {
+          setTutorialGroupName(groupName)
+          setTutorialOpen(true)
+        }}
+      />
+      <GroupTutorialCarousel 
+        open={tutorialOpen}
+        onClose={() => setTutorialOpen(false)}
+        groupName={tutorialGroupName}
+      />
     </div>
   )
 }
