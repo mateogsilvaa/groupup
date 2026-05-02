@@ -11,12 +11,6 @@
           }
         } catch (e) {}
       })();
-      (function(l) {
-        if (l.search[1] === '/') {
-          const d = l.search.slice(1).split('&').map(s => s.replace(/~and~/g, '&')).join('?');
-          window.history.replaceState(null, null, l.pathname.slice(0, -1) + d + l.hash);
-        }
-      })(window.location);
     </script>
 
     <meta charset="UTF-8" />
