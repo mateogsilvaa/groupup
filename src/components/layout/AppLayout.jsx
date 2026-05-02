@@ -71,6 +71,10 @@ function CreateGroupModal({ open, onClose, onSuccess }) {
       .from('group_members')
       .insert({ group_id: groupId, user_id: user.id, role: 'admin' })
 
+    await supabase
+      .from('group_members')
+      .insert({ group_id: groupId, user_id: user.id, role: 'member' })
+
     if (template?.tasks?.length) {
       await supabase.from('tasks').insert(
         template.tasks.map(title => ({

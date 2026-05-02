@@ -79,7 +79,7 @@ export default function ProfileEditModal({ open, onClose }) {
 
   return (
     <Modal open={open} onClose={onClose} title="Editar perfil">
-      <form onSubmit={handleSave} className="space-y-6">
+      <form onSubmit={handleSave} className="p-5 flex flex-col gap-5">
         {/* Avatar */}
         <div className="flex flex-col items-center gap-4">
           <motion.div
