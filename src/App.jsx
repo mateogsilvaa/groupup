@@ -9,7 +9,6 @@ import Toast from './components/ui/Toast'
 import Landing from './pages/Landing'
 import Auth from './pages/Auth'
 import Dashboard from './pages/Dashboard'
-import Pricing from './pages/Pricing'
 import AppLayout from './components/layout/AppLayout'
 import GroupLayout from './pages/group/GroupLayout'
 import Chat from './pages/group/Chat'
@@ -40,7 +39,6 @@ function AnimatedRoutes() {
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<GuestGuard><Landing /></GuestGuard>} />
         <Route path="/auth" element={<GuestGuard><Auth /></GuestGuard>} />
-        <Route path="/pricing" element={<Pricing />} />
 
         <Route element={<AuthGuard><AppLayout /></AuthGuard>}>
           <Route path="/dashboard" element={<Dashboard />} />

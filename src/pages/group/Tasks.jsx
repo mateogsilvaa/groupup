@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import {
-  DndContext, closestCorners, PointerSensor, useSensor, useSensors, useDroppable, useDraggable,
+  DndContext, closestCorners, PointerSensor, useSensor, useSensors, useDroppable, useDraggable, DragOverlay,
 } from '@dnd-kit/core'
 import { Plus, GripVertical, Calendar, AlertTriangle, Trash2, Check } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
@@ -14,9 +14,9 @@ import Avatar from '../../components/ui/Avatar'
 import Empty from '../../components/ui/Empty'
 
 const COLUMNS = [
-  { id: 'todo', label: 'Por hacer', color: 'text-ink-3 dark:text-white/40' },
-  { id: 'in_progress', label: 'En progreso', color: 'text-amber-600 dark:text-amber-400' },
-  { id: 'done', label: 'Hecho', color: 'text-emerald-600 dark:text-emerald-400' },
+  { id: 'todo', label: 'Por hacer', color: 'text-ink-3 dark:text-white/40', bg: 'bg-slate-50 dark:bg-slate-900/20 border border-slate-100 dark:border-slate-800/40' },
+  { id: 'in_progress', label: 'En progreso', color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50/60 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-800/30' },
+  { id: 'done', label: 'Hecho', color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50/60 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-800/30' },
 ]
 
 const PRIORITY_BORDER = { high: 'border-l-red-400', medium: 'border-l-amber-400', low: 'border-l-emerald-400' }
@@ -53,16 +53,18 @@ function DeadlineBadge({ dueDate }) {
   )
 }
 
-function TaskCard({ task, members, onToggle, onDelete }) {
-  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: task.id })
+function TaskCard({ task, members, onToggle, onDelete, isOverlay = false }) {
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id: task.id })
   const assignee = members.find(m => m.id === task.assigned_to)
   const isDone = task.status === 'done'
 
   return (
     <div
-      ref={setNodeRef}
-      style={transform ? { transform: `translate(${transform.x}px,${transform.y}px)` } : undefined}
-      className={`group bg-surface dark:bg-surface-dark rounded-lg border border-border dark:border-white/8 border-l-2 ${task.priority ? PRIORITY_BORDER[task.priority] : 'border-l-border dark:border-l-white/8'} p-3 flex flex-col gap-2 ${isDragging ? 'opacity-40 shadow-4' : 'hover:shadow-2'} transition-all`}
+      ref={isOverlay ? undefined : setNodeRef}
+      className={`group bg-surface dark:bg-surface-dark rounded-lg border border-border dark:border-white/8 border-l-2 ${task.priority ? PRIORITY_BORDER[task.priority] : 'border-l-border dark:border-l-white/8'} p-3 flex flex-col gap-2 transition-all duration-150 ${
+        isOverlay ? 'shadow-2xl rotate-[1.5deg] opacity-95 cursor-grabbing scale-[1.02]' :
+        isDragging ? 'opacity-0 scale-95' : 'hover:shadow-2 cursor-default'
+      }`}
     >
       <div className="flex items-start gap-2">
         <button
@@ -76,7 +78,7 @@ function TaskCard({ task, members, onToggle, onDelete }) {
         >
           {isDone && <Check size={9} className="text-white" />}
         </button>
-        <button {...attributes} {...listeners} className="mt-0.5 text-ink-4 dark:text-white/20 hover:text-ink-2 cursor-grab active:cursor-grabbing flex-shrink-0">
+        <button {...(isOverlay ? {} : { ...attributes, ...listeners })} className="mt-0.5 text-ink-4 dark:text-white/20 hover:text-ink-2 cursor-grab active:cursor-grabbing flex-shrink-0">
           <GripVertical size={14} />
         </button>
         <p className={`flex-1 text-sm leading-snug ${isDone ? 'line-through text-ink-3 dark:text-white/30' : 'text-ink dark:text-white'}`}>
@@ -108,14 +110,14 @@ function TaskCard({ task, members, onToggle, onDelete }) {
 function Column({ column, tasks, members, onToggle, onDelete }) {
   const { setNodeRef, isOver } = useDroppable({ id: column.id })
   return (
-    <div className="flex flex-col min-h-0">
+    <div className={`flex flex-col min-h-0 rounded-xl p-3 ${column.bg}`}>
       <div className="flex items-center gap-2 mb-3">
         <span className={`font-semibold text-sm ${column.color}`}>{column.label}</span>
-        <span className="text-xs text-ink-4 dark:text-white/25 bg-surface-2 dark:bg-surface-dark-2 px-1.5 py-0.5 rounded">{tasks.length}</span>
+        <span className="text-xs text-ink-4 dark:text-white/25 bg-white/60 dark:bg-white/5 px-1.5 py-0.5 rounded">{tasks.length}</span>
       </div>
       <div
         ref={setNodeRef}
-        className={`flex flex-col gap-2 flex-1 rounded-lg p-2 min-h-[120px] transition-colors ${isOver ? 'bg-primary-faint dark:bg-primary/5' : 'bg-bg dark:bg-bg-dark'}`}
+        className={`flex flex-col gap-2 flex-1 rounded-lg p-2 min-h-[120px] transition-colors duration-150 ${isOver ? 'bg-primary/8 dark:bg-primary/10 ring-2 ring-primary/20' : ''}`}
       >
         {tasks.map(t => <TaskCard key={t.id} task={t} members={members} onToggle={onToggle} onDelete={onDelete} />)}
         {tasks.length === 0 && (
@@ -205,7 +207,8 @@ export default function Tasks() {
   const [filterPriority, setFilterPriority] = useState('')
   const { error } = useToast()
 
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }))
+  const [activeTask, setActiveTask] = useState(null)
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }))
 
   useEffect(() => {
     supabase
@@ -228,7 +231,12 @@ export default function Tasks() {
     return () => supabase.removeChannel(sub)
   }, [groupId])
 
+  function handleDragStart({ active }) {
+    setActiveTask(tasks.find(t => t.id === active.id) || null)
+  }
+
   async function handleDragEnd({ active, over }) {
+    setActiveTask(null)
     if (!over || active.id === over.id) return
     const col = COLUMNS.find(c => c.id === over.id)
     if (!col) return
@@ -293,7 +301,7 @@ export default function Tasks() {
         </Button>
       </div>
 
-      <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
+      <DndContext sensors={sensors} collisionDetection={closestCorners} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
         <div className="grid grid-cols-3 gap-4 p-5 flex-1 overflow-y-auto">
           {COLUMNS.map(col => (
             <Column
@@ -306,6 +314,17 @@ export default function Tasks() {
             />
           ))}
         </div>
+        <DragOverlay dropAnimation={{ duration: 180, easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)' }}>
+          {activeTask && (
+            <TaskCard
+              task={activeTask}
+              members={currentGroupMembers}
+              onToggle={() => {}}
+              onDelete={() => {}}
+              isOverlay
+            />
+          )}
+        </DragOverlay>
       </DndContext>
 
       <CreateTaskModal

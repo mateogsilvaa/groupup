@@ -115,6 +115,17 @@ export default function ProfileEditModal({ open, onClose }) {
           <p className="text-xs text-ink-3 dark:text-white/40">Máx. 5MB</p>
         </div>
 
+        {/* Avatar URL */}
+        <FormField label="URL de foto (opcional)">
+          <Input
+            type="url"
+            value={avatarUrl}
+            onChange={(e) => setAvatarUrl(e.target.value)}
+            placeholder="https://ejemplo.com/foto.jpg"
+            disabled={loading || uploading}
+          />
+        </FormField>
+
         {/* Full Name */}
         <FormField label="Nombre completo">
           <Input

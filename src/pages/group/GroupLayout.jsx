@@ -41,9 +41,13 @@ export default function GroupLayout() {
     <div className="flex flex-col h-full overflow-hidden">
       {currentGroup && (
         <div className="flex-shrink-0 h-10 flex items-center gap-3 px-4 border-b border-border dark:border-white/8 bg-surface dark:bg-surface-dark">
-          <div className={`w-5 h-5 rounded-sm text-white text-[9px] font-bold flex items-center justify-center flex-shrink-0 ${groupColor(groupId)}`}>
-            {currentGroup.name?.[0]?.toUpperCase()}
-          </div>
+          {currentGroup.avatar_url ? (
+            <img src={currentGroup.avatar_url} alt={currentGroup.name} className="w-5 h-5 rounded-sm object-cover flex-shrink-0" />
+          ) : (
+            <div className={`w-5 h-5 rounded-sm text-white text-[9px] font-bold flex items-center justify-center flex-shrink-0 ${groupColor(groupId)}`}>
+              {currentGroup.name?.[0]?.toUpperCase()}
+            </div>
+          )}
           <span className="font-medium text-sm text-ink dark:text-white truncate flex-1 min-w-0">{currentGroup.name}</span>
           <div className="flex items-center gap-2 flex-shrink-0">
             {currentGroupMembers.length > 0 && (

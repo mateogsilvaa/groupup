@@ -28,7 +28,7 @@ function groupColor(id) {
 
 export default function Sidebar({ onCreateGroup, onJoinGroup, open, onClose }) {
   const { groupId } = useParams()
-  const { groups, currentGroup, profile, theme, toggleTheme, signOut } = useStore()
+  const { groups, currentGroup, profile, user, theme, toggleTheme, signOut } = useStore()
   const navigate = useNavigate()
   const [profileModalOpen, setProfileModalOpen] = useState(false)
 
@@ -94,9 +94,13 @@ export default function Sidebar({ onCreateGroup, onJoinGroup, open, onClose }) {
                   : 'text-ink-2 dark:text-white/60 hover:bg-surface-2 dark:hover:bg-surface-dark-2 hover:text-ink dark:hover:text-white',
               )}
             >
-              <span className={`w-5 h-5 rounded-sm text-white text-[9px] font-bold flex items-center justify-center flex-shrink-0 ${groupColor(g.id)}`}>
-                {g.name?.[0]?.toUpperCase()}
-              </span>
+              {g.avatar_url ? (
+                <img src={g.avatar_url} alt={g.name} className="w-5 h-5 rounded-sm object-cover flex-shrink-0" />
+              ) : (
+                <span className={`w-5 h-5 rounded-sm text-white text-[9px] font-bold flex items-center justify-center flex-shrink-0 ${groupColor(g.id)}`}>
+                  {g.name?.[0]?.toUpperCase()}
+                </span>
+              )}
               <span className="truncate">{g.name}</span>
               {g.role === 'admin' && (
                 <span className="ml-auto text-[9px] text-ink-4 dark:text-white/25 font-medium flex-shrink-0">ADM</span>
@@ -160,7 +164,7 @@ export default function Sidebar({ onCreateGroup, onJoinGroup, open, onClose }) {
             className="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-surface-2 dark:hover:bg-surface-dark-2 transition-colors group cursor-pointer text-left w-full"
           >
             <Avatar name={profile?.full_name || profile?.username} url={profile?.avatar_url} size="sm" />
-            <span className="flex-1 text-sm text-ink dark:text-white truncate font-medium">{profile?.full_name || profile?.username || 'Cargando...'}</span>
+            <span className="flex-1 text-sm text-ink dark:text-white truncate font-medium">{profile?.full_name || profile?.username || user?.email?.split('@')[0] || '...'}</span>
             <button
               onClick={(e) => {
                 e.stopPropagation()

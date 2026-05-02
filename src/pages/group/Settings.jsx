@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Copy, RefreshCw, Trash2, UserMinus, Crown } from 'lucide-react'
+import { Copy, RefreshCw, Trash2, UserMinus, Crown, Upload } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import useStore from '../../store/useStore'
 import { useToast } from '../../hooks/useToast'
@@ -25,14 +25,39 @@ export default function GroupSettings() {
   const [section, setSection] = useState('info')
   const [name, setName] = useState('')
   const [desc, setDesc] = useState('')
+  const [avatarUrl, setAvatarUrl] = useState('')
+  const [uploading, setUploading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [regenerating, setRegenerating] = useState(false)
+  const fileInputRef = useRef(null)
 
   const isAdmin = currentGroup?.role === 'admin'
 
   useEffect(() => {
-    if (currentGroup) { setName(currentGroup.name || ''); setDesc(currentGroup.description || '') }
+    if (currentGroup) {
+      setName(currentGroup.name || '')
+      setDesc(currentGroup.description || '')
+      setAvatarUrl(currentGroup.avatar_url || '')
+    }
   }, [currentGroup])
+
+  async function handleAvatarUpload(e) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    try {
+      setUploading(true)
+      const ext = file.name.split('.').pop()
+      const path = `groups/${groupId}-${Date.now()}.${ext}`
+      const { error: uploadErr } = await supabase.storage.from('group-files').upload(path, file)
+      if (uploadErr) throw uploadErr
+      const { data } = supabase.storage.from('group-files').getPublicUrl(path)
+      setAvatarUrl(data.publicUrl)
+    } catch {
+      error('Error al subir imagen')
+    } finally {
+      setUploading(false)
+    }
+  }
 
   async function saveInfo(e) {
     e.preventDefault()
@@ -40,7 +65,7 @@ export default function GroupSettings() {
     setSaving(true)
     const { data, error: err } = await supabase
       .from('groups')
-      .update({ name: name.trim(), description: desc.trim() })
+      .update({ name: name.trim(), description: desc.trim(), avatar_url: avatarUrl.trim() || null })
       .eq('id', groupId)
       .select().single()
     if (err) { error('Error al guardar'); setSaving(false); return }
@@ -123,6 +148,44 @@ export default function GroupSettings() {
           <div className="max-w-md">
             <h2 className="font-semibold text-ink dark:text-white mb-6">Información del grupo</h2>
             <form onSubmit={saveInfo} className="flex flex-col gap-4">
+              {/* Group avatar */}
+              <div className="flex flex-col gap-2">
+                <span className="text-xs font-medium text-ink-3 dark:text-white/40">Foto del grupo</span>
+                <div className="flex items-center gap-4">
+                  <div className="relative flex-shrink-0">
+                    {avatarUrl ? (
+                      <img src={avatarUrl} alt={name} className="w-16 h-16 rounded-xl object-cover border border-border dark:border-white/8" />
+                    ) : (
+                      <div className="w-16 h-16 rounded-xl bg-primary text-white text-2xl font-bold flex items-center justify-center">
+                        {name?.[0]?.toUpperCase() || '?'}
+                      </div>
+                    )}
+                    {isAdmin && (
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={uploading}
+                        className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary-hover disabled:opacity-50 transition-colors"
+                      >
+                        {uploading ? <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <Upload size={11} />}
+                      </button>
+                    )}
+                  </div>
+                  {isAdmin && (
+                    <div className="flex-1">
+                      <Input
+                        type="url"
+                        value={avatarUrl}
+                        onChange={e => setAvatarUrl(e.target.value)}
+                        placeholder="https://... o sube una imagen"
+                        disabled={uploading}
+                      />
+                    </div>
+                  )}
+                </div>
+                <input ref={fileInputRef} type="file" accept="image/*" onChange={handleAvatarUpload} className="hidden" disabled={uploading} />
+              </div>
+
               <FormField label="Nombre del grupo">
                 <Input value={name} onChange={e => setName(e.target.value)} disabled={!isAdmin} required />
               </FormField>

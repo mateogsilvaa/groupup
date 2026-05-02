@@ -73,9 +73,17 @@ const useStore = create((set, get) => ({
   fetchGroupMembers: async (groupId) => {
     const { data } = await supabase
       .from('group_members')
-      .select('*, profiles(*)')
+      .select('user_id, role, joined_at, profiles(id, full_name, username, avatar_url, email)')
       .eq('group_id', groupId)
-    const members = (data || []).map(m => ({ id: m.user_id, ...m.profiles, role: m.role, joined_at: m.joined_at }))
+    const members = (data || []).map(m => ({
+      id: m.user_id,
+      full_name: m.profiles?.full_name ?? null,
+      username: m.profiles?.username ?? null,
+      avatar_url: m.profiles?.avatar_url ?? null,
+      email: m.profiles?.email ?? null,
+      role: m.role,
+      joined_at: m.joined_at,
+    }))
     set({ currentGroupMembers: members })
     return members
   },

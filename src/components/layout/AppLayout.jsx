@@ -39,7 +39,7 @@ const TEMPLATES = [
   },
 ]
 
-function CreateGroupModal({ open, onClose }) {
+function CreateGroupModal({ open, onClose, onSuccess }) {
   const [step, setStep] = useState(1)
   const [template, setTemplate] = useState(null)
   const [name, setName] = useState('')
@@ -87,8 +87,7 @@ function CreateGroupModal({ open, onClose }) {
     success(`Grupo "${groupName}" creado`)
     setLoading(false)
     handleClose()
-    setTutorialGroupName(groupName)
-    setTutorialOpen(true)
+    onSuccess?.(groupName, groupId)
     navigate(`/group/${groupId}/chat`)
   }
 
@@ -183,7 +182,7 @@ function JoinGroupModal({ open, onClose, onSuccess }) {
     setLoading(false)
     setCode('')
     onClose()
-    onSuccess?.(group.name)
+    onSuccess?.(group.name, group.id)
     navigate(`/group/${group.id}/chat`)
   }
 
@@ -214,6 +213,21 @@ export default function AppLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [tutorialOpen, setTutorialOpen] = useState(false)
   const [tutorialGroupName, setTutorialGroupName] = useState('')
+  const [tutorialGroupId, setTutorialGroupId] = useState(null)
+
+  function handleGroupSuccess(groupName, groupId) {
+    const seen = localStorage.getItem(`gu-tutorial-${groupId}`)
+    if (!seen) {
+      setTutorialGroupId(groupId)
+      setTutorialGroupName(groupName)
+      setTutorialOpen(true)
+    }
+  }
+
+  function handleTutorialClose() {
+    if (tutorialGroupId) localStorage.setItem(`gu-tutorial-${tutorialGroupId}`, '1')
+    setTutorialOpen(false)
+  }
 
   return (
     <div className="flex h-screen bg-bg dark:bg-bg-dark overflow-hidden">
@@ -236,20 +250,9 @@ export default function AppLayout() {
           </motion.div>
         </main>
       </div>
-      <CreateGroupModal open={createOpen} onClose={() => setCreateOpen(false)} />
-      <JoinGroupModal 
-        open={joinOpen} 
-        onClose={() => setJoinOpen(false)}
-        onSuccess={(groupName) => {
-          setTutorialGroupName(groupName)
-          setTutorialOpen(true)
-        }}
-      />
-      <GroupTutorialCarousel 
-        open={tutorialOpen}
-        onClose={() => setTutorialOpen(false)}
-        groupName={tutorialGroupName}
-      />
+      <CreateGroupModal open={createOpen} onClose={() => setCreateOpen(false)} onSuccess={handleGroupSuccess} />
+      <JoinGroupModal open={joinOpen} onClose={() => setJoinOpen(false)} onSuccess={handleGroupSuccess} />
+      <GroupTutorialCarousel open={tutorialOpen} onClose={handleTutorialClose} groupName={tutorialGroupName} />
     </div>
   )
 }
