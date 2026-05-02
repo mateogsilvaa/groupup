@@ -67,8 +67,9 @@ function CreateGroupModal({ open, onClose, onSuccess }) {
       .insert({ id: groupId, name: groupName, description: desc.trim(), invite_code: code, created_by: user.id })
     if (err) { error('Error al crear el grupo'); setLoading(false); return }
 
-    // El trigger de la base de datos agrega al creador como admin en group_members.
-    // Queremos que el usuario admin también sea considerado miembro para asignar tareas.
+    await supabase
+      .from('group_members')
+      .insert({ group_id: groupId, user_id: user.id, role: 'member' })
 
     if (template?.tasks?.length) {
       await supabase.from('tasks').insert(
@@ -206,6 +207,8 @@ function JoinGroupModal({ open, onClose, onSuccess }) {
   )
 }
 
+const seenTutorials = new Set()
+
 export default function AppLayout() {
   const [createOpen, setCreateOpen] = useState(false)
   const [joinOpen, setJoinOpen] = useState(false)
@@ -215,7 +218,7 @@ export default function AppLayout() {
   const [tutorialGroupId, setTutorialGroupId] = useState(null)
 
   function handleGroupSuccess(groupName, groupId) {
-    const seen = localStorage.getItem(`gu-tutorial-${groupId}`)
+    const seen = seenTutorials.has(groupId)
     if (!seen) {
       setTutorialGroupId(groupId)
       setTutorialGroupName(groupName)
@@ -224,7 +227,7 @@ export default function AppLayout() {
   }
 
   function handleTutorialClose() {
-    if (tutorialGroupId) localStorage.setItem(`gu-tutorial-${tutorialGroupId}`, '1')
+    if (tutorialGroupId) seenTutorials.add(tutorialGroupId)
     setTutorialOpen(false)
   }
 
