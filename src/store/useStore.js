@@ -73,20 +73,29 @@ const useStore = create((set, get) => ({
   fetchGroupMembers: async (groupId) => {
     const { data } = await supabase
       .from('group_members')
-      .select('user_id, role, joined_at, profiles(id, full_name, username, avatar_url, email)')
+      .select('user_id, role, joined_at')
       .eq('group_id', groupId)
+
+    const userIds = (data || []).map(m => m.user_id)
+    const { data: profiles } = userIds.length
+      ? await supabase.from('profiles').select('id, full_name, username, avatar_url, email').in('id', userIds)
+      : { data: [] }
+
     const seen = new Set()
     const members = (data || [])
       .filter(m => !seen.has(m.user_id) && seen.add(m.user_id))
-      .map(m => ({
-        id: m.user_id,
-        full_name: m.profiles?.full_name ?? null,
-        username: m.profiles?.username ?? null,
-        avatar_url: m.profiles?.avatar_url ?? null,
-        email: m.profiles?.email ?? null,
-        role: m.role,
-        joined_at: m.joined_at,
-      }))
+      .map(m => {
+        const p = profiles?.find(p => p.id === m.user_id) || null
+        return {
+          id: m.user_id,
+          full_name: p?.full_name ?? null,
+          username: p?.username ?? null,
+          avatar_url: p?.avatar_url ?? null,
+          email: p?.email ?? null,
+          role: m.role,
+          joined_at: m.joined_at,
+        }
+      })
       .sort((a, b) => {
         if (a.role === 'admin' && b.role !== 'admin') return -1
         if (b.role === 'admin' && a.role !== 'admin') return 1

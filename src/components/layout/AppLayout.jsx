@@ -86,8 +86,8 @@ function CreateGroupModal({ open, onClose, onSuccess }) {
     await fetchGroups()
     success(`Grupo "${groupName}" creado`)
     setLoading(false)
-    handleClose()
     onSuccess?.(groupName, groupId)
+    handleClose()
     navigate(`/group/${groupId}/chat`)
   }
 

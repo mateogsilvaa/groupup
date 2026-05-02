@@ -24,7 +24,7 @@ export default function Modal({ open, onClose, title, children, size = 'md', cla
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
           <motion.div
             className={clsx(
-              'relative w-full bg-surface dark:bg-surface-dark rounded-lg shadow-4 overflow-hidden',
+              'relative w-full bg-surface dark:bg-surface-dark rounded-lg shadow-4 overflow-y-auto',
               widths[size],
               className,
             )}
