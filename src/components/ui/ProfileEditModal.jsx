@@ -1,6 +1,6 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Upload, X } from 'lucide-react'
+import { Upload } from 'lucide-react'
 import Modal from './Modal'
 import Button from './Button'
 import { Input, FormField } from './Input'
@@ -18,6 +18,13 @@ export default function ProfileEditModal({ open, onClose }) {
   const [uploading, setUploading] = useState(false)
   const [loading, setLoading] = useState(false)
   const fileInputRef = useRef(null)
+
+  useEffect(() => {
+    if (!open) return
+    setFullName(profile?.full_name || '')
+    setUsername(profile?.username || '')
+    setAvatarUrl(profile?.avatar_url || '')
+  }, [open, profile])
 
   const handleAvatarChange = async (e) => {
     const file = e.target.files?.[0]
@@ -78,10 +85,10 @@ export default function ProfileEditModal({ open, onClose }) {
   }
 
   return (
-    <Modal open={open} onClose={onClose} title="Editar perfil">
-      <form onSubmit={handleSave} className="p-5 flex flex-col gap-5">
+    <Modal open={open} onClose={onClose} title="Editar perfil" size="xl" className="max-h-[calc(100vh-3rem)] overflow-y-auto">
+      <form onSubmit={handleSave} className="p-6 flex flex-col gap-6">
         {/* Avatar */}
-        <div className="flex flex-col items-center gap-4">
+        <div className="rounded-[28px] border border-border dark:border-white/10 bg-surface-2 dark:bg-surface-dark-2 p-6 flex flex-col items-center gap-4">
           <motion.div
             whileHover={{ scale: 1.05 }}
             className="relative"

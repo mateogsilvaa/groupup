@@ -67,13 +67,8 @@ function CreateGroupModal({ open, onClose, onSuccess }) {
       .insert({ id: groupId, name: groupName, description: desc.trim(), invite_code: code, created_by: user.id })
     if (err) { error('Error al crear el grupo'); setLoading(false); return }
 
-    await supabase
-      .from('group_members')
-      .insert({ group_id: groupId, user_id: user.id, role: 'admin' })
-
-    await supabase
-      .from('group_members')
-      .insert({ group_id: groupId, user_id: user.id, role: 'member' })
+    // El trigger de la base de datos agrega al creador como admin en group_members.
+    // Queremos que el usuario admin también sea considerado miembro para asignar tareas.
 
     if (template?.tasks?.length) {
       await supabase.from('tasks').insert(

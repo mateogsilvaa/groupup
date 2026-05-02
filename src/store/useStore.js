@@ -87,6 +87,13 @@ const useStore = create((set, get) => ({
         role: m.role,
         joined_at: m.joined_at,
       }))
+      .sort((a, b) => {
+        if (a.role === 'admin' && b.role !== 'admin') return -1
+        if (b.role === 'admin' && a.role !== 'admin') return 1
+        const nameA = (a.full_name || a.username || '').toLowerCase()
+        const nameB = (b.full_name || b.username || '').toLowerCase()
+        return nameA.localeCompare(nameB)
+      })
     set({ currentGroupMembers: members })
     return members
   },
