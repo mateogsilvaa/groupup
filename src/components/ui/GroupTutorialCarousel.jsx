@@ -58,6 +58,7 @@ export default function GroupTutorialCarousel({ open, onClose, groupName }) {
   const slide = slides[current]
   const CurrentIcon = slide.icon
 
+  console.log('GroupTutorialCarousel render, open=', open)
   return (
     <AnimatePresence>
       {open && (

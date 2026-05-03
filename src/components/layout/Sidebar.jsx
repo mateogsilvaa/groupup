@@ -1,10 +1,8 @@
-import { useState } from 'react'
 import { NavLink, useNavigate, useParams } from 'react-router-dom'
 import { clsx } from 'clsx'
 import { MessageSquare, CheckSquare, Layout, Paperclip, Lightbulb, Settings, Users, Plus, Sun, Moon, LogOut, Home, X } from 'lucide-react'
 import useStore from '../../store/useStore'
 import Avatar from '../ui/Avatar'
-import ProfileEditModal from '../ui/ProfileEditModal'
 
 const groupNav = [
   { to: 'chat', icon: MessageSquare, label: 'Chat' },
@@ -26,11 +24,10 @@ function groupColor(id) {
   return GROUP_COLORS[n % GROUP_COLORS.length]
 }
 
-export default function Sidebar({ onCreateGroup, onJoinGroup, open, onClose }) {
+export default function Sidebar({ onCreateGroup, onJoinGroup, open, onClose, onEditProfile }) {
   const { groupId } = useParams()
   const { groups, currentGroup, profile, user, theme, toggleTheme, signOut } = useStore()
   const navigate = useNavigate()
-  const [profileModalOpen, setProfileModalOpen] = useState(false)
 
   function goTo(path) {
     navigate(path)
@@ -160,7 +157,7 @@ export default function Sidebar({ onCreateGroup, onJoinGroup, open, onClose }) {
           </button>
 
           <button
-            onClick={() => setProfileModalOpen(true)}
+            onClick={onEditProfile}
             className="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-surface-2 dark:hover:bg-surface-dark-2 transition-colors group cursor-pointer text-left w-full"
           >
             <Avatar name={profile?.full_name || profile?.username} url={profile?.avatar_url} size="sm" />
@@ -178,7 +175,6 @@ export default function Sidebar({ onCreateGroup, onJoinGroup, open, onClose }) {
           </button>
         </div>
 
-        <ProfileEditModal open={profileModalOpen} onClose={() => setProfileModalOpen(false)} />
       </aside>
     </>
   )

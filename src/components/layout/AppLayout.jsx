@@ -5,6 +5,7 @@ import Sidebar from './Sidebar'
 import Topbar from './Topbar'
 import Modal from '../ui/Modal'
 import GroupTutorialCarousel from '../ui/GroupTutorialCarousel'
+import ProfileEditModal from '../ui/ProfileEditModal'
 import { Input, FormField } from '../ui/Input'
 import Button from '../ui/Button'
 import useStore from '../../store/useStore'
@@ -216,8 +217,10 @@ export default function AppLayout() {
   const [tutorialOpen, setTutorialOpen] = useState(false)
   const [tutorialGroupName, setTutorialGroupName] = useState('')
   const [tutorialGroupId, setTutorialGroupId] = useState(null)
+  const [profileOpen, setProfileOpen] = useState(false)
 
   function handleGroupSuccess(groupName, groupId) {
+    console.log('handleGroupSuccess fired', groupName, groupId)
     const seen = seenTutorials.has(groupId)
     if (!seen) {
       setTutorialGroupId(groupId)
@@ -238,6 +241,7 @@ export default function AppLayout() {
         onJoinGroup={() => setJoinOpen(true)}
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
+        onEditProfile={() => setProfileOpen(true)}
       />
       <div className="flex-1 flex flex-col overflow-hidden min-w-0">
         <Topbar onMenuClick={() => setSidebarOpen(true)} />
@@ -255,6 +259,7 @@ export default function AppLayout() {
       <CreateGroupModal open={createOpen} onClose={() => setCreateOpen(false)} onSuccess={handleGroupSuccess} />
       <JoinGroupModal open={joinOpen} onClose={() => setJoinOpen(false)} onSuccess={handleGroupSuccess} />
       <GroupTutorialCarousel open={tutorialOpen} onClose={handleTutorialClose} groupName={tutorialGroupName} />
+      <ProfileEditModal open={profileOpen} onClose={() => setProfileOpen(false)} />
     </div>
   )
 }
