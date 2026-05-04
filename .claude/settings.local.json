@@ -11,7 +11,14 @@
       "Bash(npm uninstall *)",
       "Bash(git add *)",
       "Bash(git commit *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(cp -r src/. appOrdenador/windows/src/)",
+      "Bash(cp -r src/. appOrdenador/mac/src/)",
+      "Bash(cp -r public/. appOrdenador/windows/public/)",
+      "Bash(cp -r public/. appOrdenador/mac/public/)",
+      "Bash(cp \"C:/Users/mateo/Downloads/GroupUp Setup.exe\" \"C:/Users/mateo/Documents/Repositorios - mateogsilvaa/groupup/groupup/public/downloads/GroupUp-Setup-Windows.exe\")",
+      "Bash(cp \"C:/Users/mateo/Downloads/GroupUp Setup.dmg\" \"C:/Users/mateo/Documents/Repositorios - mateogsilvaa/groupup/groupup/public/downloads/GroupUp-Setup-Mac.dmg\")",
+      "Bash(git checkout *)"
     ]
   },
   "enableAllProjectMcpServers": true,
