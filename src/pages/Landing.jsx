@@ -331,7 +331,7 @@ export default function Landing() {
             transition={{ delay: 0.15 }}
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
-            <a href="/downloads/GroupUp-Setup-Windows.exe" download className="group">
+            <a href="https://github.com/mateogsilvaa/groupup/releases/download/v1.0.0/GroupUp-Setup-Windows.exe" className="group">
               <div className="flex items-center gap-4 px-6 py-4 rounded-xl border border-border dark:border-white/10 bg-surface dark:bg-surface-dark hover:border-primary/40 dark:hover:border-primary-dark/40 hover:shadow-md transition-all duration-300 cursor-pointer">
                 <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-500 flex-shrink-0">
                   <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
@@ -346,7 +346,7 @@ export default function Landing() {
               </div>
             </a>
 
-            <a href="/downloads/GroupUp-Setup-Mac.dmg" download className="group">
+            <a href="https://github.com/mateogsilvaa/groupup/releases/download/v1.0.0/GroupUp-Setup-Mac.dmg" className="group">
               <div className="flex items-center gap-4 px-6 py-4 rounded-xl border border-border dark:border-white/10 bg-surface dark:bg-surface-dark hover:border-primary/40 dark:hover:border-primary-dark/40 hover:shadow-md transition-all duration-300 cursor-pointer">
                 <div className="w-10 h-10 rounded-lg bg-gray-500/10 flex items-center justify-center text-gray-500 flex-shrink-0">
                   <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
