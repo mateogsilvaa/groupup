@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   MessageSquare, CheckSquare, Layout, Lightbulb, ArrowRight, Zap, Star,
   Users, Clock, Lock, Sparkles, ChevronRight, Menu, X, Send, Plus, Download
@@ -65,7 +65,7 @@ const testimonials = [
   },
   {
     name: 'Sofía Martín',
-    role: 'Estudiante de ADE, UFV',
+    role: 'Estudiante de ADE',
     text: 'Dejamos de perder el hilo en WhatsApp desde el primer día. Todo el grupo ve las tareas, los plazos y los archivos en el mismo sitio. Ha cambiado por completo cómo trabajamos.',
     initials: 'SM'
   },
@@ -74,6 +74,42 @@ const testimonials = [
     role: 'Estudiante de la ESO',
     text: 'Pensé que era solo para la universidad, pero funciona genial también en el insti. Lo usé para un trabajo de Ciencias y fue mucho mejor que cualquier grupo de WhatsApp. Hasta para la ESO va de lujo.',
     initials: 'LG'
+  },
+  {
+    name: 'María Pérez',
+    role: 'Estudiante de Medicina, 3er año',
+    text: 'En mi carrera los grupos de estudio son clave. Con GroupUp organizamos casos clínicos, repartimos temas y nadie se queda sin saber qué toca. Es lo que necesitábamos desde primero.',
+    initials: 'MP'
+  },
+  {
+    name: 'Pablo Rodríguez',
+    role: 'Estudiante de Derecho',
+    text: 'Somos seis en el grupo y antes los hilos de WhatsApp eran un caos total. Ahora cada tarea tiene su responsable y su fecha. Las entregas ya no son una pesadilla de último minuto.',
+    initials: 'PR'
+  },
+  {
+    name: 'Elena Sánchez',
+    role: 'Estudiante de Diseño Gráfico',
+    text: 'El tablón de ideas es lo que más usamos. Subimos referencias, comentamos bocetos y votamos conceptos sin tener que quedar en persona. Para trabajos creativos en grupo es perfecto.',
+    initials: 'ES'
+  },
+  {
+    name: 'Carmen Villanueva',
+    role: 'Coordinadora de voluntariado',
+    text: 'Lo adoptamos para gestionar un proyecto de voluntariado con veinte personas. Funciona igual de bien fuera del entorno académico. Claro, intuitivo y sin curva de aprendizaje.',
+    initials: 'CV'
+  },
+  {
+    name: 'Diego Torres',
+    role: 'Estudiante de Física',
+    text: 'Nuestro grupo de laboratorio lleva meses usándolo. Los informes los escribimos entre todos en el mismo sitio, sin versiones duplicadas ni correos eternos. Ahorras un tiempo brutal.',
+    initials: 'DT'
+  },
+  {
+    name: 'Ana García',
+    role: 'Estudiante de Magisterio',
+    text: 'Como futura docente valoro que sea tan fácil de usar. Hasta los compañeros menos tecnológicos del grupo se adaptaron en cuestión de minutos. No tiene ninguna barrera de entrada.',
+    initials: 'AG'
   },
 ]
 
@@ -159,6 +195,19 @@ const itemVariants = {
 
 export default function Landing() {
   const [hoveredFeature, setHoveredFeature] = useState(null)
+  const [testimonialsPage, setTestimonialsPage] = useState(0)
+  const ITEMS_PER_PAGE = 3
+  const totalPages = Math.ceil(testimonials.length / ITEMS_PER_PAGE)
+
+  useEffect(() => {
+    const t = setInterval(() => setTestimonialsPage(p => (p + 1) % totalPages), 5000)
+    return () => clearInterval(t)
+  }, [totalPages])
+
+  const visibleTestimonials = testimonials.slice(
+    testimonialsPage * ITEMS_PER_PAGE,
+    (testimonialsPage + 1) * ITEMS_PER_PAGE
+  )
 
   return (
     <div className="min-h-screen bg-bg dark:bg-bg-dark text-ink dark:text-white overflow-hidden">
@@ -515,46 +564,52 @@ export default function Landing() {
           </motion.h2>
         </motion.div>
 
-        <motion.div
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: '-100px' }}
-          variants={containerVariants}
-          className="grid md:grid-cols-3 gap-6"
-        >
-          {testimonials.map(({ name, role, text, initials }) => (
-            <motion.div
-              key={name}
-              variants={itemVariants}
-              whileHover={{ y: -8 }}
-              className="bg-surface dark:bg-surface-dark rounded-xl p-6 border border-border dark:border-white/8 hover:shadow-lg transition-shadow duration-300"
-            >
-              <div className="flex gap-1 mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, scale: 0 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.1 + i * 0.05 }}
-                  >
-                    <Star size={16} className="text-amber-400 fill-amber-400" />
-                  </motion.div>
-                ))}
-              </div>
-              <p className="text-sm text-ink-2 dark:text-white/60 mb-6 leading-relaxed">"{text}"</p>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center">
-                  {initials}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={testimonialsPage}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.4, ease: 'easeOut' }}
+            className="grid md:grid-cols-3 gap-6"
+          >
+            {visibleTestimonials.map(({ name, role, text, initials }) => (
+              <motion.div
+                key={name}
+                whileHover={{ y: -8 }}
+                className="bg-surface dark:bg-surface-dark rounded-xl p-6 border border-border dark:border-white/8 hover:shadow-lg transition-shadow duration-300"
+              >
+                <div className="flex gap-1 mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} size={16} className="text-amber-400 fill-amber-400" />
+                  ))}
                 </div>
-                <div>
-                  <p className="text-sm font-semibold">{name}</p>
-                  <p className="text-xs text-ink-3 dark:text-white/40">{role}</p>
+                <p className="text-sm text-ink-2 dark:text-white/60 mb-6 leading-relaxed">"{text}"</p>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center">
+                    {initials}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold">{name}</p>
+                    <p className="text-xs text-ink-3 dark:text-white/40">{role}</p>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </AnimatePresence>
+
+        <div className="flex justify-center gap-2 mt-8">
+          {Array.from({ length: totalPages }).map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setTestimonialsPage(i)}
+              className={`h-2 rounded-full transition-all duration-300 ${
+                i === testimonialsPage ? 'w-6 bg-primary' : 'w-2 bg-border dark:bg-white/20'
+              }`}
+            />
           ))}
-        </motion.div>
+        </div>
       </section>
 
       {/* FAQ */}
